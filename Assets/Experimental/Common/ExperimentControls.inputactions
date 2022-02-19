@@ -1,0 +1,34 @@
+{
+    "name": "ExperimentControls",
+    "maps": [
+        {
+            "name": "Standard",
+            "id": "d2ee1399-c3ca-421b-996e-f891128a0fce",
+            "actions": [
+                {
+                    "name": "KbdSpace",
+                    "type": "Button",
+                    "id": "94d274b0-2e7d-434b-abd5-e8b6ea833640",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e4d28842-5a45-4b06-968e-dad1e33878f6",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "KbdSpace",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
