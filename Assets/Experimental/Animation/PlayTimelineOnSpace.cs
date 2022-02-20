@@ -1,15 +1,24 @@
 ﻿using System;
+using Animancer;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 
 namespace Experimental.Animation
 {
+    [AddComponentMenu("Experimental/" + nameof(PlayTimelineOnSpace) + " (Experimental)")]
     public class PlayTimelineOnSpace : MonoBehaviour
     {
-        private ExperimentControls _controls;
-        private PlayableDirector _director;
+        [SerializeField] private PlayableDirector _director;
+        [SerializeField] private AnimancerComponent _animancer;
         
+        [SerializeField] private bool _useAnimancer;
+        [SerializeField] private PlayableAssetTransition _playableAssetTransition;
+        
+        [SerializeField] private AvatarMask _upperBodyMask;
+        
+        private ExperimentControls _controls;
+
         private void Awake()
         {
             _controls = new ExperimentControls();
@@ -25,14 +34,22 @@ namespace Experimental.Animation
         {
             if (ctx.performed)
             {
-                PlayTimeline();
+                Invoke(nameof(PlayTimeline), 0.5f);
             }
         }
         
         private void PlayTimeline()
         {
-            Debug.Log("[Experimental.Animation] Played timeline");
-            _director.Play();
+            var note = _useAnimancer ? "using animancer" : "using playable director";
+            Debug.Log($"[Experimental.Animation] Played timeline ({note})");
+            if (_useAnimancer)
+            {
+                _animancer.Play(_playableAssetTransition);
+            }
+            else
+            {
+                _director.Play();
+            }
         }
 
         private void OnDestroy()
