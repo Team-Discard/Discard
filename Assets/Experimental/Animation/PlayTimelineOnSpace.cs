@@ -3,6 +3,7 @@ using Animancer;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.Timeline;
 
 namespace Experimental.Animation
 {
@@ -17,12 +18,15 @@ namespace Experimental.Animation
         
         [SerializeField] private AvatarMask _upperBodyMask;
         
+        [SerializeField] private AvatarMask _fullBodyMask;
+        
         private ExperimentControls _controls;
 
         private void Awake()
         {
             _controls = new ExperimentControls();
             _controls.Standard.Enable();
+            (_playableAssetTransition.Asset as TimelineAsset).GetOutputTracks(); 
         }
 
         private void Start()
@@ -44,6 +48,7 @@ namespace Experimental.Animation
             Debug.Log($"[Experimental.Animation] Played timeline ({note})");
             if (_useAnimancer)
             {
+                _animancer.Layers[0].SetMask(_fullBodyMask);
                 _animancer.Play(_playableAssetTransition);
             }
             else
