@@ -11,7 +11,10 @@ namespace Unstable.Entities
         private TranslationFrame _translationFrame;
 
         private RotationFrame _rotationFrame;
-        
+
+        public Vector3 CurrentVelocity => _rigidbody.velocity;
+        public Vector3 CurrentForward => _rigidbody.transform.forward;
+
         public RigidbodyPawn(Rigidbody rigidbody)
         {
             _rotationFrame = new RotationFrame

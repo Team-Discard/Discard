@@ -19,6 +19,8 @@ namespace Unstable.Entities
         public RotationFrame GetRotationFrame() => _internalPawn.GetRotationFrame();
 
         public void SetRotationFrame(RotationFrame rotationFrame) => _internalPawn.SetRotationFrame(rotationFrame);
+        public Vector3 CurrentVelocity => _internalPawn.CurrentVelocity;
+        public Vector3 CurrentForward => _internalPawn.CurrentForward;
 
         private void Update()
         {

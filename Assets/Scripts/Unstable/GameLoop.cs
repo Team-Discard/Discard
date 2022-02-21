@@ -36,6 +36,7 @@ namespace Unstable
             {
                 foreach (var actionEffect in actionEffects)
                 {
+                    if (actionEffect.DamageVolumes == null) continue;
                     foreach (var damageVolume in actionEffect.DamageVolumes)
                     {
                         enemyController.InteractWithDamageVolume(damageVolume);
