@@ -15,6 +15,7 @@ namespace Experimental.Animation
         
         [SerializeField] private bool _useAnimancer;
         [SerializeField] private PlayableAssetTransition _playableAssetTransition;
+        [SerializeField] private PlayableAssetTransition _secondaryAssetTransition;
         
         [SerializeField] private AvatarMask _upperBodyMask;
         
@@ -48,8 +49,11 @@ namespace Experimental.Animation
             Debug.Log($"[Experimental.Animation] Played timeline ({note})");
             if (_useAnimancer)
             {
-                _animancer.Layers[0].SetMask(_fullBodyMask);
-                _animancer.Play(_playableAssetTransition);
+                // _animancer.Layers[0].SetMask(_fullBodyMask);
+                _animancer.Layers[0].Play(_playableAssetTransition);
+                
+                _animancer.Layers[1].SetMask(_upperBodyMask);
+                _animancer.Layers[1].Play(_secondaryAssetTransition);
             }
             else
             {
