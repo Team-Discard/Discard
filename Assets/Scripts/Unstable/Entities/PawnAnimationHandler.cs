@@ -22,6 +22,7 @@ namespace Unstable.Entities
 
         private LinearMixerState _locomotionMixerState;
         private float _normalizedLocomotionSpeed;
+        private float _absoluteLocomotionSpeed;
 
         public PawnAnimationHandler(IPawn pawn, AnimancerComponent animancer,
             [NotNull] StandardWeaponLocomotionAnimationSet startingLocomotionAnimationSet)
@@ -44,6 +45,11 @@ namespace Unstable.Entities
         public void SetNormalizedSpeed(float normalizedSpeed)
         {
             _normalizedLocomotionSpeed = normalizedSpeed;
+        }
+
+        public void SetAbsoluteSpeed(float forwardSpeed)
+        {
+            _absoluteLocomotionSpeed = forwardSpeed;
         }
 
         public void BeginPlayActionAnimation(IAction action)
@@ -99,8 +105,40 @@ namespace Unstable.Entities
             if (_locomotionMixerState != null)
             {
                 // todo: if animation is not ticked next frame, locomotion speed is not updated for the linear mixer
+
+                // _locomotionMixerState.Parameter = Mathf.Lerp(_locomotionMixerState.Parameter,
+                //     _normalizedLocomotionSpeed, 15.0f * deltaTime);
                 
-                _locomotionMixerState.Parameter = Mathf.Lerp(_locomotionMixerState.Parameter, _normalizedLocomotionSpeed, 15.0f * deltaTime);
+                _locomotionMixerState.Parameter = Mathf.Lerp(_locomotionMixerState.Parameter,
+                     _absoluteLocomotionSpeed, 15.0f * deltaTime);
+                
+                var children = _locomotionMixerState.ChildStates;
+                var currentAnimationVelocity = 0.0f;
+                if (_absoluteLocomotionSpeed < 0.01f) return;
+                for (var i = 1; i < children.Count; ++i)
+                {
+                    currentAnimationVelocity +=
+                        children[i].Clip.averageSpeed.z * children[i].EffectiveWeight;
+                }
+                
+                // Debug.Log(_absoluteLocomotionSpeed);
+                //
+                // Debug.Log(
+                //     $"z: {children[2].AverageVelocity.z / children[2].EffectiveWeight}, " +
+                //     $"play_speed: {children[2].EffectiveSpeed}");
+
+                if (currentAnimationVelocity < 0.01f) return;
+
+                var multiplier = _absoluteLocomotionSpeed / currentAnimationVelocity;
+                
+                if (Mathf.Approximately(multiplier, 1.0f)) return;
+                
+                Debug.Log(multiplier);
+                
+                for (var i = 1; i < children.Count; ++i)
+                {
+                    children[i].Speed = multiplier;
+                }
             }
         }
     }

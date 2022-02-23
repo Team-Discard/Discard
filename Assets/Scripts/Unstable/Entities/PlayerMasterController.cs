@@ -59,6 +59,7 @@ namespace Unstable.Entities
             var normalizedSpeed = Mathf.InverseLerp(0.0f, _maxSpeed, forwardSpeed);
             
             _animationHandler.SetNormalizedSpeed(normalizedSpeed);
+            _animationHandler.SetAbsoluteSpeed(forwardSpeed);
             
             HandleActionTriggers(_actionExecutor);
             

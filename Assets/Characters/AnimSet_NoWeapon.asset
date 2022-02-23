@@ -28,13 +28,13 @@ MonoBehaviour:
         _Speed: 1
         _Animations:
         - {fileID: -203655887218126122, guid: 2cc64f6088758474097fd68a32143ec6, type: 3}
-        - {fileID: -203655887218126122, guid: 780a9bb86f4fb3c438198b1b576adcf1, type: 3}
-        - {fileID: -203655887218126122, guid: f0b201f680d708143a53e6640c3ac0b2, type: 3}
+        - {fileID: -203655887218126122, guid: 22748321ac4ec0d418c2b213f682e989, type: 3}
+        - {fileID: -203655887218126122, guid: 37b55accae5c4f24da7ac14dbbacde9d, type: 3}
         _Speeds: []
         _SynchronizeChildren: 
         _Thresholds:
         - 0
-        - 0.5
-        - 1
+        - 1.5
+        - 5
         _DefaultParameter: 0
-        _ExtrapolateSpeed: 1
+        _ExtrapolateSpeed: 0
