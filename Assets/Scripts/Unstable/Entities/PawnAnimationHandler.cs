@@ -96,49 +96,45 @@ namespace Unstable.Entities
             }
             else if (_hasActionAnimations && !hasActionAnimationsNow || _locomotionAnimationDirty)
             {
-                _locomotionMixerState = _animancer.Play(_locomotionAnimationSet.Transition) as LinearMixerState;
+                _locomotionMixerState = 
+                    _animancer.Play(_locomotionAnimationSet.Transition) as LinearMixerState;
             }
 
             _locomotionAnimationDirty = false;
             _hasActionAnimations = hasActionAnimationsNow;
 
-            if (_locomotionMixerState != null)
+            SyncLocomotionAnimationSpeed(deltaTime);
+        }
+
+        private void SyncLocomotionAnimationSpeed(float deltaTime)
+        {
+            if (_locomotionMixerState == null) return;
+            
+            // todo: if animation is not ticked next frame, locomotion speed is not updated for the linear mixer
+
+            _locomotionMixerState.Parameter = Mathf.Lerp(_locomotionMixerState.Parameter,
+                _absoluteLocomotionSpeed, 15.0f * deltaTime);
+
+            var children = _locomotionMixerState.ChildStates;
+            var currentAnimationVelocity = 0.0f;
+            if (_absoluteLocomotionSpeed < 0.01f) return;
+            
+            // loops starts with 1 because the 0-th index is the idle animation
+            for (var i = 1; i < children.Count; ++i)
             {
-                // todo: if animation is not ticked next frame, locomotion speed is not updated for the linear mixer
+                currentAnimationVelocity +=
+                    children[i].Clip.averageSpeed.z * children[i].EffectiveWeight;
+            }
 
-                // _locomotionMixerState.Parameter = Mathf.Lerp(_locomotionMixerState.Parameter,
-                //     _normalizedLocomotionSpeed, 15.0f * deltaTime);
-                
-                _locomotionMixerState.Parameter = Mathf.Lerp(_locomotionMixerState.Parameter,
-                     _absoluteLocomotionSpeed, 15.0f * deltaTime);
-                
-                var children = _locomotionMixerState.ChildStates;
-                var currentAnimationVelocity = 0.0f;
-                if (_absoluteLocomotionSpeed < 0.01f) return;
-                for (var i = 1; i < children.Count; ++i)
-                {
-                    currentAnimationVelocity +=
-                        children[i].Clip.averageSpeed.z * children[i].EffectiveWeight;
-                }
-                
-                // Debug.Log(_absoluteLocomotionSpeed);
-                //
-                // Debug.Log(
-                //     $"z: {children[2].AverageVelocity.z / children[2].EffectiveWeight}, " +
-                //     $"play_speed: {children[2].EffectiveSpeed}");
+            if (currentAnimationVelocity < 0.01f) return;
 
-                if (currentAnimationVelocity < 0.01f) return;
+            var multiplier = _absoluteLocomotionSpeed / currentAnimationVelocity;
 
-                var multiplier = _absoluteLocomotionSpeed / currentAnimationVelocity;
-                
-                if (Mathf.Approximately(multiplier, 1.0f)) return;
-                
-                Debug.Log(multiplier);
-                
-                for (var i = 1; i < children.Count; ++i)
-                {
-                    children[i].Speed = multiplier;
-                }
+            if (Mathf.Approximately(multiplier, 1.0f)) return;
+
+            for (var i = 1; i < children.Count; ++i)
+            {
+                children[i].Speed = multiplier;
             }
         }
     }

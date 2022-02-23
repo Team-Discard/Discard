@@ -12,11 +12,10 @@ namespace Unstable.Actions.GreatSwordSlash
 
         [SerializeField] private ClipTransition _preparationClip;
         [SerializeField] private ClipTransition _executionClip;
-        [SerializeField] private ClipTransition _idleClip;
 
         [SerializeField] private float _preparationTime;
-        
-        [SerializeField] private AnimancerComponent _animancer;
+
+        private PawnAnimationHandler _animationHandler;
 
         private ActionStage _stage;
         private bool _preparationClipDone;
@@ -25,10 +24,14 @@ namespace Unstable.Actions.GreatSwordSlash
         private bool _recoveryClipDone;
 
         private RootMotionFrame _rootMotionFrame;
-        
+
         public void Begin()
         {
-            _animancer.Play(_preparationClip).Events.OnEnd = () => { _preparationClipDone = true; };
+            _animationHandler.BeginPlayActionAnimation(this);
+            _animationHandler.PlayActionAnimation(
+                this,
+                _preparationClip, 
+                () => { _preparationClipDone = true; });
         }
 
         public ActionEffects Execute(float deltaTime)
@@ -46,13 +49,12 @@ namespace Unstable.Actions.GreatSwordSlash
                     if (_preparationClipDone || _preparationTimer <= 0)
                     {
                         _stage = ActionStage.Execution;
-                        var state = _animancer.Play(_executionClip);
-                        state.Events.OnEnd = () =>
-                        {
-                            _executionClipDone = true;
-                            state.Events.OnEnd = null;
-                        };
+                        _animationHandler.PlayActionAnimation(
+                            this,
+                            _executionClip,
+                            () => { _executionClipDone = true; });
                     }
+
                     break;
                 }
                 case ActionStage.Execution:
@@ -62,8 +64,9 @@ namespace Unstable.Actions.GreatSwordSlash
                     if (_executionClipDone)
                     {
                         Completed = true;
-                        _animancer.Play(_idleClip);
+                        _animationHandler.EndPlayActionAnimation(this);
                     }
+
                     break;
                 }
                 case ActionStage.Recovery:
@@ -77,7 +80,7 @@ namespace Unstable.Actions.GreatSwordSlash
 
         public bool Completed { get; private set; }
 
-        public void Init(PlayerPawn pawn)
+        public void Init(PlayerPawn pawn, PawnAnimationHandler animationHandler)
         {
             _playerPawn = pawn;
             _stage = ActionStage.Preparation;
@@ -86,6 +89,7 @@ namespace Unstable.Actions.GreatSwordSlash
             _recoveryClipDone = false;
             _rootMotionFrame = _playerPawn.RootMotionFrame;
             _preparationTimer = _preparationTime;
+            _animationHandler = animationHandler;
         }
     }
 }

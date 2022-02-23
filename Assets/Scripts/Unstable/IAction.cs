@@ -8,8 +8,6 @@ namespace Unstable
 
         bool Completed { get; }
 
-        void Init(PlayerPawn pawn);
-        
         void Begin()
         {
         }
