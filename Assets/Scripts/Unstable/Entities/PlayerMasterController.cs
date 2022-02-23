@@ -83,7 +83,7 @@ namespace Unstable.Entities
         private IAction CreateChargeAction()
         {
             var charge = Instantiate(_chargeActionPrefab, _playerPawn.transform);
-            charge.Init(_playerPawn);
+            charge.Init(_playerPawn, _animationHandler);
             return charge;
         }
     }
