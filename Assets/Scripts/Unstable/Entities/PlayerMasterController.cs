@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Animancer;
 using UnityEngine;
 using Unstable.Actions.GreatSwordSlash;
@@ -18,17 +19,17 @@ namespace Unstable.Entities
         [SerializeField] private Camera _controlCamera;
         [SerializeField] private AnimancerComponent _animancer;
         [SerializeField] private StandardWeaponLocomotionAnimationSet _noWeaponLocomotionAnimations;
-        
+
         [SerializeField] private float _maxSpeed;
 
         private ActionExecutor _actionExecutor;
         private List<ActionEffects> _actionEffects;
 
         private PawnAnimationHandler _animationHandler;
-        
+
         public List<ActionEffects> CurrentActionEffects => _actionEffects;
-        
-        
+
+
         #region Triggers
 
         #endregion
@@ -48,22 +49,31 @@ namespace Unstable.Entities
             var rotationFrame = _playerPawn.GetRotationFrame();
             _actionExecutor.Execute(deltaTime, _actionEffects);
 
-            _locomotionController.ApplyDirectionalMovement(
-                Time.deltaTime, inputDirection, controlDirection, _maxSpeed,
-                ref translationFrame, ref rotationFrame);
+            if (!AnyActionDisablesFreeMovement(_actionEffects))
+            {
+                _locomotionController.ApplyDirectionalMovement(
+                    Time.deltaTime, inputDirection, controlDirection, _maxSpeed,
+                    ref translationFrame, ref rotationFrame);
+            }
+
             _locomotionController.ApplyEffects(deltaTime, _actionEffects, ref translationFrame);
             _playerPawn.SetTranslationFrame(translationFrame);
             _playerPawn.SetRotationFrame(rotationFrame);
 
             var forwardSpeed = _playerPawn.CalculateForwardSpeed();
             var normalizedSpeed = Mathf.InverseLerp(0.0f, _maxSpeed, forwardSpeed);
-            
+
             _animationHandler.SetNormalizedSpeed(normalizedSpeed);
             _animationHandler.SetAbsoluteSpeed(forwardSpeed);
-            
+
             HandleActionTriggers(_actionExecutor);
-            
+
             _animationHandler.Tick(deltaTime);
+        }
+
+        private static bool AnyActionDisablesFreeMovement(List<ActionEffects> actionEffects)
+        {
+            return actionEffects.Any(effect => !effect.FreeMovementEnabled);
         }
 
         private void HandleActionTriggers(ActionExecutor actionExecutor)
