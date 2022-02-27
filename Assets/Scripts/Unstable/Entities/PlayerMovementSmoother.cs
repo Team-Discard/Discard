@@ -9,16 +9,12 @@ namespace Unstable.Entities
         private Vector3 _effectivePosition;
         private Vector3 _moveToIdealVelocity;
         
-        private void Awake()
-        {
-            _moveToIdealVelocity = Vector3.zero;
-            _effectivePosition = _rootTransform.position;
-        }
 
-        private void LateUpdate()
+        public void Tick(float deltaTime)
         {
             var idealPos = _rootTransform.transform.position;
-            _effectivePosition = Vector3.SmoothDamp(_effectivePosition, idealPos, ref _moveToIdealVelocity, 0.05f);
+            _effectivePosition = Vector3.SmoothDamp(_effectivePosition, idealPos, ref _moveToIdealVelocity, 0.05f,
+                float.MaxValue, deltaTime);
             transform.position = _effectivePosition;
         }
     }

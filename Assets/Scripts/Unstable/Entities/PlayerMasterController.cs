@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Animancer;
 using UnityEngine;
 using Unstable.Actions.GreatSwordSlash;
 using Unstable.Utils;
+using Uxt;
 using WeaponSystem;
+using WeaponSystem.Swords;
 
 namespace Unstable.Entities
 {
@@ -22,13 +25,19 @@ namespace Unstable.Entities
         [SerializeField] private StandardWeaponLocomotionAnimationSet _noWeaponLocomotionAnimations;
         [SerializeField] private WeaponTriggers _weaponTriggers;
 
+        [SerializeField] private Transform _swordHandleBottom;
+        [SerializeField] private Transform _swordHandleTop;
 
+        [SerializeField] private PlayerMovementSmoother _smoother;
+        
         [SerializeField] private float _maxSpeed;
 
         private ActionExecutor _actionExecutor;
         private List<ActionEffects> _actionEffects;
 
         private PawnAnimationHandler _animationHandler;
+
+        private Sword _activeSwordEquipped;
 
         public List<ActionEffects> CurrentActionEffects => _actionEffects;
 
@@ -43,6 +52,7 @@ namespace Unstable.Entities
             _actionEffects = new List<ActionEffects>();
             _animationHandler = new PawnAnimationHandler(_playerPawn, _animancer, _noWeaponLocomotionAnimations);
             _weaponTriggers = new WeaponTriggers();
+            _activeSwordEquipped = null;
         }
 
         public void Tick(float deltaTime)
@@ -60,7 +70,7 @@ namespace Unstable.Entities
                     ref translationFrame, ref rotationFrame);
             }
 
-            _locomotionController.ApplyEffects(deltaTime, _actionEffects, ref translationFrame);
+            _locomotionController.ApplyActionEffects(deltaTime, _actionEffects, ref translationFrame);
             _playerPawn.SetTranslationFrame(translationFrame);
             _playerPawn.SetRotationFrame(rotationFrame);
 
@@ -72,20 +82,72 @@ namespace Unstable.Entities
 
             HandleActionTriggers(_actionExecutor);
 
+            if (_weaponTriggers.UnEquipTrigger.Consume(out var _))
+            {
+                _animationHandler.SetLocomotionAnimations(_noWeaponLocomotionAnimations);
+
+                if (_activeSwordEquipped != null)
+                {
+                    UnEquipActiveSword();
+                }
+            }
+
             if (_weaponTriggers.EquipTrigger.Consume(out var equipDesc))
             {
                 if (equipDesc.Sword is { } equipSword)
                 {
                     _animationHandler.SetLocomotionAnimations(equipSword.LocomotionAnimations);
+                    var swordPrefab = equipSword.SwordPrefab;
+                    if (_activeSwordEquipped == null && swordPrefab != null)
+                    {
+                        EquipSword(Instantiate(swordPrefab, transform.position, Quaternion.identity));
+                    }
                 }
             }
+            
+            _smoother.Tick(deltaTime);
 
-            if (_weaponTriggers.UnEquipTrigger.Consume(out var _))
+            if (_activeSwordEquipped != null)
             {
-                _animationHandler.SetLocomotionAnimations(_noWeaponLocomotionAnimations);
+                MatchSwordToHandPosition();
+            }
+            
+            _animationHandler.Tick(deltaTime);
+        }
+
+        private void FixedUpdate()
+        {
+            if (_activeSwordEquipped != null)
+            {
+                MatchSwordToHandPosition();
+            }
+        }
+
+        private void MatchSwordToHandPosition()
+        {
+            var swordTransform = _activeSwordEquipped.transform;
+            var swordCenterTransform = _activeSwordEquipped.Center;
+            var target = IkUtility.MatchStickWithHandlePoints(_swordHandleBottom, _swordHandleTop);
+            var swordTransformData = IkUtility.MoveParentToMatchChild(swordTransform, swordCenterTransform, target);
+            swordTransformData.ApplyTo(swordTransform);
+        }
+
+        private void UnEquipActiveSword()
+        {
+            Destroy(_activeSwordEquipped.gameObject);
+        }
+
+        private void EquipSword(Sword swordInstance)
+        {
+            if (_activeSwordEquipped != null)
+            {
+                Debug.LogError(
+                    $"[Weapon Equip System] Player could not equip another sword" +
+                    $" without first un-equipping the old one ({_activeSwordEquipped.gameObject.name})");
+                return;
             }
 
-            _animationHandler.Tick(deltaTime);
+            _activeSwordEquipped = swordInstance;
         }
 
         private static bool AnyActionDisablesFreeMovement(List<ActionEffects> actionEffects)

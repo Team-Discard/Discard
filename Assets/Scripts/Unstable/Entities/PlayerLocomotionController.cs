@@ -21,7 +21,7 @@ namespace Unstable.Entities
             _useGravity = true;
         }
 
-        public void ApplyEffects(float deltaTime, IReadOnlyList<ActionEffects> effects,
+        public void ApplyActionEffects(float deltaTime, IReadOnlyList<ActionEffects> effects,
             ref TranslationFrame translationFrame)
         {
             foreach (var effect in effects)
