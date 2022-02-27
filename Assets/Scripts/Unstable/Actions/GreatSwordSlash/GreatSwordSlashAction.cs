@@ -3,6 +3,8 @@ using Animancer;
 using UnityEngine;
 using Unstable.Entities;
 using Unstable.Utils;
+using WeaponSystem;
+using WeaponSystem.Swords;
 
 namespace Unstable.Actions.GreatSwordSlash
 {
@@ -13,7 +15,11 @@ namespace Unstable.Actions.GreatSwordSlash
         [SerializeField] private ClipTransition _preparationClip;
         [SerializeField] private ClipTransition _executionClip;
 
+        [SerializeField] private StandardWeaponLocomotionAnimationSet _locomotionAnimationSet;
+
         [SerializeField] private float _preparationTime;
+
+        [SerializeField] private Sword _swordPrefab;
 
         private PawnAnimationHandler _animationHandler;
 
@@ -24,13 +30,14 @@ namespace Unstable.Actions.GreatSwordSlash
         private bool _recoveryClipDone;
 
         private RootMotionFrame _rootMotionFrame;
+        private WeaponTriggers _weaponTriggers;
 
         public void Begin()
         {
             _animationHandler.BeginPlayActionAnimation(this);
             _animationHandler.PlayActionAnimation(
                 this,
-                _preparationClip, 
+                _preparationClip,
                 () => { _preparationClipDone = true; });
         }
 
@@ -54,6 +61,14 @@ namespace Unstable.Actions.GreatSwordSlash
                             _executionClip,
                             () => { _executionClipDone = true; });
                     }
+
+                    _weaponTriggers.EquipTrigger.Set(
+                        WeaponEquipDesc.EquipSword(new SwordEquipDesc
+                        {
+                            LocomotionAnimations = _locomotionAnimationSet,
+                            SwordPrefab = _swordPrefab
+                        })
+                    );
 
                     break;
                 }
@@ -80,7 +95,7 @@ namespace Unstable.Actions.GreatSwordSlash
 
         public bool Completed { get; private set; }
 
-        public void Init(PlayerPawn pawn, PawnAnimationHandler animationHandler)
+        public void Init(PlayerPawn pawn, PawnAnimationHandler animationHandler, WeaponTriggers weaponTriggers)
         {
             _playerPawn = pawn;
             _stage = ActionStage.Preparation;
@@ -90,6 +105,7 @@ namespace Unstable.Actions.GreatSwordSlash
             _rootMotionFrame = _playerPawn.RootMotionFrame;
             _preparationTimer = _preparationTime;
             _animationHandler = animationHandler;
+            _weaponTriggers = weaponTriggers;
         }
     }
 }

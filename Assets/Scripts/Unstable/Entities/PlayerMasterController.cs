@@ -8,6 +8,7 @@ using WeaponSystem;
 
 namespace Unstable.Entities
 {
+    [SelectionBase]
     public class PlayerMasterController :
         MonoBehaviour,
         ITicker
@@ -19,6 +20,8 @@ namespace Unstable.Entities
         [SerializeField] private Camera _controlCamera;
         [SerializeField] private AnimancerComponent _animancer;
         [SerializeField] private StandardWeaponLocomotionAnimationSet _noWeaponLocomotionAnimations;
+        [SerializeField] private WeaponTriggers _weaponTriggers;
+
 
         [SerializeField] private float _maxSpeed;
 
@@ -39,6 +42,7 @@ namespace Unstable.Entities
             _actionExecutor = new ActionExecutor();
             _actionEffects = new List<ActionEffects>();
             _animationHandler = new PawnAnimationHandler(_playerPawn, _animancer, _noWeaponLocomotionAnimations);
+            _weaponTriggers = new WeaponTriggers();
         }
 
         public void Tick(float deltaTime)
@@ -68,6 +72,19 @@ namespace Unstable.Entities
 
             HandleActionTriggers(_actionExecutor);
 
+            if (_weaponTriggers.EquipTrigger.Consume(out var equipDesc))
+            {
+                if (equipDesc.Sword is { } equipSword)
+                {
+                    _animationHandler.SetLocomotionAnimations(equipSword.LocomotionAnimations);
+                }
+            }
+
+            if (_weaponTriggers.UnEquipTrigger.Consume(out var _))
+            {
+                _animationHandler.SetLocomotionAnimations(_noWeaponLocomotionAnimations);
+            }
+
             _animationHandler.Tick(deltaTime);
         }
 
@@ -93,7 +110,7 @@ namespace Unstable.Entities
         private IAction CreateChargeAction()
         {
             var charge = Instantiate(_chargeActionPrefab, _playerPawn.transform);
-            charge.Init(_playerPawn, _animationHandler);
+            charge.Init(_playerPawn, _animationHandler, _weaponTriggers);
             return charge;
         }
     }

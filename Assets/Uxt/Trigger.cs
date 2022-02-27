@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace Uxt
 {
@@ -27,6 +28,12 @@ namespace Uxt
         {
             _value = default;
             HasValue = false;
+        }
+
+        public void Set([NotNull] T val)
+        {
+            _value = val;
+            HasValue = true;
         }
 
         public T Value => HasValue ? _value : throw new NullReferenceException("The trigger does not contain a value");
