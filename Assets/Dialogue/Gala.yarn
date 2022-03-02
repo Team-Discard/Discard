@@ -9,17 +9,25 @@ Gala: Hi player, how are you today?
 -> I'm OK
     Gala: OK that's good to hear.
 Gala: I want you to know how to use card to fight enemies.
-[[I don't care about it | Gala.NotInterested]]
-[[Please tell me more! | Gala.Interested]]
+-> I don't care about it
+    <<set $interested to false>>
+-> Please tell me more!
+    <<set $interested to true>>
+
+<<if $interested>>
+    <<jump GalaInterested>>
+<<else>>
+    <<jump GalaNotInterested>>
+<<endif>>
 ===
-title: Gala.NotInterested
+title: GalaNotInterested
 tags: 
 colorID: 0
 position: 561,592
 ---
 Gala: OK fine...
 ===
-title: Gala.Interested
+title: GalaInterested
 tags: 
 colorID: 0
 position: 1014,590

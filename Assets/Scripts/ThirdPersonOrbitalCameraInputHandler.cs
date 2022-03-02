@@ -12,12 +12,13 @@ public class ThirdPersonOrbitalCameraInputHandler : MonoBehaviour
     
     private MainPlayerControl _control;
 
-    public static bool IsCameraMovable = true;
+    public static bool IsCameraMovable;
 
     private void Awake()
     {
         _control = MainInputHandler.Instance.Control;
         Cursor.lockState = CursorLockMode.Locked;
+        IsCameraMovable = true;
     }
 
     private void Update()
