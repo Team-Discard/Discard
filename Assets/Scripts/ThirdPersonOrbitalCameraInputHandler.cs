@@ -12,6 +12,8 @@ public class ThirdPersonOrbitalCameraInputHandler : MonoBehaviour
     
     private MainPlayerControl _control;
 
+    public static bool IsCameraMovable = true;
+
     private void Awake()
     {
         _control = MainInputHandler.Instance.Control;
@@ -20,6 +22,8 @@ public class ThirdPersonOrbitalCameraInputHandler : MonoBehaviour
 
     private void Update()
     {
+        if (!IsCameraMovable) return;
+        
         var mouseDelta = _control.Standard.CameraRotate.ReadValue<Vector2>();
         var rotationDelta = mouseDelta * _sensitivity;
         _pivot.Rotate(rotationDelta, _minPitch, _maxPitch);

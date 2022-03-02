@@ -9,8 +9,8 @@ Gala: Hi player, how are you today?
 -> I'm OK
     Gala: OK that's good to hear.
 Gala: I want you to know how to use card to fight enemies.
-[[I don't care about it |Gala.NotInterested]]
-[[Please tell me more! |Gala.Interested]]
+[[I don't care about it | Gala.NotInterested]]
+[[Please tell me more! | Gala.Interested]]
 ===
 title: Gala.NotInterested
 tags: 
