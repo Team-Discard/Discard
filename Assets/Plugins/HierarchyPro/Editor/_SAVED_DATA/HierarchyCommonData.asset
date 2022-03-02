@@ -28,6 +28,12 @@ MonoBehaviour:
     - 
     guid:
     - 
+  - pin: 0
+    path:
+    - Assets/Plugins/Animancer/Examples/10 Animation Jobs/01 Two Bone IK/Two Bone
+      IK.unity
+    guid:
+    - 78d8f7266fff42e488c6bdc105f65b0a
   HasCustomIconKeys: []
   HidedComponentsIconsValues: []
   HidedComponentsIconsKeys: []
