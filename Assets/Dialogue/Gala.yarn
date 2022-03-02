@@ -1,0 +1,28 @@
+title: Gala.Start
+tags: 
+colorID: 0
+position: 789,276
+---
+Gala: Hi player, how are you today?
+-> Fantastic
+    Gala: Glad to hear that!
+-> I'm OK
+    Gala: OK that's good to hear.
+Gala: I want you to know how to use card to fight enemies.
+[[I don't care about it |Gala.NotInterested]]
+[[Please tell me more! |Gala.Interested]]
+===
+title: Gala.NotInterested
+tags: 
+colorID: 0
+position: 561,592
+---
+Gala: OK fine...
+===
+title: Gala.Interested
+tags: 
+colorID: 0
+position: 1014,590
+---
+Gala: Yep. So you need to go find some skeleton, pick up card, and fight your ass through this!
+===
