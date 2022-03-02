@@ -1,5 +1,4 @@
 using UnityEngine;
-using Unstable.Entities;
 using Yarn.Unity;
 
 namespace TestDialogueScripts
