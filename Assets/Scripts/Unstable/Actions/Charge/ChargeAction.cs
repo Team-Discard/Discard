@@ -10,7 +10,7 @@ namespace Unstable.PlayerActions.Charge
         [SerializeField] private float _duration;
         private float _speed;
 
-        [SerializeField] private List<DamageVolume> _damageVolumes;
+        [SerializeField] private List<DamageBox> _damageVolumes;
 
         private PlayerPawn _pawn;
         private Vector2 _direction;

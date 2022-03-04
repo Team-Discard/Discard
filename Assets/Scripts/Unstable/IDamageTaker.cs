@@ -2,7 +2,7 @@
 {
     public interface IDamageTaker
     {
-        void InteractWithDamageVolume(IDamageVolume damageVolume);
+        void InteractWithDamageVolume(IDamageBox damageBox);
         void ReckonAllDamage(float deltaTime);
     }
 }

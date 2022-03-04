@@ -15,14 +15,14 @@ MonoBehaviour:
   ScenesTabs:
   - pin: 0
     path:
-    - Assets/Scenes/GeorgeDemoScene.unity
-    guid:
-    - e549b1aad50ad7041b2306463ef07f2e
-  - pin: 0
-    path:
     - Assets/Scenes/SampleScene.unity
     guid:
     - 9fc0d4010bbf28b4594072e72b8655ab
+  - pin: 0
+    path:
+    - Assets/Scenes/GeorgeDemoScene.unity
+    guid:
+    - e549b1aad50ad7041b2306463ef07f2e
   - pin: 0
     path:
     - 

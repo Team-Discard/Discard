@@ -23,15 +23,15 @@ namespace Unstable.Entities
         [SerializeField] private Camera _controlCamera;
         [SerializeField] private AnimancerComponent _animancer;
         [SerializeField] private StandardWeaponLocomotionAnimationSet _noWeaponLocomotionAnimations;
-        [SerializeField] private WeaponTriggers _weaponTriggers;
 
         [SerializeField] private Transform _swordHandleBottom;
         [SerializeField] private Transform _swordHandleTop;
 
         [SerializeField] private PlayerMovementSmoother _smoother;
-        
+
         [SerializeField] private float _maxSpeed;
 
+        private WeaponTriggers _weaponTriggers;
         private ActionExecutor _actionExecutor;
         private List<ActionEffects> _actionEffects;
 
@@ -82,7 +82,7 @@ namespace Unstable.Entities
 
             HandleActionTriggers(_actionExecutor);
 
-            if (_weaponTriggers.UnEquipTrigger.Consume(out var _))
+            if (_weaponTriggers.UnEquipAllWeapon.Consume(out var _, out var onUnEquipSucceed))
             {
                 _animationHandler.SetLocomotionAnimations(_noWeaponLocomotionAnimations);
 
@@ -90,28 +90,35 @@ namespace Unstable.Entities
                 {
                     UnEquipActiveSword();
                 }
+
+                onUnEquipSucceed?.Invoke(true);
             }
 
-            if (_weaponTriggers.EquipTrigger.Consume(out var equipDesc))
+            if (_weaponTriggers.EquipSword.Consume(out var equipSword, out var onEquipSwordSucceed))
             {
-                if (equipDesc.Sword is { } equipSword)
+                _animationHandler.SetLocomotionAnimations(equipSword.LocomotionAnimations);
+                var swordPrefab = equipSword.SwordPrefab;
+                Sword sword = null;
+                if (_activeSwordEquipped != null)
                 {
-                    _animationHandler.SetLocomotionAnimations(equipSword.LocomotionAnimations);
-                    var swordPrefab = equipSword.SwordPrefab;
-                    if (_activeSwordEquipped == null && swordPrefab != null)
-                    {
-                        EquipSword(Instantiate(swordPrefab, transform.position, Quaternion.identity));
-                    }
+                    sword = _activeSwordEquipped;
                 }
+                else if (swordPrefab != null)
+                {
+                    sword = Instantiate(swordPrefab, transform.position, Quaternion.identity);
+                    EquipSword(sword);
+                }
+
+                onEquipSwordSucceed?.Invoke(sword);
             }
-            
+
             _smoother.Tick(deltaTime);
 
             if (_activeSwordEquipped != null)
             {
                 MatchSwordToHandPosition();
             }
-            
+
             _animationHandler.Tick(deltaTime);
         }
 

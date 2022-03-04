@@ -9,7 +9,7 @@ namespace Unstable.Entities
         IEnemy,
         IDamageTaker
     {
-        [SerializeField] private List<DamageablePart> _damageableParts;
+        [SerializeField] private List<HurtBox> _damageableParts;
         [SerializeField] private float _invincibleDuration;
         
         private float _totalDamage;
@@ -28,19 +28,19 @@ namespace Unstable.Entities
             _invincibilityTimer -= Time.deltaTime;
         }
 
-        public void InteractWithDamageVolume(IDamageVolume damageVolume)
+        public void InteractWithDamageVolume(IDamageBox damageBox)
         {
-            if (IsHitBy(damageVolume))
+            if (IsHitBy(damageBox))
             {
                 // todo: evil null here
-                _totalDamage += damageVolume.GetDamageAmount(null);
+                _totalDamage += damageBox.GetDamageAmount(null);
                 _hasTakenDamage = true;
             }
         }
 
-        private bool IsHitBy(IDamageVolume damageVolume)
+        private bool IsHitBy(IDamageBox damageBox)
         {
-            return _damageableParts.Any(damageVolume.CheckOverlap);
+            return _damageableParts.Any(damageBox.CheckOverlap);
         }
         
         public void ReckonAllDamage(float deltaTime)

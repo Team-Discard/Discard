@@ -1,10 +1,11 @@
 ﻿using Uxt;
+using WeaponSystem.Swords;
 
 namespace WeaponSystem
 {
     public class WeaponTriggers
     {
-        public Trigger<WeaponEquipDesc> EquipTrigger { get; } = new();
-        public Trigger<bool> UnEquipTrigger { get; } = new();
+        public DelayedMethod<SwordEquipDesc, Sword> EquipSword { get; } = new();
+        public DelayedMethod<bool, bool> UnEquipAllWeapon { get; } = new();
     }
 }
