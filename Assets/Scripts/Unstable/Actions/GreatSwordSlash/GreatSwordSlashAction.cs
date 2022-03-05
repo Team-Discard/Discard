@@ -30,7 +30,19 @@ namespace Unstable.Actions.GreatSwordSlash
         private WeaponTriggers _weaponTriggers;
 
         public bool Completed { get; private set; }
-        
+
+        public void Init(PlayerPawn pawn, PawnAnimationHandler animationHandler, WeaponTriggers weaponTriggers)
+        {
+            _playerPawn = pawn;
+            _stage = ActionStage.Preparation;
+            _preparationClipDone = false;
+            _executionClipDone = false;
+            _rootMotionFrame = _playerPawn.RootMotionFrame;
+            _preparationTimer = _preparationTime;
+            _animationHandler = animationHandler;
+            _weaponTriggers = weaponTriggers;
+        }
+
         private void Awake()
         {
             _swordInstance = null;
@@ -111,19 +123,6 @@ namespace Unstable.Actions.GreatSwordSlash
                     SwordPrefab = _swordPrefab
                 },
                 sword => { _swordInstance = sword; });
-        }
-
-
-        public void Init(PlayerPawn pawn, PawnAnimationHandler animationHandler, WeaponTriggers weaponTriggers)
-        {
-            _playerPawn = pawn;
-            _stage = ActionStage.Preparation;
-            _preparationClipDone = false;
-            _executionClipDone = false;
-            _rootMotionFrame = _playerPawn.RootMotionFrame;
-            _preparationTimer = _preparationTime;
-            _animationHandler = animationHandler;
-            _weaponTriggers = weaponTriggers;
         }
     }
 }
