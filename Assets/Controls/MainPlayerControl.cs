@@ -53,6 +53,42 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Card South"",
+                    ""type"": ""Button"",
+                    ""id"": ""69cf1c0a-8918-4940-a589-e85473c794e3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Card East"",
+                    ""type"": ""Button"",
+                    ""id"": ""ded331da-9f50-4d28-9593-794e63105c17"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Card North"",
+                    ""type"": ""Button"",
+                    ""id"": ""0a9b5e8b-4f6b-460f-ac76-33e220b06f53"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Card West"",
+                    ""type"": ""Button"",
+                    ""id"": ""130e126e-2fd5-40d5-899e-20d4361e34a1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -154,6 +190,50 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                     ""action"": ""Roll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fbc6ab79-b3cb-4414-af2c-307bbe3b95f7"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Card South"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""779b09e5-b258-4601-9798-1525ac76f8c8"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Card East"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6178facd-c0d7-49c8-bef5-5d9e55e7e7d8"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Card North"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e041489a-726a-42c0-9981-c13e68261484"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Card West"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -165,6 +245,10 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
         m_Standard_Locomotion = m_Standard.FindAction("Locomotion", throwIfNotFound: true);
         m_Standard_CameraRotate = m_Standard.FindAction("Camera Rotate", throwIfNotFound: true);
         m_Standard_Roll = m_Standard.FindAction("Roll", throwIfNotFound: true);
+        m_Standard_CardSouth = m_Standard.FindAction("Card South", throwIfNotFound: true);
+        m_Standard_CardEast = m_Standard.FindAction("Card East", throwIfNotFound: true);
+        m_Standard_CardNorth = m_Standard.FindAction("Card North", throwIfNotFound: true);
+        m_Standard_CardWest = m_Standard.FindAction("Card West", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -227,6 +311,10 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
     private readonly InputAction m_Standard_Locomotion;
     private readonly InputAction m_Standard_CameraRotate;
     private readonly InputAction m_Standard_Roll;
+    private readonly InputAction m_Standard_CardSouth;
+    private readonly InputAction m_Standard_CardEast;
+    private readonly InputAction m_Standard_CardNorth;
+    private readonly InputAction m_Standard_CardWest;
     public struct StandardActions
     {
         private @MainPlayerControl m_Wrapper;
@@ -234,6 +322,10 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
         public InputAction @Locomotion => m_Wrapper.m_Standard_Locomotion;
         public InputAction @CameraRotate => m_Wrapper.m_Standard_CameraRotate;
         public InputAction @Roll => m_Wrapper.m_Standard_Roll;
+        public InputAction @CardSouth => m_Wrapper.m_Standard_CardSouth;
+        public InputAction @CardEast => m_Wrapper.m_Standard_CardEast;
+        public InputAction @CardNorth => m_Wrapper.m_Standard_CardNorth;
+        public InputAction @CardWest => m_Wrapper.m_Standard_CardWest;
         public InputActionMap Get() { return m_Wrapper.m_Standard; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -252,6 +344,18 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                 @Roll.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnRoll;
                 @Roll.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnRoll;
                 @Roll.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnRoll;
+                @CardSouth.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardSouth;
+                @CardSouth.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardSouth;
+                @CardSouth.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardSouth;
+                @CardEast.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardEast;
+                @CardEast.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardEast;
+                @CardEast.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardEast;
+                @CardNorth.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardNorth;
+                @CardNorth.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardNorth;
+                @CardNorth.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardNorth;
+                @CardWest.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardWest;
+                @CardWest.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardWest;
+                @CardWest.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardWest;
             }
             m_Wrapper.m_StandardActionsCallbackInterface = instance;
             if (instance != null)
@@ -265,6 +369,18 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                 @Roll.started += instance.OnRoll;
                 @Roll.performed += instance.OnRoll;
                 @Roll.canceled += instance.OnRoll;
+                @CardSouth.started += instance.OnCardSouth;
+                @CardSouth.performed += instance.OnCardSouth;
+                @CardSouth.canceled += instance.OnCardSouth;
+                @CardEast.started += instance.OnCardEast;
+                @CardEast.performed += instance.OnCardEast;
+                @CardEast.canceled += instance.OnCardEast;
+                @CardNorth.started += instance.OnCardNorth;
+                @CardNorth.performed += instance.OnCardNorth;
+                @CardNorth.canceled += instance.OnCardNorth;
+                @CardWest.started += instance.OnCardWest;
+                @CardWest.performed += instance.OnCardWest;
+                @CardWest.canceled += instance.OnCardWest;
             }
         }
     }
@@ -274,5 +390,9 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
         void OnLocomotion(InputAction.CallbackContext context);
         void OnCameraRotate(InputAction.CallbackContext context);
         void OnRoll(InputAction.CallbackContext context);
+        void OnCardSouth(InputAction.CallbackContext context);
+        void OnCardEast(InputAction.CallbackContext context);
+        void OnCardNorth(InputAction.CallbackContext context);
+        void OnCardWest(InputAction.CallbackContext context);
     }
 }

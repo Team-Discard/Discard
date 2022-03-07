@@ -1,4 +1,5 @@
-﻿using Unstable.Entities;
+﻿using Unstable.Actions;
+using Unstable.Entities;
 
 namespace Unstable
 {
@@ -14,6 +15,11 @@ namespace Unstable
 
         void Finish()
         {
+        }
+
+        void Accept(IActionVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

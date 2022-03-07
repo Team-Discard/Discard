@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _TransitionPreviewWindow:
     _AutoClose: 1
-    _Models: []
+    _Models:
+    - {fileID: 8525776740673082216, guid: 59ad3105c16e30b418049d479fd3adb1, type: 3}
+    - {fileID: 1378629693320865583, guid: 8d1ad70ee0d34f54fa28ae097e276b6a, type: 3}
   _AnimationTimeFields:
     showApproximations: 1
     showNormalized: 1

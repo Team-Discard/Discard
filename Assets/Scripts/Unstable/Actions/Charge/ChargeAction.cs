@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Unstable.Actions;
 using Unstable.Entities;
 
 namespace Unstable.PlayerActions.Charge
@@ -66,6 +67,11 @@ namespace Unstable.PlayerActions.Charge
         public void Finish()
         {
             Destroy(gameObject);
+        }
+
+        public void Accept(IActionVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

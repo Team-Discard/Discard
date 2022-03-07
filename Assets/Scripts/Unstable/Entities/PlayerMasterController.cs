@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Animancer;
+using CardSystem;
 using UnityEngine;
+using Unstable.Actions;
 using Unstable.Actions.GreatSwordSlash;
+using Unstable.PlayerActions.Charge;
 using Unstable.Utils;
 using Uxt;
 using WeaponSystem;
@@ -14,7 +17,8 @@ namespace Unstable.Entities
     [SelectionBase]
     public class PlayerMasterController :
         MonoBehaviour,
-        ITicker
+        ITicker,
+        IActionVisitor
     {
         [SerializeField] private PlayerPawn _playerPawn;
         [SerializeField] private PlayerLocomotionController _locomotionController;
@@ -31,16 +35,17 @@ namespace Unstable.Entities
 
         [SerializeField] private float _maxSpeed;
 
+        [SerializeField] private List<Card> _cards;
+
         private WeaponTriggers _weaponTriggers;
         private ActionExecutor _actionExecutor;
         private List<ActionEffects> _actionEffects;
 
         private PawnAnimationHandler _animationHandler;
 
-        private Sword _activeSwordEquipped;
+        private Sword _swordEquipped;
 
         public List<ActionEffects> CurrentActionEffects => _actionEffects;
-
 
         #region Triggers
 
@@ -52,7 +57,15 @@ namespace Unstable.Entities
             _actionEffects = new List<ActionEffects>();
             _animationHandler = new PawnAnimationHandler(_playerPawn, _animancer, _noWeaponLocomotionAnimations);
             _weaponTriggers = new WeaponTriggers();
-            _activeSwordEquipped = null;
+            _swordEquipped = null;
+        }
+
+        private void Start()
+        {
+            _inputHandler.onSouthButton += UseSouthCard;
+            _inputHandler.onEastButton += UseEastCard;
+            _inputHandler.onNorthButton += UseNorthCard;
+            _inputHandler.onWestButton += UseWestCard;
         }
 
         public void Tick(float deltaTime)
@@ -86,7 +99,7 @@ namespace Unstable.Entities
             {
                 _animationHandler.SetLocomotionAnimations(_noWeaponLocomotionAnimations);
 
-                if (_activeSwordEquipped != null)
+                if (_swordEquipped != null)
                 {
                     UnEquipActiveSword();
                 }
@@ -99,9 +112,9 @@ namespace Unstable.Entities
                 _animationHandler.SetLocomotionAnimations(equipSword.LocomotionAnimations);
                 var swordPrefab = equipSword.SwordPrefab;
                 Sword sword = null;
-                if (_activeSwordEquipped != null)
+                if (_swordEquipped != null)
                 {
-                    sword = _activeSwordEquipped;
+                    sword = _swordEquipped;
                 }
                 else if (swordPrefab != null)
                 {
@@ -114,7 +127,7 @@ namespace Unstable.Entities
 
             _smoother.Tick(deltaTime);
 
-            if (_activeSwordEquipped != null)
+            if (_swordEquipped != null)
             {
                 MatchSwordToHandPosition();
             }
@@ -124,7 +137,7 @@ namespace Unstable.Entities
 
         private void FixedUpdate()
         {
-            if (_activeSwordEquipped != null)
+            if (_swordEquipped != null)
             {
                 MatchSwordToHandPosition();
             }
@@ -132,8 +145,8 @@ namespace Unstable.Entities
 
         private void MatchSwordToHandPosition()
         {
-            var swordTransform = _activeSwordEquipped.transform;
-            var swordCenterTransform = _activeSwordEquipped.Center;
+            var swordTransform = _swordEquipped.transform;
+            var swordCenterTransform = _swordEquipped.Center;
             var target = IkUtility.MatchStickWithHandlePoints(_swordHandleBottom, _swordHandleTop);
             var swordTransformData = IkUtility.MoveParentToMatchChild(swordTransform, swordCenterTransform, target);
             swordTransformData.ApplyTo(swordTransform);
@@ -141,25 +154,50 @@ namespace Unstable.Entities
 
         private void UnEquipActiveSword()
         {
-            Destroy(_activeSwordEquipped.gameObject);
+            Destroy(_swordEquipped.gameObject);
         }
 
         private void EquipSword(Sword swordInstance)
         {
-            if (_activeSwordEquipped != null)
+            if (_swordEquipped != null)
             {
                 Debug.LogError(
                     $"[Weapon Equip System] Player could not equip another sword" +
-                    $" without first un-equipping the old one ({_activeSwordEquipped.gameObject.name})");
+                    $" without first un-equipping the old one ({_swordEquipped.gameObject.name})");
                 return;
             }
 
-            _activeSwordEquipped = swordInstance;
+            _swordEquipped = swordInstance;
         }
 
         private static bool AnyActionDisablesFreeMovement(List<ActionEffects> actionEffects)
         {
             return actionEffects.Any(effect => !effect.FreeMovementEnabled);
+        }
+
+        private void UseSouthCard() => UseCard(0);
+
+        private void UseEastCard() => UseCard(1);
+
+        private void UseNorthCard() => UseCard(2);
+
+        private void UseWestCard() => UseCard(3);
+
+        private void UseCard(int index)
+        {
+            Debug.Assert(0 <= index && index < _cards.Count);
+
+            if (_actionExecutor.HasPendingOrActiveActions)
+            {
+                return;
+            }
+
+            var useResult = _cards[index].Use(this);
+            var action = useResult.Action;
+            if (action != null)
+            {
+                _actionExecutor.AddAction(useResult.Action);
+            }
         }
 
         private void HandleActionTriggers(ActionExecutor actionExecutor)
@@ -181,6 +219,16 @@ namespace Unstable.Entities
             var charge = Instantiate(_chargeActionPrefab, _playerPawn.transform);
             charge.Init(_playerPawn, _animationHandler, _weaponTriggers);
             return charge;
+        }
+
+        public void Visit(GreatSwordSlashAction greatSwordSlashAction)
+        {
+            greatSwordSlashAction.Init(_playerPawn, _animationHandler, _weaponTriggers);
+        }
+
+        public void Visit(ChargeAction chargeAction)
+        {
+            chargeAction.Init(_playerPawn);
         }
     }
 }

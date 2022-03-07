@@ -124,5 +124,10 @@ namespace Unstable.Actions.GreatSwordSlash
                 },
                 sword => { _swordInstance = sword; });
         }
+
+        public void Accept(IActionVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }
