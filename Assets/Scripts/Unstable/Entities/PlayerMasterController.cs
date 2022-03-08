@@ -32,10 +32,11 @@ namespace Unstable.Entities
         [SerializeField] private Transform _swordHandleTop;
 
         [SerializeField] private PlayerMovementSmoother _smoother;
-
+        
         [SerializeField] private float _maxSpeed;
-
+        
         [SerializeField] private List<Card> _cards;
+        private TemporaryCardTextUI _cardUi;
 
         private WeaponTriggers _weaponTriggers;
         private ActionExecutor _actionExecutor;
@@ -58,6 +59,7 @@ namespace Unstable.Entities
             _animationHandler = new PawnAnimationHandler(_playerPawn, _animancer, _noWeaponLocomotionAnimations);
             _weaponTriggers = new WeaponTriggers();
             _swordEquipped = null;
+            _cardUi = new TemporaryCardTextUI(_cards);
         }
 
         private void Start()
@@ -133,6 +135,7 @@ namespace Unstable.Entities
             }
 
             _animationHandler.Tick(deltaTime);
+            _cardUi.Tick(deltaTime);
         }
 
         private void FixedUpdate()
