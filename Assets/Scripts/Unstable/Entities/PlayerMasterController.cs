@@ -21,7 +21,7 @@ namespace Unstable.Entities
         IActionVisitor
     {
         [SerializeField] private PlayerPawn _playerPawn;
-        [SerializeField] private PlayerLocomotionController _locomotionController;
+        [SerializeField] private LocomotionController _locomotionController;
         [SerializeField] private GreatSwordSlashAction _chargeActionPrefab;
         [SerializeField] private PlayerInputHandler _inputHandler;
         [SerializeField] private Camera _controlCamera;
@@ -85,14 +85,13 @@ namespace Unstable.Entities
                     ref translationFrame, ref rotationFrame);
             }
 
+            _locomotionController.ApplyGravity(deltaTime, ref translationFrame);
             _locomotionController.ApplyActionEffects(deltaTime, _actionEffects, ref translationFrame);
             _playerPawn.SetTranslationFrame(translationFrame);
             _playerPawn.SetRotationFrame(rotationFrame);
 
             var forwardSpeed = _playerPawn.CalculateForwardSpeed();
-            var normalizedSpeed = Mathf.InverseLerp(0.0f, _maxSpeed, forwardSpeed);
 
-            _animationHandler.SetNormalizedSpeed(normalizedSpeed);
             _animationHandler.SetAbsoluteSpeed(forwardSpeed);
 
             HandleActionTriggers(_actionExecutor);

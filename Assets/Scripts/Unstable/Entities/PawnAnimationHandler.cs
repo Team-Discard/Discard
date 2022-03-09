@@ -21,7 +21,6 @@ namespace Unstable.Entities
         private StandardWeaponLocomotionAnimationSet _locomotionAnimationSet;
 
         private LinearMixerState _locomotionMixerState;
-        private float _normalizedLocomotionSpeed;
         private float _absoluteLocomotionSpeed;
 
         public PawnAnimationHandler(IPawn pawn, AnimancerComponent animancer,
@@ -41,12 +40,7 @@ namespace Unstable.Entities
 
             _locomotionAnimationSet = animationSet;
         }
-
-        public void SetNormalizedSpeed(float normalizedSpeed)
-        {
-            _normalizedLocomotionSpeed = normalizedSpeed;
-        }
-
+        
         public void SetAbsoluteSpeed(float forwardSpeed)
         {
             _absoluteLocomotionSpeed = forwardSpeed;

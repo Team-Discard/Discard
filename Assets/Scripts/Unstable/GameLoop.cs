@@ -12,7 +12,7 @@ namespace Unstable
         private List<IDamageTaker> _damageTakers;
         private List<IEnemy> _enemies;
         private List<IPhysicsTicker> _physicsTickers;
-
+        private List<EnemyController> _enemyControllers;
 
         private void Start()
         {
