@@ -23,6 +23,8 @@ namespace Unstable.Entities
         private LinearMixerState _locomotionMixerState;
         private float _absoluteLocomotionSpeed;
 
+        private int _freeAnimationCount = 0;
+
         public PawnAnimationHandler(IPawn pawn, AnimancerComponent animancer,
             [NotNull] StandardWeaponLocomotionAnimationSet startingLocomotionAnimationSet)
         {
@@ -40,12 +42,19 @@ namespace Unstable.Entities
 
             _locomotionAnimationSet = animationSet;
         }
-        
+
         public void SetAbsoluteSpeed(float forwardSpeed)
         {
             _absoluteLocomotionSpeed = forwardSpeed;
         }
 
+        /// <summary>
+        /// Tells the pawn animation handler that it is currently playing
+        /// the animation for <paramref name="action"/>. This prevents
+        /// the animation handler from reverting back to the locomotion animation
+        /// when there is a small gap between two animations played by an action.
+        /// </summary>
+        /// <param name="action"></param>
         public void BeginPlayActionAnimation(IAction action)
         {
             if (_activeActions.Contains(action))
@@ -59,16 +68,12 @@ namespace Unstable.Entities
             Debug.Log($"[{SystemName}] Begin playing animation for {action}", _animancer);
         }
 
-        public void PlayActionAnimation(IAction action, ITransition transition, Action doneCallback)
-        {
-            var state = _animancer.Play(transition);
-            state.Events.OnEnd = () =>
-            {
-                state.Events.OnEnd = null;
-                doneCallback?.Invoke();
-            };
-        }
-
+        /// <summary>
+        /// Tells the pawn animation handler that it is no longer playing
+        /// the animation for <paramref name="action"/>. See <see cref="BeginPlayActionAnimation"/>
+        /// for more details.
+        /// </summary>
+        /// <param name="action"></param>
         public void EndPlayActionAnimation(IAction action)
         {
             if (!_activeActions.Remove(action))
@@ -80,22 +85,52 @@ namespace Unstable.Entities
             Debug.Log($"[{SystemName}] Stop playing animation for {action}", _animancer);
         }
 
+        public void PlayActionAnimation(IAction action, ITransition transition, Action doneCallback)
+        {
+            if (!_activeActions.Contains(action))
+            {
+                Debug.LogError($"The action '{action}' is not currently active on the animation handler. " +
+                               $"You might want to call {nameof(BeginPlayActionAnimation)} first.",
+                    _animancer.gameObject);
+                return;
+            }
+
+            var state = _animancer.Play(transition);
+            state.Events.OnEnd = () =>
+            {
+                state.Events.OnEnd = null;
+                doneCallback?.Invoke();
+            };
+        }
+
+        public void PlayAnimation(ITransition transition, Action doneCallback)
+        {
+            ++_freeAnimationCount;
+            var state = _animancer.Play(transition);
+            state.Events.OnEnd = () =>
+            {
+                --_freeAnimationCount;
+                state.Events.OnEnd = null;
+                doneCallback?.Invoke();
+            };
+        }
+        
         public void Tick(float deltaTime)
         {
-            var hasActionAnimationsNow = _activeActions.Count > 0;
+            var hasNonLocomotionAnimation = _activeActions.Count > 0 || _freeAnimationCount > 0;
 
-            if (!_hasActionAnimations && hasActionAnimationsNow)
+            if (!_hasActionAnimations && hasNonLocomotionAnimation)
             {
                 // nothing is done here
             }
-            else if (_hasActionAnimations && !hasActionAnimationsNow || _locomotionAnimationDirty)
+            else if (_hasActionAnimations && !hasNonLocomotionAnimation || _locomotionAnimationDirty)
             {
-                _locomotionMixerState = 
+                _locomotionMixerState =
                     _animancer.Play(_locomotionAnimationSet.Transition) as LinearMixerState;
             }
 
             _locomotionAnimationDirty = false;
-            _hasActionAnimations = hasActionAnimationsNow;
+            _hasActionAnimations = hasNonLocomotionAnimation;
 
             SyncLocomotionAnimationSpeed(deltaTime);
         }
@@ -103,7 +138,7 @@ namespace Unstable.Entities
         private void SyncLocomotionAnimationSpeed(float deltaTime)
         {
             if (_locomotionMixerState == null) return;
-            
+
             // todo: if animation is not ticked next frame, locomotion speed is not updated for the linear mixer
 
             _locomotionMixerState.Parameter = Mathf.Lerp(_locomotionMixerState.Parameter,
@@ -112,7 +147,7 @@ namespace Unstable.Entities
             var children = _locomotionMixerState.ChildStates;
             var currentAnimationVelocity = 0.0f;
             if (_absoluteLocomotionSpeed < 0.01f) return;
-            
+
             // loops starts with 1 because the 0-th index is the idle animation
             for (var i = 1; i < children.Count; ++i)
             {
