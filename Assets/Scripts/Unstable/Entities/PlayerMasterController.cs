@@ -75,7 +75,7 @@ namespace Unstable.Entities
             _inputHandler.UpdateInput(out var inputDirection);
             var controlDirection = _controlCamera.transform.forward.ConvertXz2Xy();
             var translationFrame = new TranslationFrame();
-            var rotationFrame = _playerPawn.GetRotationFrame();
+            var rotationFrame = _playerPawn.GetRotationFrame().PrepareNextFrame();
             _actionExecutor.Execute(deltaTime, _actionEffects);
 
             if (!AnyActionDisablesFreeMovement(_actionEffects))

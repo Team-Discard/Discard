@@ -38,7 +38,7 @@ namespace Unstable.Entities
             _enemyAI.Tick(deltaTime);
 
             var translationFrame = new TranslationFrame();
-            var rotationFrame = new RotationFrame();
+            var rotationFrame = _enemyPawn.GetRotationFrame().PrepareNextFrame();
 
             if (_enemyAI.IsMoving)
             {
@@ -78,7 +78,7 @@ namespace Unstable.Entities
                 {
                     var deltaAngle = Mathf.MoveTowardsAngle(0.0f, angleDiff,
                         _maxAngularVelocityDuringAttack * Time.deltaTime);
-                    rotationFrame.AddOverrideLinearRotation(deltaAngle); 
+                    rotationFrame.AddOverrideLinearRotation(deltaAngle);
                 }
             }
 

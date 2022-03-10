@@ -67,7 +67,10 @@ namespace Unstable.Entities
             moveDirection.Normalize();
             
             translationFrame.TargetHorizontalVelocity += speed * moveDirection;
-            rotationFrame.TargetForwardDirection = moveDirection;
+            if (!Mathf.Approximately(moveDirection.sqrMagnitude, 0))
+            {
+                rotationFrame.TargetForwardDirection = moveDirection;
+            }
             rotationFrame.Responsiveness = 15.0f;
         }
 
