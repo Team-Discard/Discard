@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Uxt
+namespace Uxt.Debugging
 {
     public static class DebugMessageManager
     {

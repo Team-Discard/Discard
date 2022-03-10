@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace Uxt
+namespace Uxt.Debugging
 {
     public class DebugMessageDisplay : MonoBehaviour
     {
