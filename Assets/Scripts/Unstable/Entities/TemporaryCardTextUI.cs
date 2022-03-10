@@ -2,6 +2,7 @@
 using CardSystem;
 using UnityEngine;
 using Uxt;
+using Uxt.Debugging;
 
 namespace Unstable.Entities
 {

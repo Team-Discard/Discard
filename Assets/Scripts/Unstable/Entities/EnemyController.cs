@@ -17,6 +17,8 @@ namespace Unstable.Entities
         [SerializeField] private StandardWeaponLocomotionAnimationSet _defaultAnimationSet;
         [SerializeField] private ClipTransition _stabAnimation;
         [SerializeField] private RootMotionFrame _rootMotionFrame;
+        [SerializeField] private float _maxAngularVelocityDuringAttack;
+        [SerializeField] private float _rotationThreshold;
 
         private PawnAnimationHandler _animationHandler;
 
@@ -64,7 +66,20 @@ namespace Unstable.Entities
                             _attackAnimationPlayed = false;
                         });
                 }
+
                 translationFrame.TargetHorizontalVelocity += _rootMotionFrame.Velocity.ConvertXz2Xy();
+
+                var angleDiff = Vector3.SignedAngle(
+                    transform.forward,
+                    _enemyAI.PlayerTransform.position - transform.position,
+                    Vector3.up);
+
+                if (Mathf.Abs(angleDiff) >= _rotationThreshold)
+                {
+                    var deltaAngle = Mathf.MoveTowardsAngle(0.0f, angleDiff,
+                        _maxAngularVelocityDuringAttack * Time.deltaTime);
+                    rotationFrame.AddOverrideLinearRotation(deltaAngle); 
+                }
             }
 
 

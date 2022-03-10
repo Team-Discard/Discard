@@ -50,10 +50,18 @@ namespace Unstable.Entities
 
         public void TickRotation(float deltaTime)
         {
-            var targetForward = _rotationFrame.TargetForwardDirection.ConvertXy2Xz();
-            var targetRotation = Quaternion.LookRotation(targetForward);
-            var currentRotation = _rigidbody.rotation;
-            _rigidbody.rotation = Quaternion.Slerp(currentRotation, targetRotation, deltaTime * _rotationFrame.Responsiveness);
+            if (_rotationFrame.OverrideLinearRotation is { } linearRotation)
+            {
+                _rigidbody.rotation *= Quaternion.Euler(0.0f, linearRotation, 0.0f);
+            }
+            else
+            {
+                var targetForward = _rotationFrame.TargetForwardDirection.ConvertXy2Xz();
+                var targetRotation = Quaternion.LookRotation(targetForward);
+                var currentRotation = _rigidbody.rotation;
+                _rigidbody.rotation = Quaternion.Slerp(currentRotation, targetRotation, deltaTime * _rotationFrame.Responsiveness);
+            }
+            
         }
     }
 }
