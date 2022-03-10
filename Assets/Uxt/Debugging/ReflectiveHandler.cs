@@ -6,17 +6,30 @@ using UnityEngine;
 
 namespace Uxt.Debugging
 {
-    public static class CommandHandlerCreator
-    {
-        /// <summary>
+    /// <summary>
         /// A handler that reacts to commands by looking at the method overloads
         /// of a class's member functions and determine the best function to call.
         /// </summary>
-        private class ReflectiveHandler : ICommandHandler
+        public class ReflectiveHandler : ICommandHandler
         {
-            private readonly Type _type;
+            private const BindingFlags MethodBindingFlags =
+                BindingFlags.Instance |
+                BindingFlags.Static |
+                BindingFlags.Public |
+                BindingFlags.NonPublic;
+
             private readonly object _instance;
             private readonly List<MethodInfo> _overloads;
+
+            public ReflectiveHandler(object instance)
+            {
+                _instance = instance;
+                _overloads = _instance
+                    .GetType()
+                    .GetMethods(MethodBindingFlags)
+                    .Where(m => m.GetCustomAttribute<DebugCommandAttribute>() != null)
+                    .ToList();
+            }
 
             public void HandleCommand(string command)
             {
@@ -97,5 +110,4 @@ namespace Uxt.Debugging
                 return true;
             }
         }
-    }
 }

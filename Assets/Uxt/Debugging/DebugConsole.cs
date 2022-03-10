@@ -14,11 +14,20 @@ namespace Uxt.Debugging
         private static void StaticInit()
         {
             onMessagePrinted = null;
+            _commandHandlers = new Dictionary<string, ICommandHandler>();
         }
 
         public static void SubmitCommand(string command)
         {
-            
+            var prefix = (command.Split().FirstOrDefault() ?? "").Trim().ToLower();
+            if (!_commandHandlers.TryGetValue(prefix, out var handler))
+            {
+                PrintMessage($"Command '{prefix}' is not found.");
+            }
+            else
+            {
+                handler.HandleCommand(command);
+            }
         }
 
         public static void RegisterHandler(string prefix, ICommandHandler handler)
@@ -41,6 +50,11 @@ namespace Uxt.Debugging
             {
                 Debug.LogError($"'{prefix}' is not registered as a command.");
             }
+        }
+
+        public static ReflectiveHandler CreateHandlerFromObject(object obj)
+        {
+            return new ReflectiveHandler(obj);
         }
 
         public static void PrintMessage(string message)
