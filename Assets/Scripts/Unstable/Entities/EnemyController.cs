@@ -2,6 +2,7 @@
 using Animancer;
 using UnityEngine;
 using Unstable.Utils;
+using Uxt.Debugging;
 using WeaponSystem;
 
 namespace Unstable.Entities
@@ -37,6 +38,8 @@ namespace Unstable.Entities
         {
             _enemyAI.Tick(deltaTime);
 
+            DebugMessageManager.AddOnScreen($"Attack playing: {_enemyAI.IsMoving}", 42, Color.blue, 0.0f);
+            
             var translationFrame = new TranslationFrame();
             var rotationFrame = _enemyPawn.GetRotationFrame().PrepareNextFrame();
 
@@ -57,6 +60,7 @@ namespace Unstable.Entities
             {
                 if (!_attackAnimationPlayed)
                 {
+                    _rootMotionFrame.BeginAccumulateDisplacement();
                     _attackAnimationPlayed = true;
                     _animationHandler.PlayAnimation(
                         _stabAnimation,
@@ -64,10 +68,15 @@ namespace Unstable.Entities
                         {
                             _enemyAI.IsSlashing = false;
                             _attackAnimationPlayed = false;
+                            _rootMotionFrame.EndAccumulateDisplacement();
                         });
                 }
-
-                translationFrame.TargetHorizontalVelocity += _rootMotionFrame.Velocity.ConvertXz2Xy();
+                else
+                {
+                    translationFrame.Displacement += _rootMotionFrame.Displacement;
+                    // translationFrame.TargetHorizontalVelocity += _rootMotionFrame.Velocity.ConvertXz2Xy();
+                    // Debug.Log($"{_rootMotionFrame.Velocity.ConvertXz2Xy()}");
+                }
 
                 var angleDiff = Vector3.SignedAngle(
                     transform.forward,

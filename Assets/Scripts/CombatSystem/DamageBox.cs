@@ -1,17 +1,19 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Unstable;
 using Uxt;
 
-namespace Unstable
+namespace CombatSystem
 {
     public class DamageBox : MonoBehaviour, IDamageBox
     {
-        public int DamageId { get; set; }
+        [SerializeField] private Damage _damage;
+        public Damage Damage => _damage;
 
         private AssociativeCounter<HurtBox> _overlappingPairsCounter;
 
         private void Awake()
         {
+            _damage.Id = DamageIdAllocator.AllocateId();
             _overlappingPairsCounter = new AssociativeCounter<HurtBox>();
         }
 
@@ -20,9 +22,9 @@ namespace Unstable
             return _overlappingPairsCounter.CountKey(hurtBox) > 0;
         }
 
-        public float GetDamageAmount(HurtBox hurtBox)
+        public Damage GetDamage()
         {
-            return 42.0f;
+            return Damage;
         }
 
         public void NotifyEnteredOverlapWith(HurtBox hurtBox)

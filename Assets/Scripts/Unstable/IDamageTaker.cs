@@ -1,8 +1,10 @@
-﻿namespace Unstable
+﻿using CombatSystem;
+
+namespace Unstable
 {
     public interface IDamageTaker
     {
-        void InteractWithDamageVolume(IDamageBox damageBox);
+        void HandleDamage(IDamageBox damageBox);
         void ReckonAllDamage(float deltaTime);
     }
 }

@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Unstable
+namespace CombatSystem
 {
     public class HurtBoxTrigger : MonoBehaviour
     {

@@ -34,7 +34,7 @@ namespace Unstable.Entities
             finalVelocity += ImmediateHorizontalVelocity.ConvertXy2Xz();
             finalVelocity += TargetVerticalVelocity * Vector3.up;
 
-            return finalVelocity;
+            return finalVelocity + Displacement;
         }
     }
 }

@@ -57,9 +57,6 @@ namespace Unstable.Entities
                 return;
             }
 
-            rotationFrame.TargetForwardDirection = controlDirection.normalized;
-            rotationFrame.Responsiveness = 15.0f;
-
             var speed = Mathf.InverseLerp(0.0f, 1.0f, inputDirection.magnitude) * maxSpeed;
             var forward = controlDirection.normalized;
             var right = Vector3.Cross(Vector3.up, forward.ConvertXy2Xz()).ConvertXz2Xy();

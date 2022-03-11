@@ -32,14 +32,14 @@ namespace Unstable
 
             var actionEffects = _playerController.CurrentActionEffects;
 
-            foreach (var enemyController in _damageTakers)
+            foreach (var damageTaker in _damageTakers)
             {
                 foreach (var actionEffect in actionEffects)
                 {
                     if (actionEffect.DamageVolumes == null) continue;
                     foreach (var damageVolume in actionEffect.DamageVolumes)
                     {
-                        enemyController.InteractWithDamageVolume(damageVolume);
+                        damageTaker.HandleDamage(damageVolume);
                     }
                 }
             }

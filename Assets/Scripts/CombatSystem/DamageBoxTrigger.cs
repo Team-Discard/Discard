@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Unstable
+namespace CombatSystem
 {
     public class DamageBoxTrigger : MonoBehaviour
     {
