@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Unstable.Utils;
 
 namespace Unstable.Entities
 {
@@ -21,6 +22,23 @@ namespace Unstable.Entities
             ret.Responsiveness = 15.0f;
             ret.OverrideLinearRotation = null;
             return ret;
+        }
+
+        public Quaternion Apply(float deltaTime, Quaternion rotation)
+        {
+            if (OverrideLinearRotation is { } linearRotation)
+            {
+                rotation *= Quaternion.Euler(0.0f, linearRotation, 0.0f);
+            }
+            else
+            {
+                var targetForward = TargetForwardDirection.ConvertXy2Xz();
+                var targetRotation = Quaternion.LookRotation(targetForward);
+                var currentRotation = rotation;
+                rotation = Quaternion.Slerp(currentRotation, targetRotation, deltaTime * Responsiveness);
+            }
+
+            return rotation;
         }
     }
 }

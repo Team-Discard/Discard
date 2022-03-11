@@ -5,12 +5,11 @@ namespace Unstable.Entities
 {
     public interface IPawn
     {
+        Vector3 CurrentVelocity { get; }
+        Vector3 CurrentForward { get; }
         void SetTranslationFrame(TranslationFrame translationFrame);
         RotationFrame GetRotationFrame();
         void SetRotationFrame(RotationFrame rotationFrame);
-
-        Vector3 CurrentVelocity { get; }
-        Vector3 CurrentForward { get; }
     }
 
     public static class PawnUtilities

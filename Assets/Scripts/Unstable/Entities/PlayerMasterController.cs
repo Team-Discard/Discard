@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Animancer;
 using CardSystem;
@@ -126,7 +125,10 @@ namespace Unstable.Entities
                 onEquipSwordSucceed?.Invoke(sword);
             }
 
-            _smoother.Tick(deltaTime);
+            if (_smoother != null)
+            {
+                _smoother.Tick(deltaTime);
+            }
 
             if (_swordEquipped != null)
             {

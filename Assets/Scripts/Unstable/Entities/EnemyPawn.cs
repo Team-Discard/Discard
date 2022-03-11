@@ -1,16 +1,15 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Unstable.Entities
 {
     public class EnemyPawn : MonoBehaviour, IPawn
     {
-        private RigidbodyPawn _internalPawn;
+        private CharacterControllerPawn _internalPawn;
 
         private void Awake()
         {
-            var rigidBody = GetComponent<Rigidbody>();
-            _internalPawn = new RigidbodyPawn(rigidBody);
+            var characterController = GetComponent<CharacterController>();
+            _internalPawn = new CharacterControllerPawn(characterController);
         }
 
         public void SetTranslationFrame(TranslationFrame translationFrame) =>
