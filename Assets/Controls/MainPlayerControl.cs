@@ -174,7 +174,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                     ""id"": ""d03fc1ad-4497-48d1-bd82-14c62ef944af"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""ScaleVector2(x=15,y=15)"",
                     ""groups"": """",
                     ""action"": ""Camera Rotate"",
                     ""isComposite"": false,
