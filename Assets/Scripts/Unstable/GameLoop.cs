@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using CombatSystem;
 using UnityEngine;
 using Unstable.Entities;
 
@@ -13,6 +15,17 @@ namespace Unstable
         private List<IEnemy> _enemies;
         private List<IPhysicsTicker> _physicsTickers;
         private List<EnemyController> _enemyControllers;
+
+        #region List Buffers
+
+        private List<DamageIdPair> _damageBuffer;
+
+        #endregion
+
+        private void Awake()
+        {
+            _damageBuffer = new List<DamageIdPair>();
+        }
 
         private void Start()
         {
@@ -32,15 +45,12 @@ namespace Unstable
 
             var actionEffects = _playerController.CurrentActionEffects;
 
+            DamageManager.GetAllDamages(_damageBuffer);
             foreach (var damageTaker in _damageTakers)
             {
-                foreach (var actionEffect in actionEffects)
+                foreach (var pair in _damageBuffer)
                 {
-                    if (actionEffect.DamageVolumes == null) continue;
-                    foreach (var damageVolume in actionEffect.DamageVolumes)
-                    {
-                        damageTaker.HandleDamage(damageVolume);
-                    }
+                    damageTaker.HandleDamage(pair.Id, pair.Damage);
                 }
             }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Animancer;
+using CombatSystem;
 using UnityEngine;
 using Unstable.Entities;
 using Unstable.Utils;
@@ -19,6 +20,7 @@ namespace Unstable.Actions.GreatSwordSlash
         [SerializeField] private Sword _swordPrefab;
 
         private Sword _swordInstance;
+        private int _swordDamageId;
         private PawnAnimationHandler _animationHandler;
 
         private ActionStage _stage;
@@ -55,6 +57,17 @@ namespace Unstable.Actions.GreatSwordSlash
                 this,
                 _preparationClip,
                 () => { _preparationClipDone = true; });
+        }
+
+        public void Finish()
+        {
+            if (_swordInstance != null)
+            {
+                Debug.Assert(_swordDamageId != -1);
+
+                _swordInstance = null;
+                DamageManager.ClearDamage(ref _swordDamageId);
+            }
         }
 
         public ActionEffects Execute(float deltaTime)
@@ -122,7 +135,16 @@ namespace Unstable.Actions.GreatSwordSlash
                     LocomotionAnimations = _locomotionAnimationSet,
                     SwordPrefab = _swordPrefab
                 },
-                sword => { _swordInstance = sword; });
+                sword =>
+                {
+                    _swordInstance = sword;
+                    _swordDamageId = DamageManager.SetDamage(new Damage
+                    {
+                        BaseAmount = 47,
+                        // todo: change this to dynamically bind to sword damage volumes
+                        DamageBox = sword.DamageVolumes[0]
+                    });
+                });
         }
 
         public void Accept(IActionVisitor visitor)

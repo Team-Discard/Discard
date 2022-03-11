@@ -30,21 +30,19 @@ namespace Unstable.Entities
             _invincibilityTimer -= Time.deltaTime;
         }
 
-        public void HandleDamage(IDamageBox damageBox)
+        public void HandleDamage(int id, in Damage damage)
         {
-            if (!IsHitBy(damageBox))
+            if (!IsHitBy(damage.DamageBox))
             {
                 return;
             }
-
-            var damage = damageBox.GetDamage();
 
             if (damage.Layer != _damageLayer)
             {
                 return;
             }
 
-            _totalDamage += damageBox.GetDamage().BaseAmount;
+            _totalDamage += damage.BaseAmount;
             _hasTakenDamage = true;
         }
 

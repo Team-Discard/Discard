@@ -4,7 +4,7 @@ namespace Unstable
 {
     public interface IDamageTaker
     {
-        void HandleDamage(IDamageBox damageBox);
+        void HandleDamage(int id, in Damage damage);
         void ReckonAllDamage(float deltaTime);
     }
 }
