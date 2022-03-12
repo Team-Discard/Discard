@@ -1,9 +1,11 @@
 ﻿using System;
 using Animancer;
+using CombatSystem;
 using UnityEngine;
 using Unstable.Utils;
 using Uxt.Debugging;
 using WeaponSystem;
+using WeaponSystem.Swords;
 
 namespace Unstable.Entities
 {
@@ -21,6 +23,8 @@ namespace Unstable.Entities
         [SerializeField] private float _maxAngularVelocityDuringAttack;
         [SerializeField] private float _rotationThreshold;
 
+        [SerializeField] private Sword _sword;
+        
         private PawnAnimationHandler _animationHandler;
 
         private bool _attackAnimationPlayed;
@@ -62,6 +66,12 @@ namespace Unstable.Entities
                 {
                     _rootMotionFrame.BeginAccumulateDisplacement();
                     _attackAnimationPlayed = true;
+                    var damageId = DamageManager.SetDamage(new Damage
+                    {
+                        BaseAmount = 1.0f,
+                        DamageBox = _sword.DamageVolumes[0],
+                        Layer = DamageLayer.Enemy
+                    });
                     _animationHandler.PlayAnimation(
                         _stabAnimation,
                         () =>
@@ -69,6 +79,7 @@ namespace Unstable.Entities
                             _enemyAI.IsSlashing = false;
                             _attackAnimationPlayed = false;
                             _rootMotionFrame.EndAccumulateDisplacement();
+                            DamageManager.ClearDamage(ref damageId);
                         });
                 }
                 else

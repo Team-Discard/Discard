@@ -35,7 +35,7 @@ namespace Uxt.Debugging
 
         public static void AddOnScreen(string text, int id, Color color, float duration = 1.5f)
         {
-            if (id < 0)
+            if (id == -1)
             {
                 var message = new Message()
                 {

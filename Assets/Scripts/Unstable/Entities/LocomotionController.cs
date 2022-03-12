@@ -88,7 +88,7 @@ namespace Unstable.Entities
                 }
                 case FallAndPushType.Push:
                 {
-                    translationFrame.Displacement += fallAndPush.AbsoluteAmount * Vector3.up;
+                    // translationFrame.Displacement += fallAndPush.AbsoluteAmount * Vector3.up;
                     break;
                 }
             }

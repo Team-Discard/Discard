@@ -2,12 +2,14 @@
 using System.Linq;
 using Animancer;
 using CardSystem;
+using CombatSystem;
 using UnityEngine;
 using Unstable.Actions;
 using Unstable.Actions.GreatSwordSlash;
 using Unstable.PlayerActions.Charge;
 using Unstable.Utils;
 using Uxt;
+using Uxt.Debugging;
 using WeaponSystem;
 using WeaponSystem.Swords;
 
@@ -16,7 +18,8 @@ namespace Unstable.Entities
     [SelectionBase]
     public class PlayerMasterController :
         MonoBehaviour,
-        ITicker
+        ITicker,
+        IDamageTaker
     {
         [SerializeField] private PlayerPawn _playerPawn;
         [SerializeField] private LocomotionController _locomotionController;
@@ -34,6 +37,9 @@ namespace Unstable.Entities
         [SerializeField] private float _maxSpeed;
 
         [SerializeField] private List<Card> _cards;
+
+        [SerializeField] private HurtBox _hurtBox;
+
         private TemporaryCardTextUI _cardUi;
 
         private WeaponTriggers _weaponTriggers;
@@ -58,6 +64,8 @@ namespace Unstable.Entities
             _weaponTriggers = new WeaponTriggers();
             _swordEquipped = null;
             _cardUi = new TemporaryCardTextUI(_cards);
+
+            _damageTaken = 0.0f;
         }
 
         private void Start()
@@ -209,6 +217,28 @@ namespace Unstable.Entities
                 _animationHandler,
                 _weaponTriggers
             };
+        }
+
+        private float _damageTaken;
+
+        public void HandleDamage(int id, in Damage damage)
+        {
+            if (damage.Layer == DamageLayer.Player)
+            {
+                return;
+            }
+
+            if (!damage.DamageBox.CheckOverlap(_hurtBox))
+            {
+                return;
+            }
+
+            _damageTaken += damage.BaseAmount;
+            DebugMessageManager.AddOnScreen($"Damage taken: {_damageTaken}", -72, Color.red);
+        }
+
+        public void ReckonAllDamage(float deltaTime)
+        {
         }
     }
 }
