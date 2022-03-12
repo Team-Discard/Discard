@@ -17,7 +17,7 @@ namespace Unstable.Entities
     public class PlayerMasterController :
         MonoBehaviour,
         ITicker,
-        IActionVisitor
+        IActionInitializer
     {
         [SerializeField] private PlayerPawn _playerPawn;
         [SerializeField] private LocomotionController _locomotionController;
@@ -31,9 +31,9 @@ namespace Unstable.Entities
         [SerializeField] private Transform _swordHandleTop;
 
         [SerializeField] private PlayerMovementSmoother _smoother;
-        
+
         [SerializeField] private float _maxSpeed;
-        
+
         [SerializeField] private List<Card> _cards;
         private TemporaryCardTextUI _cardUi;
 
@@ -225,14 +225,23 @@ namespace Unstable.Entities
             return charge;
         }
 
-        public void Visit(GreatSwordSlashAction greatSwordSlashAction)
+        /*
+         * This region implements the initialization of different types of actions by the player.
+         */
+        #region Intialize Actions
+
+        Void IActionVisitor<Void, IActionInitializer.Init>.Visit(GreatSwordSlashAction greatSwordSlashAction)
         {
             greatSwordSlashAction.Init(_playerPawn, _animationHandler, _weaponTriggers);
+            return default;
         }
 
-        public void Visit(ChargeAction chargeAction)
+        Void IActionVisitor<Void, IActionInitializer.Init>.Visit(ChargeAction chargeAction)
         {
             chargeAction.Init(_playerPawn);
+            return default;
         }
+        
+        #endregion
     }
 }

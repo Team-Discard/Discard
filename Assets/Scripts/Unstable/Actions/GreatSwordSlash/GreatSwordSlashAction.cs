@@ -147,9 +147,9 @@ namespace Unstable.Actions.GreatSwordSlash
                 });
         }
 
-        public void Accept(IActionVisitor visitor)
+        TRet IAction.Accept<TRet, TTag>(IActionVisitor<TRet, TTag> visitor)
         {
-            visitor.Visit(this);
+            return visitor.Visit(this);
         }
     }
 }

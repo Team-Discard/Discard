@@ -43,8 +43,6 @@ namespace Unstable
             var deltaTime = Time.deltaTime;
             _playerController.Tick(deltaTime);
 
-            var actionEffects = _playerController.CurrentActionEffects;
-
             DamageManager.GetAllDamages(_damageBuffer);
             foreach (var damageTaker in _damageTakers)
             {

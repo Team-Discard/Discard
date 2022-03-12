@@ -17,9 +17,9 @@ namespace Unstable
         {
         }
 
-        void Accept(IActionVisitor visitor)
+        TRet Accept<TRet, TTag>(IActionVisitor<TRet, TTag> visitor)
         {
-            visitor.Visit(this);
+            return visitor.Visit(this);
         }
     }
 }

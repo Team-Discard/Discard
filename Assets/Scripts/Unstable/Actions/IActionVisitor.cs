@@ -3,20 +3,21 @@ using Unstable.PlayerActions.Charge;
 
 namespace Unstable.Actions
 {
-    public interface IActionVisitor
+    public interface IActionVisitor<out TRet, TTag>
     {
-        void Visit(IAction action)
+        TRet Visit(IAction action)
         {
+            return default;
         }
 
-        void Visit(GreatSwordSlashAction greatSwordSlashAction)
+        TRet Visit(GreatSwordSlashAction greatSwordSlashAction)
         {
-            Visit((IAction)greatSwordSlashAction);
+            return Visit((IAction)greatSwordSlashAction);
         }
 
-        void Visit(ChargeAction chargeAction)
+        TRet Visit(ChargeAction chargeAction)
         {
-            Visit((IAction)chargeAction);
+            return Visit((IAction)chargeAction);
         }
     }
 }

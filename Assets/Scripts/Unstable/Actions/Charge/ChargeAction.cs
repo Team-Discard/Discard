@@ -70,9 +70,9 @@ namespace Unstable.PlayerActions.Charge
             Destroy(gameObject);
         }
 
-        public void Accept(IActionVisitor visitor)
+        public TRet Accept<TRet, TTag>(IActionVisitor<TRet, TTag> visitor)
         {
-            visitor.Visit(this);
+            return visitor.Visit(this);
         }
     }
 }
