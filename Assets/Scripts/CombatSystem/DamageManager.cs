@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Unstable;
 
 namespace CombatSystem
 {
@@ -12,22 +13,29 @@ namespace CombatSystem
 
     public static class DamageManager
     {
-        private static Dictionary<int, Damage> _damages;
+        private class DamageRecord
+        {
+            public Damage damage;
+            public Dictionary<IDamageTaker, float> invincibilityFrames = new();
+        }
+
+        private static Dictionary<int, DamageRecord> _damages;
         private static int _nextDamageId;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void StaticInit()
         {
-            _damages = new Dictionary<int, Damage>();
+            _damages = new Dictionary<int, DamageRecord>();
             _nextDamageId = 0;
+            _removeInvincibilityFrameBuffer = new List<IDamageTaker>();
         }
 
         public static void GetAllDamages(List<DamageIdPair> outList)
         {
             outList.Clear();
-            foreach (var (id, damage) in _damages)
+            foreach (var (id, rec) in _damages)
             {
-                outList.Add(new DamageIdPair { Id = id, Damage = damage });
+                outList.Add(new DamageIdPair { Id = id, Damage = rec.damage });
             }
         }
 
@@ -38,7 +46,13 @@ namespace CombatSystem
                 id = ++_nextDamageId;
             }
 
-            _damages[id] = damage;
+            if (!_damages.TryGetValue(id, out var damageRec))
+            {
+                damageRec = new DamageRecord();
+            }
+
+            damageRec.damage = damage;
+            _damages[id] = damageRec;
             return id;
         }
 
@@ -53,8 +67,47 @@ namespace CombatSystem
             {
                 throw new Exception($"Damage with {id} does not exist!");
             }
-            
+
             id = -1;
+        }
+
+        public static bool UpdateInvincibilityFrame(IDamageTaker damageTaker, int dmgId, float newFrame)
+        {
+            if (!_damages.TryGetValue(dmgId, out var damageRec))
+            {
+                return false;
+            }
+
+            if (!damageRec.invincibilityFrames.ContainsKey(damageTaker))
+            {
+                damageRec.invincibilityFrames[damageTaker] = newFrame;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static List<IDamageTaker> _removeInvincibilityFrameBuffer;
+
+        public static void TickInvincibilityFrames(float deltaTime)
+        {
+            foreach (var damageRec in _damages.Values)
+            {
+                foreach (var damageTaker in damageRec.invincibilityFrames.Keys)
+                {
+                    if ((damageRec.invincibilityFrames[damageTaker] -= deltaTime) <= 0.0f)
+                    {
+                        _removeInvincibilityFrameBuffer.Add(damageTaker);
+                    }
+                }
+
+                foreach (var damageTaker in _removeInvincibilityFrameBuffer)
+                {
+                    damageRec.invincibilityFrames.Remove(damageTaker);
+                }
+
+                _removeInvincibilityFrameBuffer.Clear();
+            }
         }
     }
 }
