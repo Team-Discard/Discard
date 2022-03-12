@@ -16,8 +16,7 @@ namespace Unstable.Entities
     [SelectionBase]
     public class PlayerMasterController :
         MonoBehaviour,
-        ITicker,
-        IActionInitializer
+        ITicker
     {
         [SerializeField] private PlayerPawn _playerPawn;
         [SerializeField] private LocomotionController _locomotionController;
@@ -92,8 +91,6 @@ namespace Unstable.Entities
             var forwardSpeed = _playerPawn.CalculateForwardSpeed();
 
             _animationHandler.SetAbsoluteSpeed(forwardSpeed);
-
-            HandleActionTriggers(_actionExecutor);
 
             if (_weaponTriggers.UnEquipAllWeapon.Consume(out var _, out var onUnEquipSucceed))
             {
@@ -204,44 +201,14 @@ namespace Unstable.Entities
             }
         }
 
-        private void HandleActionTriggers(ActionExecutor actionExecutor)
+        public DependencyBag AsDependencyBag()
         {
-            if (actionExecutor.HasPendingOrActiveActions)
+            return new DependencyBag
             {
-                return;
-            }
-
-            if (MainInputHandler.Instance.Control.Standard.Roll.WasPerformedThisFrame())
-            {
-                var charge = CreateChargeAction();
-                actionExecutor.AddAction(charge);
-            }
+                _playerPawn,
+                _animationHandler,
+                _weaponTriggers
+            };
         }
-
-        private IAction CreateChargeAction()
-        {
-            var charge = Instantiate(_chargeActionPrefab, _playerPawn.transform);
-            charge.Init(_playerPawn, _animationHandler, _weaponTriggers);
-            return charge;
-        }
-
-        /*
-         * This region implements the initialization of different types of actions by the player.
-         */
-        #region Intialize Actions
-
-        Void IActionVisitor<Void, IActionInitializer.Init>.Visit(GreatSwordSlashAction greatSwordSlashAction)
-        {
-            greatSwordSlashAction.Init(_playerPawn, _animationHandler, _weaponTriggers);
-            return default;
-        }
-
-        Void IActionVisitor<Void, IActionInitializer.Init>.Visit(ChargeAction chargeAction)
-        {
-            chargeAction.Init(_playerPawn);
-            return default;
-        }
-        
-        #endregion
     }
 }

@@ -21,10 +21,8 @@ namespace CardSystem
             var result = new CardUseResult();
             var actionObj = Instantiate(_actionPrefab);
             var action = actionObj.GetComponent<IAction>();
-            
-            // performs initialization of the action with the visitor pattern
-            action.Accept(playerController);
-            
+            action.Init(playerController.AsDependencyBag());
+
             Debug.Assert(action != null, "The game object does not contain any action");
             result.ConsumesCard = true;
             result.Action = action;

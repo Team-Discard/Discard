@@ -1,5 +1,6 @@
 ﻿using Unstable.Actions;
 using Unstable.Entities;
+using Uxt;
 
 namespace Unstable
 {
@@ -17,9 +18,8 @@ namespace Unstable
         {
         }
 
-        TRet Accept<TRet, TTag>(IActionVisitor<TRet, TTag> visitor)
+        void Init(DependencyBag bag)
         {
-            return visitor.Visit(this);
         }
     }
 }

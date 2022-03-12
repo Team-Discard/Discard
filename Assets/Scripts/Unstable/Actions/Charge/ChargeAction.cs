@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using CombatSystem;
 using UnityEngine;
-using Unstable.Actions;
 using Unstable.Entities;
+using Uxt;
 
 namespace Unstable.PlayerActions.Charge
 {
@@ -52,10 +52,10 @@ namespace Unstable.PlayerActions.Charge
 
             return effects;
         }
-
-        public void Init(PlayerPawn pawn)
+        
+        public void Init(DependencyBag bag)
         {
-            _pawn = pawn;
+            bag.Get(out _pawn);
         }
 
         public void Begin()
@@ -68,11 +68,6 @@ namespace Unstable.PlayerActions.Charge
         public void Finish()
         {
             Destroy(gameObject);
-        }
-
-        public TRet Accept<TRet, TTag>(IActionVisitor<TRet, TTag> visitor)
-        {
-            return visitor.Visit(this);
         }
     }
 }

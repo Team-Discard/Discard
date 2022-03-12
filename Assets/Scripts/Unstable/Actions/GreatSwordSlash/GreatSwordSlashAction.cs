@@ -4,6 +4,7 @@ using CombatSystem;
 using UnityEngine;
 using Unstable.Entities;
 using Unstable.Utils;
+using Uxt;
 using WeaponSystem;
 using WeaponSystem.Swords;
 
@@ -33,16 +34,17 @@ namespace Unstable.Actions.GreatSwordSlash
 
         public bool Completed { get; private set; }
 
-        public void Init(PlayerPawn pawn, PawnAnimationHandler animationHandler, WeaponTriggers weaponTriggers)
+        public void Init(DependencyBag bag)
         {
-            _playerPawn = pawn;
+            bag.Get(out _playerPawn);
+            bag.Get(out _animationHandler);
+            bag.Get(out _weaponTriggers);
+
             _stage = ActionStage.Preparation;
             _preparationClipDone = false;
             _executionClipDone = false;
             _rootMotionFrame = _playerPawn.RootMotionFrame;
             _preparationTimer = _preparationTime;
-            _animationHandler = animationHandler;
-            _weaponTriggers = weaponTriggers;
         }
 
         private void Awake()
@@ -145,11 +147,6 @@ namespace Unstable.Actions.GreatSwordSlash
                         DamageBox = sword.DamageVolumes[0]
                     });
                 });
-        }
-
-        TRet IAction.Accept<TRet, TTag>(IActionVisitor<TRet, TTag> visitor)
-        {
-            return visitor.Visit(this);
         }
     }
 }
