@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CombatSystem;
 using UnityEngine;
@@ -61,6 +60,8 @@ namespace Unstable
             {
                 enemy.Tick(deltaTime);
             }
+            
+            DamageManager.TickInvincibilityFrames(deltaTime);
         }
     }
 }

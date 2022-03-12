@@ -231,7 +231,7 @@ namespace Unstable.Entities
                 return;
             }
 
-            if (DamageManager.UpdateInvincibilityFrame(this, id, 0.25f))
+            if (DamageManager.SetInvincibilityFrame(this, id, 0.25f))
             {
                 _damageTaken += damage.BaseAmount;
             }

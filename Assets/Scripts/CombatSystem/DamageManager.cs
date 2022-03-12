@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Unstable;
 
@@ -55,7 +56,7 @@ namespace CombatSystem
             _damages[id] = damageRec;
             return id;
         }
-
+        
         public static bool ClearDamage(int id)
         {
             return _damages.Remove(id);
@@ -71,7 +72,16 @@ namespace CombatSystem
             id = -1;
         }
 
-        public static bool UpdateInvincibilityFrame(IDamageTaker damageTaker, int dmgId, float newFrame)
+        /// <summary>
+        /// Record that <paramref name="damageTaker"/> would be invincible to
+        /// <paramref name="dmgId"/> for <paramref name="newFrame"/> amount of time.
+        /// </summary>
+        /// <param name="damageTaker">The damage taker</param>
+        /// <param name="dmgId">The damage that is ignored by <paramref name="damageTaker"/></param>
+        /// <param name="newFrame">The amount of time to ignore the damage</param>
+        /// <returns>False if <paramref name="damageTaker"/> is already invincible to <paramref name="dmgId"/>
+        /// or <paramref name="dmgId"/> is invalid. True otherwise.</returns>
+        public static bool SetInvincibilityFrame(IDamageTaker damageTaker, int dmgId, float newFrame)
         {
             if (!_damages.TryGetValue(dmgId, out var damageRec))
             {
@@ -89,11 +99,16 @@ namespace CombatSystem
 
         private static List<IDamageTaker> _removeInvincibilityFrameBuffer;
 
+        /// <summary>
+        /// Subtracts <paramref name="deltaTime"/> from all recorded invincibility frames,
+        /// and removes any frame that has expired.
+        /// </summary>
+        /// <param name="deltaTime">The amount of time to subtract</param>
         public static void TickInvincibilityFrames(float deltaTime)
         {
             foreach (var damageRec in _damages.Values)
             {
-                foreach (var damageTaker in damageRec.invincibilityFrames.Keys)
+                foreach (var damageTaker in damageRec.invincibilityFrames.Keys.ToList())
                 {
                     if ((damageRec.invincibilityFrames[damageTaker] -= deltaTime) <= 0.0f)
                     {
