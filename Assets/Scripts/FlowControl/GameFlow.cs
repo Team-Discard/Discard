@@ -1,7 +1,6 @@
 ﻿using CombatSystem;
 using EntitySystem;
 using UnityEngine;
-using Unstable;
 using Unstable.Entities;
 
 namespace FlowControl
