@@ -5,6 +5,7 @@ namespace Unstable
     public interface IDamageTaker
     {
         void HandleDamage(int id, in Damage damage);
-        void ReckonAllDamage(float deltaTime);
+        void ReckonAllDamage();
+        bool Dead => false;
     }
 }

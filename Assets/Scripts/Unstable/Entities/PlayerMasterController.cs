@@ -3,6 +3,7 @@ using System.Linq;
 using Animancer;
 using CardSystem;
 using CombatSystem;
+using EntitySystem;
 using UnityEngine;
 using Unstable.Actions.GreatSwordSlash;
 using Unstable.Utils;
@@ -17,7 +18,8 @@ namespace Unstable.Entities
     public class PlayerMasterController :
         MonoBehaviour,
         ITicker,
-        IDamageTaker
+        IDamageTaker,
+        IEntity
     {
         [SerializeField] private PlayerPawn _playerPawn;
         [SerializeField] private LocomotionController _locomotionController;
@@ -239,8 +241,13 @@ namespace Unstable.Entities
             DebugMessageManager.AddOnScreen($"Damage taken: {_damageTaken}", -72, Color.red);
         }
 
-        public void ReckonAllDamage(float deltaTime)
+        public void ReckonAllDamage()
         {
+        }
+
+        public void AddTo(IComponentRegistry registry)
+        {
+            registry.AddDamageTaker(this);
         }
     }
 }

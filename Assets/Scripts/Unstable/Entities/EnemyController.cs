@@ -1,8 +1,8 @@
 ﻿using System;
 using Animancer;
 using CombatSystem;
+using EntitySystem;
 using UnityEngine;
-using Unstable.Utils;
 using Uxt.Debugging;
 using WeaponSystem;
 using WeaponSystem.Swords;
@@ -11,6 +11,7 @@ namespace Unstable.Entities
 {
     public class EnemyController :
         MonoBehaviour,
+        IEntity,
         IEnemy
     {
         [SerializeField] private LocomotionController _locomotionController;
@@ -38,6 +39,11 @@ namespace Unstable.Entities
             _attackAnimationPlayed = false;
         }
 
+        public void AddTo(IComponentRegistry registry)
+        {
+            registry.AddEnemy(this);
+        }
+        
         public void Tick(float deltaTime)
         {
             _enemyAI.Tick(deltaTime);

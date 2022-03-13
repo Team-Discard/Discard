@@ -14,8 +14,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   types:
   - data: []
-  - data: []
-  - data: []
+  - data:
+    - saverType: 1
+      id_in_external_heap: 713596515
+      indentifierVersion: GlobalObjectId_V1
+      identifierTypetargetObjectIdtargetPrefabId: -2-9fc0d4010bbf28b4594072e72b8655ab-1378629693320865583-1378629692467526296
+      namesPathBackup: PFB_PLAYER_Player
+      siblingsPathBackup: 9
+      boolValue: 0
+      stringValue: The player
+      highLighterData: []
+      iconData: []
+  - data:
+    - saverType: 2
+      id_in_external_heap: 713596515
+      indentifierVersion: GlobalObjectId_V1
+      identifierTypetargetObjectIdtargetPrefabId: -2-9fc0d4010bbf28b4594072e72b8655ab-1378629693320865583-1378629692467526296
+      namesPathBackup: PFB_PLAYER_Player
+      siblingsPathBackup: 9
+      boolValue: 0
+      stringValue: 
+      highLighterData:
+      - TempColorData:
+        - 1
+        - 114
+        - 132
+        - 255
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+      iconData: []
   - data: []
   - data: []
   - data: []

@@ -21,6 +21,7 @@ namespace CombatSystem
         }
 
         private static Dictionary<int, DamageRecord> _damages;
+        private static List<IDamageTaker> _damageTakers;
         private static int _nextDamageId;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -29,6 +30,7 @@ namespace CombatSystem
             _damages = new Dictionary<int, DamageRecord>();
             _nextDamageId = 0;
             _removeInvincibilityFrameBuffer = new List<IDamageTaker>();
+            _damageTakers = new List<IDamageTaker>();
         }
 
         public static void GetAllDamages(List<DamageIdPair> outList)
@@ -56,7 +58,7 @@ namespace CombatSystem
             _damages[id] = damageRec;
             return id;
         }
-        
+
         public static bool ClearDamage(int id)
         {
             return _damages.Remove(id);
@@ -123,6 +125,36 @@ namespace CombatSystem
 
                 _removeInvincibilityFrameBuffer.Clear();
             }
+        }
+
+        private static readonly List<DamageIdPair> DamageBuffer = new();
+        public static void AddDamageTaker(IDamageTaker damageTaker)
+        {
+            Debug.Assert(!_damageTakers.Contains(damageTaker), "!_damageTakers.Contains(damageTaker)");
+            
+            _damageTakers.Add(damageTaker);
+        }
+        
+        public static void ResolveDamages()
+        {
+            GetAllDamages(DamageBuffer);
+
+            foreach (var damageTaker in _damageTakers)
+            {
+                foreach (var pair in DamageBuffer)
+                {
+                    damageTaker.HandleDamage(pair.Id, pair.Damage);
+                }
+            }
+
+            foreach (var damageTaker in _damageTakers)
+            {
+                damageTaker.ReckonAllDamage();
+            }
+
+            DamageBuffer.Clear();
+
+            _damageTakers.RemoveAll(damageTaker => damageTaker.Dead);
         }
     }
 }

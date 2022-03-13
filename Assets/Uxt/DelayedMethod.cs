@@ -11,11 +11,11 @@ namespace Uxt
 
         public bool HasValue { get; private set; }
 
-        public bool Consume(out TParam output, out Action<TRet> successCallback)
+        public bool Consume(out TParam param, out Action<TRet> successCallback)
         {
             if (HasValue)
             {
-                output = _value;
+                param = _value;
                 successCallback = _onSuccess;
                 HasValue = false;
                 _value = default;
@@ -25,10 +25,15 @@ namespace Uxt
             }
             else
             {
-                output = default;
+                param = default;
                 successCallback = default;
                 return false;
             }
+        }
+
+        public bool Consume()
+        {
+            return Consume(out _, out _);
         }
 
         public void Clear()
@@ -44,7 +49,7 @@ namespace Uxt
             HasValue = false;
         }
 
-        public void InvokeDelayed([NotNull] TParam val, Action<TRet> onSuccess = null, Action onFail = null)
+        public void InvokeDelayed(TParam val = default, Action<TRet> onSuccess = null, Action onFail = null)
         {
             if (HasValue)
             {
