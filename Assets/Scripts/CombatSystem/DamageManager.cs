@@ -42,11 +42,21 @@ namespace CombatSystem
             }
         }
 
+        /// <summary>
+        /// Sets the details for the damage with id <paramref name="id"/><br/>
+        ///
+        /// Special case: If <paramref name="id"/> is -1 then a new damage id would
+        /// be allocated and returned. You could initialize a damage id to -1 and pass
+        /// it to this function and then assign to it the returned value.
+        /// </summary>
+        /// <param name="damage">The damage details</param>
+        /// <param name="id">The id of the damage to set details for</param>
+        /// <returns></returns>
         public static int SetDamage(Damage damage, int id = -1)
         {
             if (id == -1)
             {
-                id = ++_nextDamageId;
+                id = _nextDamageId++;
             }
 
             if (!_damages.TryGetValue(id, out var damageRec))
@@ -128,13 +138,21 @@ namespace CombatSystem
         }
 
         private static readonly List<DamageIdPair> DamageBuffer = new();
+
+        /// <summary>
+        /// Registers a damage taker so it can later take damage.
+        /// </summary>
+        /// <param name="damageTaker">The damage taker to register</param>
         public static void AddDamageTaker(IDamageTaker damageTaker)
         {
             Debug.Assert(!_damageTakers.Contains(damageTaker), "!_damageTakers.Contains(damageTaker)");
-            
+
             _damageTakers.Add(damageTaker);
         }
-        
+
+        /// <summary>
+        /// Perform the interaction between each pair of damage and damage taker.
+        /// </summary>
         public static void ResolveDamages()
         {
             GetAllDamages(DamageBuffer);

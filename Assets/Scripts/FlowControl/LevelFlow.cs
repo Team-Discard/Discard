@@ -88,14 +88,10 @@ namespace FlowControl
             }
         }
 
-        void IComponentRegistry.AddEnemy(IEnemy enemy)
+        bool IComponentRegistry.AddEnemy(IEnemy enemy)
         {
             _enemies.Add(enemy);
-        }
-
-        void IComponentRegistry.AddDamageTaker(IDamageTaker damageTaker)
-        {
-            DamageManager.AddDamageTaker(damageTaker);
+            return true;
         }
     }
 }

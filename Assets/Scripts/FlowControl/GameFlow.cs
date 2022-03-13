@@ -21,11 +21,12 @@ namespace FlowControl
         private void Update()
         {
             var deltaTime = Time.deltaTime;
-            
+
             if (PlayerEnteredNewLevel(out var newLevelRoot))
             {
                 // We would not handle the situation where the player switch levels, YET
                 Debug.Assert(_currentLevelFlow == null);
+
                 _currentLevelRoot = newLevelRoot;
                 _currentLevelFlow = new LevelFlow(newLevelRoot);
             }
@@ -40,14 +41,12 @@ namespace FlowControl
             DamageManager.ResolveDamages();
         }
 
-        public void AddDamageTaker(IDamageTaker damageTaker)
-        {
-            DamageManager.AddDamageTaker(damageTaker);
-        }
-
         private bool PlayerEnteredNewLevel(out GameObject levelRoot)
         {
             levelRoot = _currentLevelRoot;
+
+            // Technically there could be more than one level in the queue
+            // but for now we only really care about the latest one
             while (LevelEnterManager.TryDequeueEnterLevelEvent(out var enteredLevel))
             {
                 levelRoot = enteredLevel;
