@@ -2,6 +2,7 @@
 using CombatSystem;
 using UnityEngine;
 using Unstable;
+using Unstable.Entities;
 
 namespace EntitySystem
 {
@@ -21,5 +22,10 @@ namespace EntitySystem
             DamageManager.AddDamageTaker(damageTaker);
             return true;
         }
+
+        public bool AddHealthBar(IHealthBar healthBar) => ReportComponentNotSupported(typeof(IHealthBar));
+        public bool AddPawn(IPawn pawn) => ReportComponentNotSupported(typeof(IPawn));
+        public bool AddPawnAnimationHandler(PawnAnimationHandler animationHandler) =>
+            ReportComponentNotSupported(typeof(PawnAnimationHandler));
     }
 }

@@ -14,7 +14,7 @@ namespace Unstable.PlayerActions.Charge
 
         [SerializeField] private List<DamageBox> _damageVolumes;
 
-        private PlayerPawn _pawn;
+        private Transform _transform;
         private Vector2 _direction;
 
         public bool Completed { get; private set; }
@@ -22,7 +22,7 @@ namespace Unstable.PlayerActions.Charge
         private void Awake()
         {
             _speed = CalculateSpeed();
-            _pawn = null;
+            _transform = null;
             Completed = false;
         }
 
@@ -55,12 +55,12 @@ namespace Unstable.PlayerActions.Charge
         
         public void Init(DependencyBag bag)
         {
-            bag.Get(out _pawn);
+            _transform = bag.ForceGet<Transform>();
         }
 
         public void Begin()
         {
-            var fwd = _pawn.transform.forward;
+            var fwd = _transform.forward;
             _direction = new Vector2(fwd.x, fwd.z);
             _direction.Normalize();
         }

@@ -12,8 +12,6 @@ namespace Unstable.Actions.GreatSwordSlash
 {
     public class GreatSwordSlashAction : MonoBehaviour, IAction
     {
-        private PlayerPawn _playerPawn;
-
         [SerializeField] private ClipTransition _preparationClip;
         [SerializeField] private ClipTransition _executionClip;
         [SerializeField] private StandardWeaponLocomotionAnimationSet _locomotionAnimationSet;
@@ -36,14 +34,13 @@ namespace Unstable.Actions.GreatSwordSlash
 
         public void Init(DependencyBag bag)
         {
-            bag.Get(out _playerPawn);
             bag.Get(out _animationHandler);
             bag.Get(out _weaponTriggers);
+            _rootMotionFrame = bag.ForceGet<RootMotionFrame>();
 
             _stage = ActionStage.Preparation;
             _preparationClipDone = false;
             _executionClipDone = false;
-            _rootMotionFrame = _playerPawn.RootMotionFrame;
             _preparationTimer = _preparationTime;
         }
 

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using EntitySystem;
+using UnityEngine;
 using Unstable.Utils;
 
 namespace Unstable.Entities
@@ -33,6 +35,10 @@ namespace Unstable.Entities
         public RotationFrame GetRotationFrame() => _rotationFrame;
 
         public void SetRotationFrame(RotationFrame rotationFrame) => _rotationFrame = rotationFrame;
+        public void TickTranslation(float deltaTime)
+        {
+            throw new NotImplementedException();
+        }
 
         public void TickPhysics(float deltaTime)
         {
@@ -63,5 +69,7 @@ namespace Unstable.Entities
             }
             
         }
+
+        public IEntity Entity => throw new NotImplementedException();
     }
 }

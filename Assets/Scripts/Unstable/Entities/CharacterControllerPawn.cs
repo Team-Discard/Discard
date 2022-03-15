@@ -1,19 +1,22 @@
-﻿using UnityEngine;
-using Unstable.Utils;
+﻿using EntitySystem;
+using UnityEngine;
 
 namespace Unstable.Entities
 {
     public class CharacterControllerPawn : IPawn
     {
+        public IEntity Entity { get; }
+        
         private readonly CharacterController _controller;
         private TranslationFrame _translationFrame;
         private RotationFrame _rotationFrame;
         private Vector2 _horizontalVelocity;
         private Vector3 _velocity;
 
-        public CharacterControllerPawn(CharacterController controller)
+        public CharacterControllerPawn(IEntity entity, CharacterController controller)
         {
             _controller = controller;
+            Entity = entity;
         }
 
         public Vector3 CurrentVelocity => _velocity;
@@ -28,7 +31,7 @@ namespace Unstable.Entities
         public void SetRotationFrame(RotationFrame rotationFrame) =>
             _rotationFrame = rotationFrame;
 
-        public void TickPhysics(float deltaTime)
+        public void TickTranslation(float deltaTime)
         {
             var finalVelocity = _translationFrame.CombineVelocity(
                 deltaTime, 

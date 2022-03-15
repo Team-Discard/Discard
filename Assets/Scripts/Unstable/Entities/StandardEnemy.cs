@@ -1,4 +1,5 @@
-﻿using Animancer;
+﻿using System.Collections.Generic;
+using Animancer;
 using CombatSystem;
 using EntitySystem;
 using UnityEngine;
@@ -8,13 +9,13 @@ using WeaponSystem.Swords;
 
 namespace Unstable.Entities
 {
-    public class EnemyController :
+    public class StandardEnemy :
         MonoBehaviour,
         IEntity,
         IEnemy
     {
+        private IPawn _pawn;
         [SerializeField] private LocomotionController _locomotionController;
-        [SerializeField] private EnemyPawn _enemyPawn;
         [SerializeField] private EnemyAI _enemyAI;
         [SerializeField] private float _speed;
         [SerializeField] private StandardWeaponLocomotionAnimationSet _defaultAnimationSet;
@@ -24,34 +25,96 @@ namespace Unstable.Entities
         [SerializeField] private float _rotationThreshold;
 
         [SerializeField] private Sword _sword;
-        
+
+        [SerializeField] private HurtBox _hurtBox;
+
+        private IHealthBar _healthBar;
+        private StandardHealthModifier _healthModifier;
+
         private PawnAnimationHandler _animationHandler;
 
         private bool _attackAnimationPlayed;
 
+        public bool Defeated { get; private set; }
+
         private void Awake()
         {
+            Defeated = false;
+
+            _healthBar = GetComponentInChildren<IHealthBar>();
+            Debug.Assert(_healthBar != null, "Enemy implementations must have a health bar", this);
+
+            _pawn = new CharacterControllerPawn(this, GetComponent<CharacterController>());
+            Debug.Assert(_pawn != null, "Enemy implementation must have a pawn", this);
+            
+            _healthModifier = new StandardHealthModifier(
+                DamageLayer.Enemy,
+                0.5f,
+                new List<HurtBox>
+                {
+                    _hurtBox
+                });
+
             _animationHandler = new PawnAnimationHandler(
-                _enemyPawn,
+                _pawn,
                 GetComponentInChildren<AnimancerComponent>(),
                 _defaultAnimationSet);
+            
             _attackAnimationPlayed = false;
         }
 
         public void AddTo(IComponentRegistry registry)
         {
             registry.AddEnemy(this);
+            registry.AddHealthBar(_healthBar);
+            registry.AddDamageTaker(_healthModifier);
+            registry.AddPawn(_pawn);
+            registry.AddPawnAnimationHandler(_animationHandler);
         }
         
+        public IEntity Entity => this;
+        public bool Destroyed { get; private set; }
+
+        public void Destroy()
+        {
+            Destroyed = true;
+            Destroy(gameObject);
+        }
+
         public void Tick(float deltaTime)
         {
-            _enemyAI.Tick(deltaTime);
+            _healthBar.CurrentHealth -= _healthModifier.ConsumeAllDamage();
+
+            if (_healthBar.CurrentHealth <= 0.0f)
+            {
+                Defeated = true;
+                Destroy();
+            }
+
+            if (!Defeated)
+            {
+                _enemyAI.Tick(deltaTime);
+            }
 
             DebugMessageManager.AddOnScreen($"Attack playing: {_enemyAI.IsMoving}", 42, Color.blue, 0.0f);
-            
-            var translationFrame = new TranslationFrame();
-            var rotationFrame = _enemyPawn.GetRotationFrame().PrepareNextFrame();
 
+            var translationFrame = new TranslationFrame();
+            var rotationFrame = _pawn.GetRotationFrame().PrepareNextFrame();
+
+            if (!Defeated)
+            {
+                DoThingsAccordingToAI(deltaTime, ref translationFrame, ref rotationFrame);
+            }
+            
+            _locomotionController.ApplyGravity(deltaTime, ref translationFrame);
+            _pawn.SetTranslationFrame(translationFrame);
+            _pawn.SetRotationFrame(rotationFrame);
+            _animationHandler.SetAbsoluteSpeed(_pawn.CalculateForwardSpeed());
+        }
+
+        private void DoThingsAccordingToAI(float deltaTime, ref TranslationFrame translationFrame,
+            ref RotationFrame rotationFrame)
+        {
             if (_enemyAI.IsMoving)
             {
                 var moveTowardsParams = new MoveTowardsParams
@@ -90,8 +153,6 @@ namespace Unstable.Entities
                 else
                 {
                     translationFrame.Displacement += _rootMotionFrame.Displacement;
-                    // translationFrame.TargetHorizontalVelocity += _rootMotionFrame.Velocity.ConvertXz2Xy();
-                    // Debug.Log($"{_rootMotionFrame.Velocity.ConvertXz2Xy()}");
                 }
 
                 var angleDiff = Vector3.SignedAngle(
@@ -106,15 +167,6 @@ namespace Unstable.Entities
                     rotationFrame.AddOverrideLinearRotation(deltaAngle);
                 }
             }
-
-
-            _locomotionController.ApplyGravity(deltaTime, ref translationFrame);
-
-            _enemyPawn.SetTranslationFrame(translationFrame);
-            _enemyPawn.SetRotationFrame(rotationFrame);
-
-            _animationHandler.SetAbsoluteSpeed(_enemyPawn.CalculateForwardSpeed());
-            _animationHandler.Tick(deltaTime);
         }
     }
 }

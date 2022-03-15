@@ -21,7 +21,8 @@ namespace Unstable.Entities
         IDamageTaker,
         IEntity
     {
-        [SerializeField] private PlayerPawn _playerPawn;
+        private IPawn _pawn;
+        
         [SerializeField] private LocomotionController _locomotionController;
         [SerializeField] private GreatSwordSlashAction _chargeActionPrefab;
         [SerializeField] private PlayerInputHandler _inputHandler;
@@ -32,12 +33,10 @@ namespace Unstable.Entities
         [SerializeField] private Transform _swordHandleBottom;
         [SerializeField] private Transform _swordHandleTop;
 
-        [SerializeField] private PlayerMovementSmoother _smoother;
-
         [SerializeField] private float _maxSpeed;
-
+        
         [SerializeField] private List<Card> _cards;
-
+        
         [SerializeField] private HurtBox _hurtBox;
 
         private TemporaryCardTextUI _cardUi;
@@ -50,17 +49,29 @@ namespace Unstable.Entities
 
         private Sword _swordEquipped;
 
-        public List<ActionEffects> CurrentActionEffects => _actionEffects;
+        public bool Destroyed { get; private set; }
+        public void Destroy()
+        {
+            Destroyed = true;
+            Destroy(gameObject);
+        }
 
-        #region Triggers
-
-        #endregion
+        public void AddTo(IComponentRegistry registry)
+        {
+            registry.AddDamageTaker(this);
+            registry.AddPawn(_pawn);
+            registry.AddPawnAnimationHandler(_animationHandler);
+        }
 
         private void Awake()
         {
+            Destroyed = false;
+
+            _pawn = new CharacterControllerPawn(this, GetComponent<CharacterController>());
+            
             _actionExecutor = new ActionExecutor();
             _actionEffects = new List<ActionEffects>();
-            _animationHandler = new PawnAnimationHandler(_playerPawn, _animancer, _noWeaponLocomotionAnimations);
+            _animationHandler = new PawnAnimationHandler(_pawn, _animancer, _noWeaponLocomotionAnimations);
             _weaponTriggers = new WeaponTriggers();
             _swordEquipped = null;
             _cardUi = new TemporaryCardTextUI(_cards);
@@ -81,7 +92,7 @@ namespace Unstable.Entities
             _inputHandler.UpdateInput(out var inputDirection);
             var controlDirection = _controlCamera.transform.forward.ConvertXz2Xy();
             var translationFrame = new TranslationFrame();
-            var rotationFrame = _playerPawn.GetRotationFrame().PrepareNextFrame();
+            var rotationFrame = _pawn.GetRotationFrame().PrepareNextFrame();
             _actionExecutor.Execute(deltaTime, _actionEffects);
 
             if (!AnyActionDisablesFreeMovement(_actionEffects))
@@ -93,10 +104,10 @@ namespace Unstable.Entities
 
             _locomotionController.ApplyGravity(deltaTime, ref translationFrame);
             _locomotionController.ApplyActionEffects(deltaTime, _actionEffects, ref translationFrame);
-            _playerPawn.SetTranslationFrame(translationFrame);
-            _playerPawn.SetRotationFrame(rotationFrame);
+            _pawn.SetTranslationFrame(translationFrame);
+            _pawn.SetRotationFrame(rotationFrame);
 
-            var forwardSpeed = _playerPawn.CalculateForwardSpeed();
+            var forwardSpeed = _pawn.CalculateForwardSpeed();
 
             _animationHandler.SetAbsoluteSpeed(forwardSpeed);
 
@@ -129,12 +140,7 @@ namespace Unstable.Entities
 
                 onEquipSwordSucceed?.Invoke(sword);
             }
-
-            if (_smoother != null)
-            {
-                _smoother.Tick(deltaTime);
-            }
-
+            
             if (_swordEquipped != null)
             {
                 MatchSwordToHandPosition();
@@ -213,9 +219,10 @@ namespace Unstable.Entities
         {
             return new DependencyBag
             {
-                _playerPawn,
+                transform,
                 _animationHandler,
-                _weaponTriggers
+                _weaponTriggers,
+                GetComponentInChildren<RootMotionFrame>()
             };
         }
 
@@ -237,17 +244,12 @@ namespace Unstable.Entities
             {
                 _damageTaken += damage.BaseAmount;
             }
-            
+
             DebugMessageManager.AddOnScreen($"Damage taken: {_damageTaken}", -72, Color.red);
         }
 
         public void ReckonAllDamage()
         {
-        }
-
-        public void AddTo(IComponentRegistry registry)
-        {
-            registry.AddDamageTaker(this);
         }
     }
 }

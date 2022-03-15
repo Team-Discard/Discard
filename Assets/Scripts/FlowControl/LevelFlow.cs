@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CombatSystem;
 using EntitySystem;
 using SpawnerSystem;
 using UnityEngine;
@@ -90,6 +91,11 @@ namespace FlowControl
         bool IComponentRegistry.AddEnemy(IEnemy enemy)
         {
             _enemies.Add(enemy);
+            return true;
+        }
+
+        bool IComponentRegistry.AddHealthBar(IHealthBar healthBar)
+        {
             return true;
         }
     }

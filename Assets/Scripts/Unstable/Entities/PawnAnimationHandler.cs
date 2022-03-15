@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Animancer;
+using EntitySystem;
 using JetBrains.Annotations;
 using UnityEngine;
 using WeaponSystem;
@@ -8,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace Unstable.Entities
 {
-    public class PawnAnimationHandler : ITicker
+    public class PawnAnimationHandler : ITicker, IComponent
     {
         private const string SystemName = "Pawn Animation Handler";
 
@@ -25,7 +26,11 @@ namespace Unstable.Entities
 
         private int _freeAnimationCount = 0;
 
-        public PawnAnimationHandler(IPawn pawn, AnimancerComponent animancer,
+        public IEntity Entity => _pawn.Entity;
+        
+        public PawnAnimationHandler(
+            IPawn pawn,
+            AnimancerComponent animancer,
             [NotNull] StandardWeaponLocomotionAnimationSet startingLocomotionAnimationSet)
         {
             _pawn = pawn;
@@ -114,7 +119,7 @@ namespace Unstable.Entities
                 doneCallback?.Invoke();
             };
         }
-        
+
         public void Tick(float deltaTime)
         {
             var hasNonLocomotionAnimation = _activeActions.Count > 0 || _freeAnimationCount > 0;
@@ -166,5 +171,6 @@ namespace Unstable.Entities
                 children[i].Speed = multiplier;
             }
         }
+
     }
 }

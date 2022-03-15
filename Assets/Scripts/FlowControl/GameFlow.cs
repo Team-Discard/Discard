@@ -1,4 +1,5 @@
-﻿using CombatSystem;
+﻿using System;
+using CombatSystem;
 using EntitySystem;
 using UnityEngine;
 using Unstable.Entities;
@@ -11,6 +12,12 @@ namespace FlowControl
 
         private GameObject _currentLevelRoot;
         private LevelFlow _currentLevelFlow;
+
+        private void Awake()
+        {
+            _pawns = new ComponentList<IPawn>();
+            _animationHandlers = new ComponentList<PawnAnimationHandler>();
+        }
 
         private void Start()
         {
@@ -31,6 +38,13 @@ namespace FlowControl
             }
 
             _playerController.Tick(deltaTime);
+            
+            _pawns.Tick(deltaTime, (pawn, dt) =>
+            {
+                pawn.TickRotation(dt);
+                pawn.TickTranslation(dt);
+            });
+            
             if (_currentLevelFlow != null)
             {
                 _currentLevelFlow.Tick(deltaTime);
@@ -38,6 +52,9 @@ namespace FlowControl
 
             DamageManager.TickInvincibilityFrames(deltaTime);
             DamageManager.ResolveDamages();
+            
+            _animationHandlers.Tick(deltaTime, (handler, dt) => handler.Tick(dt));
+            _animationHandlers.RemoveDestroyed();
         }
 
         private bool PlayerEnteredNewLevel(out GameObject levelRoot)
@@ -52,6 +69,22 @@ namespace FlowControl
             }
 
             return levelRoot != _currentLevelRoot;
+        }
+
+        private ComponentList<IPawn> _pawns;
+        private ComponentList<PawnAnimationHandler> _animationHandlers;
+
+        bool IComponentRegistry.AddPawn(IPawn pawn)
+        {
+            _pawns.Add(pawn);
+            return true;
+        }
+
+
+        bool IComponentRegistry.AddPawnAnimationHandler(PawnAnimationHandler animationHandler)
+        {
+            _animationHandlers.Add(animationHandler);
+            return true;
         }
     }
 }

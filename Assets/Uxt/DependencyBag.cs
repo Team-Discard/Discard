@@ -1,13 +1,26 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Uxt
 {
     public class DependencyBag : IEnumerable<object>
     {
         private readonly List<object> _bags = new();
+
+#if UNITY_ASSERTIONS
+
+        private readonly string _stackTrace;
+
+        public DependencyBag()
+        {
+            _stackTrace = new StackTrace(true).ToString();
+        }
+
+#endif
 
         public bool Get<T>(out T result)
         {
@@ -26,6 +39,21 @@ namespace Uxt
 
             result = default;
             return false;
+        }
+
+        public T ForceGet<T>()
+        {
+            if (Get(out T result))
+            {
+                return result;
+            }
+
+#if UNITY_ASSERTIONS
+            throw new NullReferenceException(
+                $"No item of type '{typeof(T)}' inside the dependency bag. Created at:\n{_stackTrace}");
+#else
+            throw new NullReferenceException($"No item of type '{typeof(T)}' inside the dependency bag.");
+#endif
         }
 
         public void Add(object item)

@@ -14,7 +14,7 @@ namespace Unstable.Entities
 
         private void Awake()
         {
-            PlayerTransform = FindObjectOfType<PlayerPawn>().transform;
+            PlayerTransform = FindObjectOfType<PlayerMasterController>().transform;
             IsMoving = true;
             IsSlashing = false;
         }

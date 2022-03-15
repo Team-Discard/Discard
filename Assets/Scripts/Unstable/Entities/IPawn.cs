@@ -1,15 +1,18 @@
-﻿using UnityEngine;
+﻿using EntitySystem;
+using UnityEngine;
 using Unstable.Utils;
 
 namespace Unstable.Entities
 {
-    public interface IPawn
+    public interface IPawn : IComponent
     {
         Vector3 CurrentVelocity { get; }
         Vector3 CurrentForward { get; }
         void SetTranslationFrame(TranslationFrame translationFrame);
         RotationFrame GetRotationFrame();
         void SetRotationFrame(RotationFrame rotationFrame);
+        void TickTranslation(float deltaTime);
+        void TickRotation(float deltaTime);
     }
 
     public static class PawnUtilities
