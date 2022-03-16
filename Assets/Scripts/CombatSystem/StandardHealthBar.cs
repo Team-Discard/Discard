@@ -1,18 +1,19 @@
-﻿using UnityEngine;
+﻿using EntitySystem;
+using UnityEngine;
 
 namespace CombatSystem
 {
-    public class StandardHealthBar : MonoBehaviour, IHealthBar
+    public class StandardHealthBar : IHealthBar
     {
-        [SerializeField] private float _maxHealth;
-
-        public float MaxHealth => _maxHealth;
-
+        public IEntity Entity { get; }
+        public float MaxHealth { get; }
         public float CurrentHealth { get; set; }
 
-        private void Awake()
+        public StandardHealthBar(IEntity entity, float maxHealth)
         {
-            CurrentHealth = _maxHealth;
+            MaxHealth = maxHealth;
+            CurrentHealth = maxHealth;
+            Entity = entity;
         }
     }
 }

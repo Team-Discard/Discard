@@ -1,4 +1,6 @@
-﻿namespace EntitySystem
+﻿using UnityEngine;
+
+namespace EntitySystem
 {
     public interface IEntity
     {

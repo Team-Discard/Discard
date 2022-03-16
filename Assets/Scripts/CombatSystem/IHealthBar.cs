@@ -1,6 +1,8 @@
-﻿namespace CombatSystem
+﻿using EntitySystem;
+
+namespace CombatSystem
 {
-    public interface IHealthBar
+    public interface IHealthBar : IComponent
     {
         public float MaxHealth => float.PositiveInfinity;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using CombatSystem;
+using SpawnerSystem;
 using UnityEngine;
 using Unstable;
 using Unstable.Entities;
@@ -27,5 +28,7 @@ namespace EntitySystem
         public bool AddPawn(IPawn pawn) => ReportComponentNotSupported(typeof(IPawn));
         public bool AddPawnAnimationHandler(PawnAnimationHandler animationHandler) =>
             ReportComponentNotSupported(typeof(PawnAnimationHandler));
+
+        public bool AddEnemySpawner(IEnemySpawner enemySpawner) => ReportComponentNotSupported(typeof(IEnemySpawner));
     }
 }

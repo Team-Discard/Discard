@@ -1,27 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using CombatSystem;
 using EntitySystem;
+using SpawnerSystem;
 using UnityEngine;
 using Unstable.Entities;
 
 namespace FlowControl
 {
-    public class GameFlow : MonoBehaviour, IComponentRegistry
+    public class GameFlow : MonoBehaviour
     {
         [SerializeField] private PlayerMasterController _playerController;
 
         private GameObject _currentLevelRoot;
         private LevelFlow _currentLevelFlow;
 
+        private List<EnemySpawnDesc> _enemySpawnBuffer;
+
         private void Awake()
         {
-            _pawns = new ComponentList<IPawn>();
-            _animationHandlers = new ComponentList<PawnAnimationHandler>();
-        }
-
-        private void Start()
-        {
-            _playerController.AddTo(this);
+            _enemySpawnBuffer = new List<EnemySpawnDesc>();
         }
 
         private void Update()
@@ -38,13 +36,14 @@ namespace FlowControl
             }
 
             _playerController.Tick(deltaTime);
-            
-            _pawns.Tick(deltaTime, (pawn, dt) =>
+
+            ComponentRegistry.Enemies.Tick(deltaTime, (enemy, dt) => enemy.Tick(dt));
+            ComponentRegistry.Pawns.Tick(deltaTime, (pawn, dt) =>
             {
                 pawn.TickRotation(dt);
                 pawn.TickTranslation(dt);
             });
-            
+
             if (_currentLevelFlow != null)
             {
                 _currentLevelFlow.Tick(deltaTime);
@@ -52,10 +51,9 @@ namespace FlowControl
 
             DamageManager.TickInvincibilityFrames(deltaTime);
             DamageManager.ResolveDamages();
-            
-            _animationHandlers.Tick(deltaTime, (handler, dt) => handler.Tick(dt));
-            _animationHandlers.RemoveDestroyed();
+            ComponentRegistry.AnimationHandlers.Tick(deltaTime, (handler, dt) => handler.Tick(dt));
         }
+
 
         private bool PlayerEnteredNewLevel(out GameObject levelRoot)
         {
@@ -73,18 +71,5 @@ namespace FlowControl
 
         private ComponentList<IPawn> _pawns;
         private ComponentList<PawnAnimationHandler> _animationHandlers;
-
-        bool IComponentRegistry.AddPawn(IPawn pawn)
-        {
-            _pawns.Add(pawn);
-            return true;
-        }
-
-
-        bool IComponentRegistry.AddPawnAnimationHandler(PawnAnimationHandler animationHandler)
-        {
-            _animationHandlers.Add(animationHandler);
-            return true;
-        }
     }
 }

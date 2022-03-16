@@ -77,6 +77,8 @@ namespace Unstable.Entities
             _cardUi = new TemporaryCardTextUI(_cards);
 
             _damageTaken = 0.0f;
+            
+            ComponentRegistry.AddEntity(this);
         }
 
         private void Start()

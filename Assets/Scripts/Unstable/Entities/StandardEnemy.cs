@@ -3,6 +3,7 @@ using Animancer;
 using CombatSystem;
 using EntitySystem;
 using UnityEngine;
+using Uxt;
 using Uxt.Debugging;
 using WeaponSystem;
 using WeaponSystem.Swords;
@@ -11,7 +12,6 @@ namespace Unstable.Entities
 {
     public class StandardEnemy :
         MonoBehaviour,
-        IEntity,
         IEnemy
     {
         private IPawn _pawn;
@@ -41,7 +41,7 @@ namespace Unstable.Entities
         {
             Defeated = false;
 
-            _healthBar = GetComponentInChildren<IHealthBar>();
+            _healthBar = new StandardHealthBar(this, 4);
             Debug.Assert(_healthBar != null, "Enemy implementations must have a health bar", this);
 
             _pawn = new CharacterControllerPawn(this, GetComponent<CharacterController>());
@@ -63,7 +63,7 @@ namespace Unstable.Entities
             _attackAnimationPlayed = false;
         }
 
-        public void AddTo(IComponentRegistry registry)
+        void IEntity.AddTo(IComponentRegistry registry)
         {
             registry.AddEnemy(this);
             registry.AddHealthBar(_healthBar);
