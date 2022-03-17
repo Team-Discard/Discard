@@ -1,4 +1,5 @@
 ﻿using Annotations;
+using EntitySystem;
 using UnityEngine;
 
 [Feature(FeatureTag.CameraController)]

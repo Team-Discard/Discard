@@ -148,7 +148,6 @@ namespace Unstable.Entities
                 MatchSwordToHandPosition();
             }
 
-            _animationHandler.Tick(deltaTime);
             _cardUi.Tick(deltaTime);
         }
 

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace EntitySystem
+﻿namespace EntitySystem
 {
     public interface IEntity
     {

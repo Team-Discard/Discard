@@ -43,7 +43,9 @@ namespace FlowControl
                 (spawner, dt) => spawner.TickSpawner(dt, _enemySpawnBuffer));
             foreach (var spawnDesc in _enemySpawnBuffer)
             {
-                var enemy = EntityUtils.Instantiate<IEnemy>(spawnDesc.enemyPrefab, spawnDesc.position,
+                var enemy = EntityUtils.Instantiate<IEnemy>(
+                    spawnDesc.enemyPrefab, 
+                    spawnDesc.position,
                     Quaternion.identity);
                 ComponentRegistry.AddEntity(enemy);
                 _enemies.Add(enemy);
