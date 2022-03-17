@@ -1,60 +1,51 @@
-﻿using CombatSystem;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
-using Unstable;
-using Unstable.Entities;
 
 namespace EntitySystem
 {
-    public class ComponentRegistry : IComponentRegistry
+    public class ComponentRegistry
     {
-        private static ComponentRegistry _instance;
-        
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void StaticInit()
-        {
-            _instance = new ComponentRegistry();
+        private readonly Dictionary<Type, ComponentList> _componentLists = new();
 
-            Enemies = new ComponentList<IEnemy>();
-            HealthBars = new ComponentList<IHealthBar>();
-            Pawns = new ComponentList<IPawn>();
-            AnimationHandlers = new ComponentList<PawnAnimationHandler>();
+        public ComponentRegistry AllowType<T>() where T : IComponent
+        {
+            return AllowType(typeof(T));
         }
 
-        public static void AddEntity(IEntity entity)
+        public ComponentRegistry AllowType(Type type)
         {
-            entity.AddTo(_instance);
-        }
-        
-        public static ComponentList<IEnemy> Enemies { get; private set; }
+            Debug.Assert(typeof(IComponent).IsAssignableFrom(type));
+            if (!_componentLists.ContainsKey(type))
+            {
+                var list = Activator.CreateInstance(typeof(ComponentList<>).MakeGenericType(type));
+                _componentLists.Add(type, (ComponentList)list);
+            }
 
-        bool IComponentRegistry.AddEnemy(IEnemy enemy)
-        {
-            Enemies.Add(enemy);
-            return true;
-        }
-
-        public static ComponentList<IHealthBar> HealthBars { get; private set; }
-
-        bool IComponentRegistry.AddHealthBar(IHealthBar healthBar)
-        {
-            HealthBars.Add(healthBar);
-            return true;
+            return this;
         }
 
-        public static ComponentList<IPawn> Pawns { get; private set; }
-
-        bool IComponentRegistry.AddPawn(IPawn pawn)
+        public void Add(IComponent component)
         {
-            Pawns.Add(pawn);
-            return true;
+            var type = component.GetComponentType();
+            if (!_componentLists.TryGetValue(type, out var list))
+            {
+                Debug.LogError($"'{type}' is not allowed in this component registry.");
+                return;
+            }
+            list.Add(component);
         }
 
-        public static ComponentList<PawnAnimationHandler> AnimationHandlers { get; private set; }
-
-        bool IComponentRegistry.AddPawnAnimationHandler(PawnAnimationHandler animationHandler)
+        public ComponentList<TComponent> Get<TComponent>() where TComponent : IComponent
         {
-            AnimationHandlers.Add(animationHandler);
-            return true;
+            var type = typeof(TComponent);
+            if (!_componentLists.TryGetValue(type, out var list))
+            {
+                Debug.LogError($"'{type}' is not allowed in this component registry.");
+                return null;
+            }
+
+            return (ComponentList<TComponent>)list;
         }
     }
 }

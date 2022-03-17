@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using EntitySystem;
 
 namespace CombatSystem
 {
-    public class StandardHealthModifier : IDamageTaker
+    public class StandardHealthModifier : 
+        StandardComponent<StandardHealthModifier>, 
+        IDamageTaker
     {
         // todo: this class has too many responsibilities. Maybe refactor later?
 

@@ -16,21 +16,31 @@ namespace FlowControl
             Completed
         }
 
+        private readonly ComponentRegistry _gameCompRegistry;
         private readonly ComponentList<IEnemySpawner> _enemySpawners = new();
         private readonly ComponentList<IEnemy> _enemies = new();
         private readonly List<EnemySpawnDesc> _enemySpawnBuffer = new();
 
         private LevelState _state;
-        
+
         private GameObject _rewardChest;
 
-        public LevelFlow(GameObject levelRoot)
+        public LevelFlow(ComponentRegistry gameCompRegistry, GameObject levelRoot)
         {
+            _gameCompRegistry = gameCompRegistry;
             _rewardChest = levelRoot.transform.Find("Reward Chest")?.gameObject;
-            foreach (var spawner in levelRoot.transform.GetComponentsInChildren<IEnemySpawner>())
+
+            Entity.SetUp(levelRoot, c =>
             {
-                _enemySpawners.Add(spawner);
-            }
+                if (c.IsOfComponentType(out IEnemySpawner spawner))
+                {
+                    _enemySpawners.Add(spawner);
+                }
+                else
+                {
+                    _gameCompRegistry.Add(c);
+                }
+            });
 
             _state = LevelState.InCombat;
         }
@@ -41,16 +51,26 @@ namespace FlowControl
             _enemySpawners.Tick(
                 deltaTime,
                 (spawner, dt) => spawner.TickSpawner(dt, _enemySpawnBuffer));
+            
             foreach (var spawnDesc in _enemySpawnBuffer)
             {
-                var enemy = EntityUtils.Instantiate<IEnemy>(
-                    spawnDesc.enemyPrefab, 
+                var enemyObj = Object.Instantiate(
+                    spawnDesc.enemyPrefab,
                     spawnDesc.position,
                     Quaternion.identity);
-                ComponentRegistry.AddEntity(enemy);
-                _enemies.Add(enemy);
+                
+                Entity.SetUp(enemyObj, c =>
+                {
+                    if (c.IsOfComponentType(out IEnemy enemy))
+                    {
+                        _enemies.Add(enemy);
+                    }
+                    _gameCompRegistry.Add(c);
+                });
             }
+
             _enemies.RemoveDestroyed();
+            
             if (_state == LevelState.InCombat &&
                 _enemySpawners.Count == 0 &&
                 _enemies.Count == 0)

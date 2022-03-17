@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CombatSystem;
 using EntitySystem;
 using SpawnerSystem;
 using UnityEngine;
+using Unstable;
 using Unstable.Entities;
 
 namespace FlowControl
@@ -15,10 +17,23 @@ namespace FlowControl
         private LevelFlow _currentLevelFlow;
 
         private List<EnemySpawnDesc> _enemySpawnBuffer;
+        private ComponentRegistry _componentRegistry;
 
         private void Awake()
         {
             _enemySpawnBuffer = new List<EnemySpawnDesc>();
+            _componentRegistry =
+                new ComponentRegistry()
+                    .AllowType<IEnemy>()
+                    .AllowType<IPawn>()
+                    .AllowType<PawnAnimationHandler>()
+                    .AllowType<IDamageTaker>()
+                    .AllowType<IHealthBar>();
+        }
+
+        private void Start()
+        {
+            Entity.SetUp(_playerController.gameObject, c => _componentRegistry.Add(c));
         }
 
         private void Update()
@@ -31,26 +46,34 @@ namespace FlowControl
                 Debug.Assert(_currentLevelFlow == null);
 
                 _currentLevelRoot = newLevelRoot;
-                _currentLevelFlow = new LevelFlow(newLevelRoot);
+                _currentLevelFlow = new LevelFlow(_componentRegistry, newLevelRoot);
             }
-
+            
             _playerController.Tick(deltaTime);
 
-            ComponentRegistry.Enemies.Tick(deltaTime, (enemy, dt) => enemy.Tick(dt));
-            ComponentRegistry.Pawns.Tick(deltaTime, (pawn, dt) =>
-            {
-                pawn.TickRotation(dt);
-                pawn.TickTranslation(dt);
-            });
+            _componentRegistry
+                .Get<IEnemy>()
+                .Tick(deltaTime, (enemy, dt) => enemy.Tick(dt));
 
+            _componentRegistry
+                .Get<IPawn>()
+                .Tick(deltaTime, (pawn, dt) =>
+                {
+                    pawn.TickRotation(dt);
+                    pawn.TickTranslation(dt);
+                });
+            
             if (_currentLevelFlow != null)
             {
                 _currentLevelFlow.Tick(deltaTime);
             }
 
             DamageManager.TickInvincibilityFrames(deltaTime);
-            DamageManager.ResolveDamages();
-            ComponentRegistry.AnimationHandlers.Tick(deltaTime, (handler, dt) => handler.Tick(dt));
+            DamageManager.ResolveDamages(_componentRegistry.Get<IDamageTaker>());
+
+            _componentRegistry
+                .Get<PawnAnimationHandler>()
+                .Tick(deltaTime, (handler, dt) => handler.Tick(dt));
         }
 
 

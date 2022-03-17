@@ -5,7 +5,6 @@ using CardSystem;
 using CombatSystem;
 using EntitySystem;
 using UnityEngine;
-using Unstable.Actions.GreatSwordSlash;
 using Unstable.Utils;
 using Uxt;
 using Uxt.Debugging;
@@ -16,15 +15,15 @@ namespace Unstable.Entities
 {
     [SelectionBase]
     public class PlayerMasterController :
-        MonoBehaviour,
+        MonoBehaviourComponent<PlayerMasterController>,
+        IComponentSource,
+        IInitialize,
         ITicker,
-        IDamageTaker,
-        IEntity
+        IDamageTaker
     {
         private IPawn _pawn;
         
         [SerializeField] private LocomotionController _locomotionController;
-        [SerializeField] private GreatSwordSlashAction _chargeActionPrefab;
         [SerializeField] private PlayerInputHandler _inputHandler;
         [SerializeField] private Camera _controlCamera;
         [SerializeField] private AnimancerComponent _animancer;
@@ -49,25 +48,11 @@ namespace Unstable.Entities
 
         private Sword _swordEquipped;
 
-        public bool Destroyed { get; private set; }
-        public void Destroy()
+        public override void Init()
         {
-            Destroyed = true;
-            Destroy(gameObject);
-        }
-
-        public void AddTo(IComponentRegistry registry)
-        {
-            registry.AddDamageTaker(this);
-            registry.AddPawn(_pawn);
-            registry.AddPawnAnimationHandler(_animationHandler);
-        }
-
-        private void Awake()
-        {
-            Destroyed = false;
-
-            _pawn = new CharacterControllerPawn(this, GetComponent<CharacterController>());
+            base.Init();
+            
+            _pawn = new CharacterControllerPawn(GetComponent<CharacterController>());
             
             _actionExecutor = new ActionExecutor();
             _actionEffects = new List<ActionEffects>();
@@ -75,13 +60,11 @@ namespace Unstable.Entities
             _weaponTriggers = new WeaponTriggers();
             _swordEquipped = null;
             _cardUi = new TemporaryCardTextUI(_cards);
-
-            _damageTaken = 0.0f;
             
-            ComponentRegistry.AddEntity(this);
+            _damageTaken = 0.0f;
         }
 
-        private void Start()
+        public void LateInit()
         {
             _inputHandler.onSouthButton += UseSouthCard;
             _inputHandler.onEastButton += UseEastCard;
@@ -89,6 +72,15 @@ namespace Unstable.Entities
             _inputHandler.onWestButton += UseWestCard;
         }
 
+        public IEnumerable<IComponent> AllComponents
+        {
+            get
+            {
+                yield return _animationHandler;
+                yield return _pawn;
+            }
+        }
+        
         public void Tick(float deltaTime)
         {
             _inputHandler.UpdateInput(out var inputDirection);

@@ -5,7 +5,12 @@ using UnityEngine;
 
 namespace EntitySystem
 {
-    public class ComponentList<TComponent> : IEnumerable<TComponent> where TComponent : IComponent
+    public abstract class ComponentList
+    {
+        public abstract void Add(IComponent component);
+    }
+
+    public class ComponentList<TComponent> : ComponentList, IEnumerable<TComponent> where TComponent : IComponent
     {
         private readonly List<TComponent> _list = new();
         private readonly List<TComponent> _pending = new();
@@ -19,6 +24,8 @@ namespace EntitySystem
 
         public void Tick(float deltaTime, Action<TComponent, float> tickAction, bool removeDestroyed = true)
         {
+            RemoveDestroyed();
+            
             try
             {
                 _isTicking = true;
@@ -36,6 +43,7 @@ namespace EntitySystem
             {
                 _isTicking = false;
             }
+
             _list.AddRange(_pending);
             _pending.Clear();
 
@@ -58,8 +66,13 @@ namespace EntitySystem
             }
         }
 
+        public override void Add(IComponent component)
+        {
+            Add((TComponent)component);
+        }
+
         public int Count => _list.Count;
-        
+
         public IEnumerator<TComponent> GetEnumerator()
         {
             return _list.GetEnumerator();

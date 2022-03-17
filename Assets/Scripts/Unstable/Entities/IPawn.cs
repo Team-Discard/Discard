@@ -4,7 +4,7 @@ using Unstable.Utils;
 
 namespace Unstable.Entities
 {
-    public interface IPawn : IComponent
+    public interface IPawn : IComponent<IPawn>
     {
         Vector3 CurrentVelocity { get; }
         Vector3 CurrentForward { get; }

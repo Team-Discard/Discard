@@ -9,7 +9,10 @@ using Object = UnityEngine.Object;
 
 namespace Unstable.Entities
 {
-    public class PawnAnimationHandler : ITicker, IComponent
+    public class PawnAnimationHandler :
+        StandardComponent<PawnAnimationHandler>,
+        IComponent<PawnAnimationHandler>,
+        ITicker
     {
         private const string SystemName = "Pawn Animation Handler";
 
@@ -26,8 +29,6 @@ namespace Unstable.Entities
 
         private int _freeAnimationCount = 0;
 
-        public IEntity Entity => _pawn.Entity;
-        
         public PawnAnimationHandler(
             IPawn pawn,
             AnimancerComponent animancer,
@@ -171,6 +172,5 @@ namespace Unstable.Entities
                 children[i].Speed = multiplier;
             }
         }
-
     }
 }

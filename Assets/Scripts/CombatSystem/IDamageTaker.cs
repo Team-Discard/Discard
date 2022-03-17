@@ -1,6 +1,8 @@
-﻿namespace CombatSystem
+﻿using EntitySystem;
+
+namespace CombatSystem
 {
-    public interface IDamageTaker
+    public interface IDamageTaker : IComponent<IDamageTaker>
     {
         void HandleDamage(int id, in Damage damage);
         void ReckonAllDamage();

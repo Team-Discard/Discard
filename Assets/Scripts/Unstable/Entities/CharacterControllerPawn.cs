@@ -3,22 +3,23 @@ using UnityEngine;
 
 namespace Unstable.Entities
 {
-    public class CharacterControllerPawn : IPawn
+    public class CharacterControllerPawn :
+        StandardComponent<CharacterControllerPawn>,
+        IPawn
     {
-        public IEntity Entity { get; }
-        
         private readonly CharacterController _controller;
         private TranslationFrame _translationFrame;
         private RotationFrame _rotationFrame;
         private Vector2 _horizontalVelocity;
         private Vector3 _velocity;
+        private bool _enabledInternal;
 
-        public CharacterControllerPawn(IEntity entity, CharacterController controller)
+        public CharacterControllerPawn(CharacterController controller)
         {
             _controller = controller;
-            Entity = entity;
         }
 
+        bool IComponent.EnabledInternal => true;
         public Vector3 CurrentVelocity => _velocity;
         public Vector3 CurrentForward => _controller.transform.forward;
 
@@ -34,7 +35,7 @@ namespace Unstable.Entities
         public void TickTranslation(float deltaTime)
         {
             var finalVelocity = _translationFrame.CombineVelocity(
-                deltaTime, 
+                deltaTime,
                 ref _horizontalVelocity);
             _controller.Move(finalVelocity * deltaTime);
             _velocity = _controller.velocity;

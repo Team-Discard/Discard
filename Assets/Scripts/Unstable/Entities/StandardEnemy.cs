@@ -3,7 +3,6 @@ using Animancer;
 using CombatSystem;
 using EntitySystem;
 using UnityEngine;
-using Uxt;
 using Uxt.Debugging;
 using WeaponSystem;
 using WeaponSystem.Swords;
@@ -11,8 +10,9 @@ using WeaponSystem.Swords;
 namespace Unstable.Entities
 {
     public class StandardEnemy :
-        MonoBehaviour,
-        IEnemy
+        GameObjectComponent<StandardEnemy>,
+        IEnemy,
+        IComponentSource
     {
         private IPawn _pawn;
         [SerializeField] private LocomotionController _locomotionController;
@@ -35,18 +35,12 @@ namespace Unstable.Entities
 
         private bool _attackAnimationPlayed;
 
-        public bool Defeated { get; private set; }
-
-        private void Awake()
+        public override void Init()
         {
-            Defeated = false;
+            base.Init();
 
-            _healthBar = new StandardHealthBar(this, 4);
-            Debug.Assert(_healthBar != null, "Enemy implementations must have a health bar", this);
-
-            _pawn = new CharacterControllerPawn(this, GetComponent<CharacterController>());
-            Debug.Assert(_pawn != null, "Enemy implementation must have a pawn", this);
-            
+            _healthBar = new StandardHealthBar(4);
+            _pawn = new CharacterControllerPawn(GetComponent<CharacterController>());
             _healthModifier = new StandardHealthModifier(
                 DamageLayer.Enemy,
                 0.5f,
@@ -63,22 +57,24 @@ namespace Unstable.Entities
             _attackAnimationPlayed = false;
         }
 
-        void IEntity.AddTo(IComponentRegistry registry)
+        public IEnumerable<IComponent> AllComponents
         {
-            registry.AddEnemy(this);
-            registry.AddHealthBar(_healthBar);
-            registry.AddDamageTaker(_healthModifier);
-            registry.AddPawn(_pawn);
-            registry.AddPawnAnimationHandler(_animationHandler);
+            get
+            {
+                yield return _healthBar;
+                yield return _pawn;
+                yield return _healthModifier;
+                yield return _animationHandler;
+            }
         }
-        
-        public IEntity Entity => this;
-        public bool Destroyed { get; private set; }
 
-        public void Destroy()
+        protected override void OnDestroy()
         {
-            Destroyed = true;
-            Destroy(gameObject);
+            base.OnDestroy();
+            _healthBar.Destroy();
+            _pawn.Destroy();
+            _healthModifier.Destroy();
+            _animationHandler.Destroy();
         }
 
         public void Tick(float deltaTime)
@@ -87,11 +83,10 @@ namespace Unstable.Entities
 
             if (_healthBar.CurrentHealth <= 0.0f)
             {
-                Defeated = true;
                 Destroy();
             }
 
-            if (!Defeated)
+            if (!Destroyed)
             {
                 _enemyAI.Tick(deltaTime);
             }
@@ -101,7 +96,7 @@ namespace Unstable.Entities
             var translationFrame = new TranslationFrame();
             var rotationFrame = _pawn.GetRotationFrame().PrepareNextFrame();
 
-            if (!Defeated)
+            if (!Destroyed)
             {
                 DoThingsAccordingToAI(deltaTime, ref translationFrame, ref rotationFrame);
             }

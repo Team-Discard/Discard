@@ -1,8 +1,31 @@
-﻿namespace EntitySystem
+﻿using System;
+using UnityEngine;
+
+namespace EntitySystem
 {
     public interface IComponent
     {
-        public IEntity Entity { get; }
-        public sealed bool Destroyed => Entity.Destroyed;
+        public sealed bool Enabled => !Destroyed && EnabledInternal;
+        protected bool EnabledInternal => true;
+        public bool Destroyed { get; }
+        public void Destroy();
+        public Type GetComponentType();
+
+        public sealed bool IsOfComponentType<T>(out T component) where T : IComponent
+        {
+            if (typeof(T) != GetComponentType())
+            {
+                component = default;
+                return false;
+            }
+
+            component = (T)this;
+            return true;
+        }
+    }
+
+    public interface IComponent<T> : IComponent where T : IComponent
+    {
+        Type IComponent.GetComponentType() => typeof(T);
     }
 }

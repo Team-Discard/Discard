@@ -1,4 +1,5 @@
-﻿using EntitySystem;
+﻿using System;
+using EntitySystem;
 
 namespace CombatSystem
 {
@@ -11,5 +12,7 @@ namespace CombatSystem
             get => float.PositiveInfinity;
             set => _ = value;
         }
+
+        Type IComponent.GetComponentType() => typeof(IHealthBar);
     }
 }

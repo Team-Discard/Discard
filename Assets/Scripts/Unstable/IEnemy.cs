@@ -2,8 +2,7 @@
 
 namespace Unstable
 {
-    public interface IEnemy : ITicker, IEntity, IComponent
+    public interface IEnemy : ITicker, IComponent<IEnemy>
     {
-        public bool Defeated => false;
     }
 }

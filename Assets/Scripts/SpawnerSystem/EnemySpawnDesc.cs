@@ -7,6 +7,5 @@ namespace SpawnerSystem
     {
         public GameObject enemyPrefab;
         public Vector3 position;
-        public LevelFlow levelFlow;
     }
 }
