@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Unstable.Entities
 {
     public class CharacterControllerPawn :
-        StandardComponent<CharacterControllerPawn>,
+        StandardComponent,
         IPawn
     {
         private readonly CharacterController _controller;

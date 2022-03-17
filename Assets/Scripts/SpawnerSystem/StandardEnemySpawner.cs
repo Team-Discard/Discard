@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SpawnerSystem
 {
     public class StandardEnemySpawner :
-        GameObjectComponent<StandardEnemySpawner>,
+        GameObjectComponent,
         IEnemySpawner
     {
         [SerializeField] private GameObject _prefab;

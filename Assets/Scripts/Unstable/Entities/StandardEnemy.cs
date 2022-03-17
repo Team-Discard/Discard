@@ -10,7 +10,7 @@ using WeaponSystem.Swords;
 namespace Unstable.Entities
 {
     public class StandardEnemy :
-        GameObjectComponent<StandardEnemy>,
+        GameObjectComponent,
         IEnemy,
         IComponentSource
     {

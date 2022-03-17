@@ -15,7 +15,7 @@ namespace Unstable.Entities
 {
     [SelectionBase]
     public class PlayerMasterController :
-        MonoBehaviourComponent<PlayerMasterController>,
+        MonoBehaviourComponent,
         IComponentSource,
         IInitialize,
         ITicker,

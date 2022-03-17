@@ -32,7 +32,7 @@ namespace FlowControl
 
             Entity.SetUp(levelRoot, c =>
             {
-                if (c.IsOfComponentType(out IEnemySpawner spawner))
+                if (c.IsComponentOfType(out IEnemySpawner spawner))
                 {
                     _enemySpawners.Add(spawner);
                 }
@@ -61,7 +61,7 @@ namespace FlowControl
                 
                 Entity.SetUp(enemyObj, c =>
                 {
-                    if (c.IsOfComponentType(out IEnemy enemy))
+                    if (c.IsComponentOfType(out IEnemy enemy))
                     {
                         _enemies.Add(enemy);
                     }

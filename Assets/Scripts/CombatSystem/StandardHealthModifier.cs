@@ -5,7 +5,7 @@ using EntitySystem;
 namespace CombatSystem
 {
     public class StandardHealthModifier : 
-        StandardComponent<StandardHealthModifier>, 
+        StandardComponent, 
         IDamageTaker
     {
         // todo: this class has too many responsibilities. Maybe refactor later?

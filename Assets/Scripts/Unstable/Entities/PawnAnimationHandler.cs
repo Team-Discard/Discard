@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 namespace Unstable.Entities
 {
     public class PawnAnimationHandler :
-        StandardComponent<PawnAnimationHandler>,
+        StandardComponent,
         IComponent<PawnAnimationHandler>,
         ITicker
     {

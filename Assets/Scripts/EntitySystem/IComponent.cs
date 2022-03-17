@@ -11,7 +11,7 @@ namespace EntitySystem
         public void Destroy();
         public Type GetComponentType();
 
-        public sealed bool IsOfComponentType<T>(out T component) where T : IComponent
+        public sealed bool IsComponentOfType<T>(out T component) where T : IComponent
         {
             if (typeof(T) != GetComponentType())
             {

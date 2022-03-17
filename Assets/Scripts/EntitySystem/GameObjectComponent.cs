@@ -3,16 +3,10 @@
 namespace EntitySystem
 {
     [DisallowMultipleComponent]
-    public class GameObjectComponent<T> : MonoBehaviour, IInitialize
-        where T : IComponent
+    public class GameObjectComponent : MonoBehaviour, IInitialize
     {
         protected bool EnabledInternal => isActiveAndEnabled;
         public bool Destroyed { get; private set; }
-
-        public GameObjectComponent()
-        {
-            Debug.Assert(typeof(T) == GetType(), "typeof(T) == GetType()");
-        }
 
         public virtual void Init()
         {
