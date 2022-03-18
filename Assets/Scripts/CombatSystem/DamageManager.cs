@@ -108,6 +108,7 @@ namespace CombatSystem
             return false;
         }
 
+        /// A buffer that stores invincibility frames records to remove
         private static List<IDamageTaker> _removeInvincibilityFrameBuffer;
 
         /// <summary>
