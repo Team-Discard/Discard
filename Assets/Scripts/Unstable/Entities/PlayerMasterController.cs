@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ActionSystem;
 using Animancer;
 using CardSystem;
+using CharacterSystem;
 using CombatSystem;
 using EntitySystem;
 using UnityEngine;
@@ -87,11 +89,11 @@ namespace Unstable.Entities
             var controlDirection = _controlCamera.transform.forward.ConvertXz2Xy();
             var translationFrame = new TranslationFrame();
             var rotationFrame = _pawn.GetRotationFrame().PrepareNextFrame();
-            _actionExecutor.Execute(deltaTime, _actionEffects);
+            _actionExecutor.Execute(deltaTime);
 
             if (!AnyActionDisablesFreeMovement(_actionEffects))
             {
-                _locomotionController.ApplyDirectionalMovement(
+                LocomotionController.ApplyDirectionalMovement(
                     Time.deltaTime, inputDirection, controlDirection, _maxSpeed,
                     ref translationFrame, ref rotationFrame);
             }

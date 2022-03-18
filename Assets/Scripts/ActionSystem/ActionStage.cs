@@ -1,4 +1,4 @@
-﻿namespace Unstable.Actions
+﻿namespace ActionSystem
 {
     public enum ActionStage
     {

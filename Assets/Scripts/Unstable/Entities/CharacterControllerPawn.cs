@@ -1,4 +1,5 @@
-﻿using EntitySystem;
+﻿using CharacterSystem;
+using EntitySystem;
 using UnityEngine;
 
 namespace Unstable.Entities

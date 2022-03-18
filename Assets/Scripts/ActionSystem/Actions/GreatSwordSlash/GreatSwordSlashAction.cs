@@ -2,13 +2,14 @@
 using Animancer;
 using CombatSystem;
 using UnityEngine;
+using Unstable;
 using Unstable.Entities;
 using Unstable.Utils;
 using Uxt;
 using WeaponSystem;
 using WeaponSystem.Swords;
 
-namespace Unstable.Actions.GreatSwordSlash
+namespace ActionSystem.Actions.GreatSwordSlash
 {
     public class GreatSwordSlashAction : MonoBehaviour, IAction
     {

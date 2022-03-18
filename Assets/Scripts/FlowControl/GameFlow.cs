@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using ActionSystem;
+using CharacterSystem;
 using CombatSystem;
 using EntitySystem;
+using PlayerSystem;
 using SpawnerSystem;
 using UnityEngine;
 using Unstable;
 using Unstable.Entities;
+using WeaponSystem;
 
 namespace FlowControl
 {
     public class GameFlow : MonoBehaviour
     {
-        [SerializeField] private PlayerMasterController _playerController;
+        [SerializeField] private StandardPlayer _player;
 
         private GameObject _currentLevelRoot;
         private LevelFlow _currentLevelFlow;
@@ -28,12 +31,17 @@ namespace FlowControl
                     .AllowType<IPawn>()
                     .AllowType<PawnAnimationHandler>()
                     .AllowType<IDamageTaker>()
-                    .AllowType<IHealthBar>();
+                    .AllowType<IHealthBar>()
+                    .AllowType<IPawnController>()
+                    .AllowType<IWeaponEquipHandler>()
+                    .AllowType<IActionExecutor>();
         }
 
         private void Start()
         {
-            Entity.SetUp(_playerController.gameObject, c => _componentRegistry.Add(c));
+            Entity.SetUp(
+                _player.gameObject,
+                c => _componentRegistry.Add(c));
         }
 
         private void Update()
@@ -48,8 +56,14 @@ namespace FlowControl
                 _currentLevelRoot = newLevelRoot;
                 _currentLevelFlow = new LevelFlow(_componentRegistry, newLevelRoot);
             }
-            
-            _playerController.Tick(deltaTime);
+
+            _componentRegistry
+                .Get<IActionExecutor>()
+                .Tick(deltaTime, (ae, dt) => ae.Execute(dt));
+
+            _componentRegistry
+                .Get<IPawnController>()
+                .Tick(deltaTime, (pc, dt) => pc.Tick(dt));
 
             _componentRegistry
                 .Get<IEnemy>()
@@ -62,7 +76,7 @@ namespace FlowControl
                     pawn.TickRotation(dt);
                     pawn.TickTranslation(dt);
                 });
-            
+
             if (_currentLevelFlow != null)
             {
                 _currentLevelFlow.Tick(deltaTime);
@@ -70,6 +84,10 @@ namespace FlowControl
 
             DamageManager.TickInvincibilityFrames(deltaTime);
             DamageManager.ResolveDamages(_componentRegistry.Get<IDamageTaker>());
+
+            _componentRegistry
+                .Get<IWeaponEquipHandler>()
+                .Tick(deltaTime, (eh, dt) => eh.Tick(dt));
 
             _componentRegistry
                 .Get<PawnAnimationHandler>()

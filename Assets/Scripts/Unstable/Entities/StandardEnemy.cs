@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Animancer;
+using CharacterSystem;
 using CombatSystem;
 using EntitySystem;
 using UnityEngine;

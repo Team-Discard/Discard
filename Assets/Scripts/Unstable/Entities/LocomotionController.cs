@@ -38,7 +38,7 @@ namespace Unstable.Entities
             UpdateGravity(_fallAndPushConfig, ref translationFrame);
         }
 
-        public void ApplyDirectionalMovement(
+        public static void ApplyDirectionalMovement(
             float deltaTime, 
             Vector2 inputDirection,
             Vector2 controlDirection,

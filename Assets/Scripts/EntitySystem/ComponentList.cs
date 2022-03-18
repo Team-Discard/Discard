@@ -53,6 +53,7 @@ namespace EntitySystem
 
                 foreach (var comp in _list)
                 {
+                    if (!comp.Enabled) continue;
                     tickAction.Invoke(comp, deltaTime);
                 }
             }

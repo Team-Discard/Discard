@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Animancer;
+using CharacterSystem;
 using EntitySystem;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -123,6 +124,8 @@ namespace Unstable.Entities
 
         public void Tick(float deltaTime)
         {
+            SetAbsoluteSpeed(_pawn.CalculateForwardSpeed());
+            
             var hasNonLocomotionAnimation = _activeActions.Count > 0 || _freeAnimationCount > 0;
 
             if (!_hasActionAnimations && hasNonLocomotionAnimation)

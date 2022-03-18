@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using PlayerSystem;
+using UnityEngine;
 
 namespace Unstable.Entities
 {
@@ -14,7 +15,7 @@ namespace Unstable.Entities
 
         private void Awake()
         {
-            PlayerTransform = FindObjectOfType<PlayerMasterController>().transform;
+            PlayerTransform = FindObjectOfType<StandardPlayer>().transform;
             IsMoving = true;
             IsSlashing = false;
         }

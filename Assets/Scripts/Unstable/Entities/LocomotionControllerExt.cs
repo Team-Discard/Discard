@@ -23,7 +23,7 @@ namespace Unstable.Entities
             var controlDirection = (moveTowardsParams.TargetPos - moveTowardsParams.MyPos).ConvertXz2Xy();
             var maxSpeed = moveTowardsParams.Speed;
 
-            locomotionController.ApplyDirectionalMovement(
+            LocomotionController.ApplyDirectionalMovement(
                 deltaTime,
                 inputDirection,
                 controlDirection,

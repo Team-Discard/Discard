@@ -3,7 +3,7 @@
 namespace EntitySystem
 {
     [DisallowMultipleComponent]
-    public class GameObjectComponent : MonoBehaviour, IInitialize
+    public abstract class GameObjectComponent : MonoBehaviour, IInitialize
     {
         protected bool EnabledInternal => isActiveAndEnabled;
         public bool Destroyed { get; private set; }
