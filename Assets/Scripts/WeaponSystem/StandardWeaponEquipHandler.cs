@@ -1,5 +1,6 @@
 ﻿using EntitySystem;
 using UnityEngine;
+using Unstable.Entities;
 using Uxt;
 using WeaponSystem.Swords;
 
@@ -18,11 +19,14 @@ namespace WeaponSystem
 
         private readonly Transform _swordHandleBottom;
         private readonly Transform _swordHandleTop;
+        private readonly PawnAnimationHandler _pawnAnimationHandler;
 
-        public StandardWeaponEquipHandler(Transform swordHandleBottom, Transform swordHandleTop)
+        public StandardWeaponEquipHandler(Transform swordHandleBottom, Transform swordHandleTop,
+            PawnAnimationHandler animationHandler)
         {
             _swordHandleBottom = swordHandleBottom;
             _swordHandleTop = swordHandleTop;
+            _pawnAnimationHandler = animationHandler;
         }
 
         public Sword EquipSword(SwordEquipDesc parameters)
@@ -41,6 +45,10 @@ namespace WeaponSystem
 
             _equippedSword = Object.Instantiate(parameters.SwordPrefab);
             _lastEquippedPrefab = parameters.SwordPrefab;
+            
+            // to:billy todo: the animation should be stored inside the weapon itself, not the equip params
+            // also weapon equip handler should not know about animations...
+            _pawnAnimationHandler.SetLocomotionAnimations(parameters.LocomotionAnimations);
 
             return _equippedSword;
         }

@@ -29,14 +29,14 @@ namespace ActionSystem.Actions.GreatSwordSlash
         private bool _executionClipDone;
 
         private RootMotionFrame _rootMotionFrame;
-        private WeaponTriggers _weaponTriggers;
+        private IWeaponEquipHandler _weaponEquipHandler;
 
         public bool Completed { get; private set; }
 
         public void Init(DependencyBag bag)
         {
-            bag.Get(out _animationHandler);
-            bag.Get(out _weaponTriggers);
+            _animationHandler = bag.ForceGet<PawnAnimationHandler>();
+            _weaponEquipHandler = bag.ForceGet<IWeaponEquipHandler>();
             _rootMotionFrame = bag.ForceGet<RootMotionFrame>();
 
             _stage = ActionStage.Preparation;
@@ -52,6 +52,8 @@ namespace ActionSystem.Actions.GreatSwordSlash
 
         public void Begin()
         {
+            _rootMotionFrame.BeginAccumulateDisplacement(this);
+
             _animationHandler.BeginPlayActionAnimation(this);
             _animationHandler.PlayActionAnimation(
                 this,
@@ -61,6 +63,8 @@ namespace ActionSystem.Actions.GreatSwordSlash
 
         public void Finish()
         {
+            _rootMotionFrame.EndAccumulateDisplacement(this);
+
             if (_swordInstance != null)
             {
                 Debug.Assert(_swordDamageId != -1);
@@ -129,22 +133,17 @@ namespace ActionSystem.Actions.GreatSwordSlash
                     () => { _executionClipDone = true; });
             }
 
-            _weaponTriggers.EquipSword.InvokeDelayed(
-                new SwordEquipDesc
-                {
-                    LocomotionAnimations = _locomotionAnimationSet,
-                    SwordPrefab = _swordPrefab
-                },
-                sword =>
-                {
-                    _swordInstance = sword;
-                    _swordDamageId = DamageManager.SetDamage(new Damage
-                    {
-                        BaseAmount = 47,
-                        // todo: change this to dynamically bind to sword damage volumes
-                        DamageBox = sword.DamageVolumes[0]
-                    });
-                });
+            _swordInstance = _weaponEquipHandler.EquipSword(new SwordEquipDesc
+            {
+                LocomotionAnimations = _locomotionAnimationSet,
+                SwordPrefab = _swordPrefab
+            });
+            _swordDamageId = DamageManager.SetDamage(new Damage
+            {
+                BaseAmount = 47,
+                // to:billy todo: change this to dynamically bind to sword damage volumes
+                DamageBox = _swordInstance.DamageVolumes[0]
+            });
         }
     }
 }

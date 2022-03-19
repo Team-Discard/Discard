@@ -22,6 +22,11 @@ namespace EntitySystem
             component = (T)this;
             return true;
         }
+
+        public sealed bool IsComponentOfType<T>() where T : IComponent
+        {
+            return IsComponentOfType(out T _);
+        }
     }
 
     public interface IComponent<T> : IComponent where T : IComponent

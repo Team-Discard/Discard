@@ -40,11 +40,13 @@ namespace PlayerSystem
                 LocomotionController.ApplyDirectionalMovement(
                     deltaTime, inputDirection, controlDirection, _maxSpeed,
                     ref translationFrame, ref rotationFrame);
-                translationFrame.TargetVerticalVelocity -= 5.0f;
-
-                _pawn.SetTranslationFrame(translationFrame);
-                _pawn.SetRotationFrame(rotationFrame);
             }
+            
+            translationFrame.TargetVerticalVelocity -= 5.0f;
+            LocomotionController.ApplyActionEffects(deltaTime, _actionExecutor.Effects, ref translationFrame);
+            
+            _pawn.SetTranslationFrame(translationFrame);
+            _pawn.SetRotationFrame(rotationFrame);
         }
     }
 }

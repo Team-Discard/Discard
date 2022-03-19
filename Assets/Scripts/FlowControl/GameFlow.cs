@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ActionSystem;
+using CardSystem;
 using CharacterSystem;
 using CombatSystem;
 using EntitySystem;
@@ -34,14 +35,23 @@ namespace FlowControl
                     .AllowType<IHealthBar>()
                     .AllowType<IPawnController>()
                     .AllowType<IWeaponEquipHandler>()
-                    .AllowType<IActionExecutor>();
+                    .AllowType<IActionExecutor>()
+                    .AllowType<IPrototypeComponent>();
         }
 
         private void Start()
         {
             Entity.SetUp(
                 _player.gameObject,
-                c => _componentRegistry.Add(c));
+                c =>
+                {
+                    if (c.IsComponentOfType<ICardUser>())
+                    {
+                        return;
+                    }
+                    
+                    _componentRegistry.Add(c);
+                });
         }
 
         private void Update()
@@ -92,6 +102,10 @@ namespace FlowControl
             _componentRegistry
                 .Get<PawnAnimationHandler>()
                 .Tick(deltaTime, (handler, dt) => handler.Tick(dt));
+            
+            _componentRegistry
+                .Get<IPrototypeComponent>()
+                .Tick(deltaTime, (p, dt) => p.Tick(dt));
         }
 
 

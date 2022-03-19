@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CardSystem;
+using EntitySystem;
 using UnityEngine;
 using Uxt;
 using Uxt.Debugging;
@@ -7,9 +8,10 @@ using Uxt.Debugging;
 namespace Unstable.Entities
 {
     /// <summary>
-    /// Displays what cards the players have with on screen text
+    /// Displays what cards the players have with on screen text <br/>
+    /// to:billy PROTOTYPE REPLACE IT
     /// </summary>
-    public class TemporaryCardTextUI
+    public class TemporaryCardTextUI : StandardComponent, IPrototypeComponent
     {
         private static readonly List<string> _buttonNames = new ()
         {
