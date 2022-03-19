@@ -48,7 +48,6 @@ namespace ActionSystem.Actions.Charge
             }
 
             effects.HorizontalVelocity = _speed * _direction;
-            effects.DamageVolumes = _damageVolumes;
 
             return effects;
         }

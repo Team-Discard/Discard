@@ -128,12 +128,12 @@ namespace Unstable.Entities
             {
                 if (!_attackAnimationPlayed)
                 {
-                    _rootMotionFrame.BeginAccumulateDisplacement();
+                    _rootMotionFrame.BeginAccumulateDisplacement(this);
                     _attackAnimationPlayed = true;
                     var damageId = DamageManager.SetDamage(new Damage
                     {
                         BaseAmount = 1.0f,
-                        DamageBox = _sword.DamageVolumes[0],
+                        DamageBox = _sword.DamageBox,
                         Layer = DamageLayer.Enemy
                     });
                     _animationHandler.PlayAnimation(
@@ -142,13 +142,13 @@ namespace Unstable.Entities
                         {
                             _enemyAI.IsSlashing = false;
                             _attackAnimationPlayed = false;
-                            _rootMotionFrame.EndAccumulateDisplacement();
+                            _rootMotionFrame.EndAccumulateDisplacement(this);
                             DamageManager.ClearDamage(ref damageId);
                         });
                 }
                 else
                 {
-                    translationFrame.Displacement += _rootMotionFrame.ConsumeDisplacement();
+                    translationFrame.Displacement += _rootMotionFrame.ConsumeDisplacement(this);
                 }
 
                 var angleDiff = Vector3.SignedAngle(

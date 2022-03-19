@@ -2,23 +2,40 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Uxt;
+using Uxt.Debugging;
 
 namespace Unstable.Entities
 {
     public class RootMotionFrame : MonoBehaviour
     {
         private Animator _animator;
-        private bool _accumulatesDisplacement;
-        private Vector3 _displacement;
 
         private Dictionary<object, Vector3> _displacements;
 
+#if UNITY_ASSERTIONS
+        private AssociativeCounter<object> _frameCount;
+#endif
+
         public Vector3 Velocity { get; private set; }
 
+        private Vector3 _temp;
+        
         private void Awake()
         {
+            _temp = Vector3.zero;
+            
+            _animator = GetComponent<Animator>();
+            _animator.applyRootMotion = true;
+            
             _displacements = new Dictionary<object, Vector3>();
             _animator = GetComponent<Animator>();
+
+            _displacementKeyBuffer = new List<object>();
+
+#if UNITY_ASSERTIONS
+            _frameCount = new AssociativeCounter<object>();
+#endif
         }
 
         [Obsolete("Use the parameterized version instead")]
@@ -55,7 +72,11 @@ namespace Unstable.Entities
             if (!_displacements.Remove(key))
             {
                 Debug.LogError($"Key '{key}' is NOT accumulating displacement on this root motion frame.");
+                return;
             }
+#if UNITY_ASSERTIONS
+            _frameCount.SetKey(key, 0);
+#endif
         }
 
         public Vector3 ConsumeDisplacement(object key)
@@ -68,28 +89,37 @@ namespace Unstable.Entities
 
             var ret = _displacements[key];
             _displacements[key] = Vector3.zero;
+#if UNITY_ASSERTIONS
+            _frameCount.SetKey(key, 0);
+#endif
             return ret;
         }
+
+        private List<object> _displacementKeyBuffer;
 
         private void OnAnimatorMove()
         {
             var deltaPosition = _animator.deltaPosition;
+            
+            _temp += deltaPosition;
+            DebugMessageManager.AddOnScreen($"distance: {_temp}", 77, Color.red, 0.1f);
+
             var deltaTime = Mathf.Max(0.001f, Time.deltaTime);
             Velocity = deltaPosition / deltaTime;
-            if (_accumulatesDisplacement)
-            {
-                _displacement += deltaPosition;
-            }
-        }
 
-        private void OnDestroy()
-        {
-            if (_displacements.Count > 0)
+            _displacements.Keys.ToList(_displacementKeyBuffer);
+            
+            foreach (var key in _displacementKeyBuffer)
             {
-                Debug.LogError("There are still objects depending on this root motion frame when it is destroyed. " +
-                               "Possible bug?");
-                var objectNameList = string.Join("\n", _displacements.Keys.Select(k => k.ToString()));
-                Debug.LogError($"Affected objects:\n{objectNameList}");
+                _displacements[key] += deltaPosition;
+#if UNITY_ASSERTIONS
+                if (_frameCount.IncrementKey(key) >= 2)
+                {
+                    Debug.LogError("You have been accumulating displacement on this root motion frame " +
+                                   "for more than 2 frames, but haven't consumed it. Possible bug?");
+                    _displacements[key] = deltaPosition;
+                }
+#endif
             }
         }
     }

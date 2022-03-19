@@ -49,7 +49,11 @@ namespace FlowControl
                     {
                         return;
                     }
-                    
+
+                    if (c.IsComponentOfType<IPawn>())
+                    {
+                        print("Pawn!");
+                    }
                     _componentRegistry.Add(c);
                 });
         }

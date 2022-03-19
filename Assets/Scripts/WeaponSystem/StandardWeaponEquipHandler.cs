@@ -46,9 +46,7 @@ namespace WeaponSystem
             _equippedSword = Object.Instantiate(parameters.SwordPrefab);
             _lastEquippedPrefab = parameters.SwordPrefab;
             
-            // to:billy todo: the animation should be stored inside the weapon itself, not the equip params
-            // also weapon equip handler should not know about animations...
-            _pawnAnimationHandler.SetLocomotionAnimations(parameters.LocomotionAnimations);
+            _pawnAnimationHandler.SetLocomotionAnimations(_equippedSword.LocomotionAnimations);
 
             return _equippedSword;
         }
