@@ -4,18 +4,14 @@ namespace InteractionSystem
 {
     public class InteractableCharacter : MonoBehaviour, IInteractable
     {
+        // for now, set these in inspector
         [SerializeField] private int interactableObjId;
         [SerializeField] private int interactionPriority;
+        [SerializeField] private InteractionType interactionType;
 
         public int InteractableObjId => interactableObjId;
         public int InteractionPriority => interactionPriority;
-
-        private void Start()
-        {
-            // subscribe to interaction related events
-            InteractionEventSystem.SubscribeToOnStartInteraction(MyStartInteraction);
-            InteractionEventSystem.SubscribeToOnEndInteraction(MyEndInteraction);
-        }
+        public InteractionType Type => interactionType;
 
         private void OnEnable()
         {

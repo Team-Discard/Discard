@@ -4,6 +4,7 @@ namespace InteractionSystem
 {
     public static class InteractionEventSystem
     {
+        // bool variable that ONLY allow a single interaction with an interactable at a time
         private static bool _IsInteracting = false;
         
         // on start interaction event
