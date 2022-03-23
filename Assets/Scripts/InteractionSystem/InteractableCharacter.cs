@@ -11,7 +11,11 @@ namespace InteractionSystem
 
         public int InteractableObjId => interactableObjId;
         public int InteractionPriority => interactionPriority;
+        
+        // not used yet, having this in case we want to do something about it
         public InteractionType Type => interactionType;
+
+        public GameObject MyGameObject => gameObject;
 
         private void OnEnable()
         {
@@ -29,12 +33,12 @@ namespace InteractionSystem
 
         public void StartInteraction()
         {
-            InteractionEventSystem.TriggerOnStartInteraction(interactableObjId);
+            InteractionEventSystem.TriggerOnStartInteraction(interactableObjId, Type);
         }
         
         public void EndInteraction()
         {
-            InteractionEventSystem.TriggerOnEndInteraction(interactableObjId);
+            InteractionEventSystem.TriggerOnEndInteraction(interactableObjId, Type);
         }
 
         private void MyStartInteraction(int id)
