@@ -15,16 +15,6 @@ MonoBehaviour:
   ScenesTabs:
   - pin: 0
     path:
-    - Assets/Scenes/SampleScene.unity
-    guid:
-    - 9fc0d4010bbf28b4594072e72b8655ab
-  - pin: 0
-    path:
-    - Assets/animations/Souls-like Essentials/Demo.unity
-    guid:
-    - f31dd43d2bfe28941bcb97a21f3049fc
-  - pin: 0
-    path:
     - Assets/Scenes/GeorgeDemoScene.unity
     guid:
     - e549b1aad50ad7041b2306463ef07f2e
@@ -33,6 +23,16 @@ MonoBehaviour:
     - 
     guid:
     - 
+  - pin: 0
+    path:
+    - Assets/Scenes/SampleScene.unity
+    guid:
+    - 9fc0d4010bbf28b4594072e72b8655ab
+  - pin: 0
+    path:
+    - Assets/animations/Souls-like Essentials/Demo.unity
+    guid:
+    - f31dd43d2bfe28941bcb97a21f3049fc
   - pin: 0
     path:
     - Assets/Plugins/Animancer/Examples/10 Animation Jobs/01 Two Bone IK/Two Bone
