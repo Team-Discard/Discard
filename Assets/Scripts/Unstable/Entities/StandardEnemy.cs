@@ -13,7 +13,7 @@ namespace Unstable.Entities
     public class StandardEnemy :
         GameObjectComponent,
         IEnemy,
-        IComponentSource
+        IRegisterComponent
     {
         private IPawn _pawn;
         [SerializeField] private LocomotionController _locomotionController;
@@ -54,24 +54,24 @@ namespace Unstable.Entities
                 _pawn,
                 GetComponentInChildren<AnimancerComponent>(),
                 _defaultAnimationSet);
-            
+
             _attackAnimationPlayed = false;
         }
 
-        public IEnumerable<IComponent> AllComponents
+        public void RegisterSelf(IComponentRegistry registry)
         {
-            get
-            {
-                yield return _healthBar;
-                yield return _pawn;
-                yield return _healthModifier;
-                yield return _animationHandler;
-            }
+            registry.AddComponent(this);
+
+            registry.AddComponent(_healthBar);
+            registry.AddComponent(_pawn);
+            registry.AddComponent(_healthModifier);
+            registry.AddComponent(_animationHandler);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
+
             _healthBar.Destroy();
             _pawn.Destroy();
             _healthModifier.Destroy();
@@ -101,7 +101,7 @@ namespace Unstable.Entities
             {
                 DoThingsAccordingToAI(deltaTime, ref translationFrame, ref rotationFrame);
             }
-            
+
             _locomotionController.ApplyGravity(deltaTime, ref translationFrame);
             _pawn.SetTranslationFrame(translationFrame);
             _pawn.SetRotationFrame(rotationFrame);

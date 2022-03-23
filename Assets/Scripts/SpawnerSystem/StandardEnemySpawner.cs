@@ -6,7 +6,8 @@ namespace SpawnerSystem
 {
     public class StandardEnemySpawner :
         GameObjectComponent,
-        IEnemySpawner
+        IEnemySpawner,
+        IRegisterComponent
     {
         [SerializeField] private GameObject _prefab;
 
@@ -18,6 +19,12 @@ namespace SpawnerSystem
                 position = transform.position
             });
             Destroy();
+        }
+
+
+        public void RegisterSelf(IComponentRegistry registry)
+        {
+            registry.AddComponent(this);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace FlowControl
             _gameCompRegistry = gameCompRegistry;
             _rewardChest = levelRoot.transform.Find("Reward Chest")?.gameObject;
 
-            Entity.SetUp(levelRoot, c =>
+            Entity.SetUp(levelRoot.transform, c =>
             {
                 if (c.IsComponentOfType(out IEnemySpawner spawner))
                 {
@@ -59,7 +59,7 @@ namespace FlowControl
                     spawnDesc.position,
                     Quaternion.identity);
                 
-                Entity.SetUp(enemyObj, c =>
+                Entity.SetUp(enemyObj.transform, c =>
                 {
                     if (c.IsComponentOfType(out IEnemy enemy))
                     {

@@ -13,7 +13,7 @@ namespace PlayerSystem
 {
     [RequireComponent(typeof(CharacterController))]
     public class StandardPlayer :
-        GameObjectComponent, IComponentSource
+        GameObjectComponent, IRegisterComponent
     {
         [SerializeField] private StandardWeaponLocomotionAnimationSet _noWeaponAnimationSet;
 
@@ -67,25 +67,23 @@ namespace PlayerSystem
             {
                 _weaponEquipHandler,
                 _animationHandler,
-                _rootMotionFrame
+                _rootMotionFrame,
+                transform
             };
 
             _cardButtonHandler = new CardButtonHandler(_inputHandler, _cardUser, cardUseDependencies);
         }
 
-        public IEnumerable<IComponent> AllComponents
+        public void RegisterSelf(IComponentRegistry registry)
         {
-            get
-            {
-                yield return _pawn;
-                yield return _actionExecutor;
-                yield return _animationHandler;
-                yield return _weaponEquipHandler;
-                yield return _controller;
-                yield return _cardUi;
-                yield return _cardUser;
-                yield return _cardButtonHandler;
-            }
+            registry.AddComponent(_pawn);
+            registry.AddComponent(_actionExecutor);
+            registry.AddComponent(_animationHandler);
+            registry.AddComponent(_weaponEquipHandler);
+            registry.AddComponent(_controller);
+            registry.AddComponent(_cardUi);
+            registry.AddComponent(_cardUser);
+            registry.AddComponent(_cardButtonHandler);
         }
 
         protected override void OnDestroy()

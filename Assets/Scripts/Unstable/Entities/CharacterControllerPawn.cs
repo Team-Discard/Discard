@@ -38,7 +38,8 @@ namespace Unstable.Entities
             var finalVelocity = _translationFrame.CombineVelocity(
                 deltaTime,
                 ref _horizontalVelocity);
-            _controller.Move(finalVelocity * deltaTime + _translationFrame.Displacement);
+            _controller.Move(_translationFrame.Displacement);
+            _controller.Move(finalVelocity * deltaTime);
             _velocity = _controller.velocity;
         }
 
