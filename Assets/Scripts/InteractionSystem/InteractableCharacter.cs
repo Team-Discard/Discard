@@ -5,8 +5,10 @@ namespace InteractionSystem
     public class InteractableCharacter : MonoBehaviour, IInteractable
     {
         [SerializeField] private int interactableObjId;
+        [SerializeField] private int interactionPriority;
 
         public int InteractableObjId => interactableObjId;
+        public int InteractionPriority => interactionPriority;
 
         private void Start()
         {
