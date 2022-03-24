@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ActionSystem;
 using CardSystem;
 using CharacterSystem;
 using CombatSystem;
 using EntitySystem;
+using InteractionSystem;
 using PlayerSystem;
 using SpawnerSystem;
 using UnityEngine;
@@ -21,6 +23,9 @@ namespace FlowControl
         private LevelFlow _currentLevelFlow;
 
         private List<EnemySpawnDesc> _enemySpawnBuffer;
+        private List<IInteractable> _interactables; // list of interactables, optimally should be handled by each level but it is here for now
+        [SerializeField] private float interactableScanRange;
+        private IInteractable _focusedInteractionTarget;
         private ComponentRegistry _componentRegistry;
 
         private void Awake()
@@ -52,6 +57,15 @@ namespace FlowControl
                     
                     _componentRegistry.Add(c);
                 });
+            
+            // fill in the interactables
+            _interactables = GetAllInteractables();
+            
+            // log all interactable object names
+            foreach (var i in _interactables)
+            {
+                Debug.Log(i.MyGameObject.name);
+            }
         }
 
         private void Update()
@@ -106,6 +120,9 @@ namespace FlowControl
             _componentRegistry
                 .Get<IPrototypeComponent>()
                 .Tick(deltaTime, (p, dt) => p.Tick(dt));
+            
+            // Scan for interactable
+            _focusedInteractionTarget = ScanForClosestInteractableWithInRange(interactableScanRange);
         }
 
 
@@ -121,6 +138,40 @@ namespace FlowControl
             }
 
             return levelRoot != _currentLevelRoot;
+        }
+
+        private static List<IInteractable> GetAllInteractables()
+        {
+            var interactablesFound = FindObjectsOfType<MonoBehaviour>(true).OfType<IInteractable>();
+
+            return interactablesFound.ToList();
+        }
+
+        private IInteractable ScanForClosestInteractableWithInRange(float range)
+        {
+            IInteractable retVal = null;
+            var closestDistanceSq = Mathf.Infinity;
+            
+            // find the closest interactable within range
+            foreach (var interactable in _interactables)
+            {
+                var directionToTarget =
+                    interactable.MyGameObject.transform.position - _player.gameObject.transform.position;
+                
+                var dSqrToTarget = directionToTarget.sqrMagnitude;
+
+                if (dSqrToTarget < closestDistanceSq)
+                {
+                    closestDistanceSq = dSqrToTarget;
+
+                    if (dSqrToTarget <= range * range)
+                    {
+                        retVal = interactable;
+                    }
+                }
+            }
+
+            return retVal;
         }
 
         private ComponentList<IPawn> _pawns;

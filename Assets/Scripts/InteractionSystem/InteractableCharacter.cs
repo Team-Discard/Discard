@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace InteractionSystem
@@ -40,10 +41,27 @@ namespace InteractionSystem
         {
             InteractionEventSystem.TriggerOnEndInteraction(interactableObjId, Type);
         }
+        
+        // in case we want to execute a coroutine for interaction, not used now
+        private IEnumerator ExecuteInteractionCoroutine(int id)
+        {
+            if (interactableObjId != id)
+            {
+                yield return null;
+            }
+            
+            yield return null;
+        }
+        
+        // force stop all running coroutines on this script when interaction ends, now used now
+        private void ForceStopAllCoroutines()
+        {
+            StopAllCoroutines();
+        }
 
         private void MyStartInteraction(int id)
         {
-            // if object called on is not myself, do nothing
+            // if interactable object called on is not myself, do nothing
             if (interactableObjId != id)
             {
                 return;
@@ -52,7 +70,7 @@ namespace InteractionSystem
 
         private void MyEndInteraction(int id)
         {
-            // if object called on is not myself, do nothing
+            // if interactable object called on is not myself, do nothing
             if (interactableObjId != id)
             {
                 return;
