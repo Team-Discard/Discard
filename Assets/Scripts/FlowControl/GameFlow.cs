@@ -139,14 +139,16 @@ namespace FlowControl
 
             return levelRoot != _currentLevelRoot;
         }
-
+        
+        // function to get all interactable objects in the scene (inactive ones included)
         private static List<IInteractable> GetAllInteractables()
         {
             var interactablesFound = FindObjectsOfType<MonoBehaviour>(true).OfType<IInteractable>();
 
             return interactablesFound.ToList();
         }
-
+        
+        // function to find the closest interactable object within certain range of the player
         private IInteractable ScanForClosestInteractableWithInRange(float range)
         {
             IInteractable retVal = null;
