@@ -35,11 +35,12 @@ namespace Unstable.Entities
             {
                 return;
             }
+
             UpdateGravity(_fallAndPushConfig, ref translationFrame);
         }
 
         public static void ApplyDirectionalMovement(
-            float deltaTime, 
+            float deltaTime,
             Vector2 inputDirection,
             Vector2 controlDirection,
             float maxSpeed,
@@ -59,14 +60,15 @@ namespace Unstable.Entities
             var speed = Mathf.InverseLerp(0.0f, 1.0f, inputDirection.magnitude) * maxSpeed;
             var forward = controlDirection.normalized;
             var right = Vector3.Cross(Vector3.up, forward.ConvertXy2Xz()).ConvertXz2Xy();
-            var moveDirection = inputDirection.x * right +  inputDirection.y * forward;
+            var moveDirection = inputDirection.x * right + inputDirection.y * forward;
             moveDirection.Normalize();
-            
+
             translationFrame.TargetHorizontalVelocity += speed * moveDirection;
             if (!Mathf.Approximately(moveDirection.sqrMagnitude, 0))
             {
                 rotationFrame.TargetForwardDirection = moveDirection;
             }
+
             rotationFrame.Responsiveness = 15.0f;
         }
 
@@ -96,6 +98,7 @@ namespace Unstable.Entities
         private static void ExtractTranslation(ActionEffects effect, ref TranslationFrame translationFrame)
         {
             translationFrame.TargetHorizontalVelocity += effect.HorizontalVelocity;
+            translationFrame.Displacement += effect.Displacement;
         }
     }
 }

@@ -141,7 +141,16 @@ namespace Unstable.Entities
             _locomotionAnimationDirty = false;
             _hasActionAnimations = hasNonLocomotionAnimation;
 
-            SyncLocomotionAnimationSpeed(deltaTime);
+            // we only do this when there is only locomotion animations present
+            // because other animations may be used in root motion and cause a
+            // infinite feedback loop to speed up the animation.
+            // to:billy bug-prevention: move the character controller twice, first time with displacement and
+            // second time with velocity * deltaTime, and use the second one to calculate velocity.
+            // really the velocity of the character controller is only applicable in locomotion...
+            if (!_hasActionAnimations)
+            {
+                SyncLocomotionAnimationSpeed(deltaTime);
+            }
         }
 
         private void SyncLocomotionAnimationSpeed(float deltaTime)

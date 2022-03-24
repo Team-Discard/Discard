@@ -78,6 +78,8 @@ namespace EntitySystem
         public void Add(TComponent component)
         {
             Debug.Assert(component != null, "component != null");
+            Debug.Assert(!_pending.Contains(component) && !_list.Contains(component));
+            
             if (_isTicking)
             {
                 _pending.Add(component);

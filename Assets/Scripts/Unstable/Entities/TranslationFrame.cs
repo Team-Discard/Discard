@@ -28,13 +28,13 @@ namespace Unstable.Entities
         {
             var finalVelocity = Vector3.zero;
             horizontalVelocity = Vector2.Lerp(horizontalVelocity, TargetHorizontalVelocity,
-                15f * deltaTime);
+                velocityResponsiveness * deltaTime);
 
             finalVelocity += horizontalVelocity.ConvertXy2Xz();
             finalVelocity += ImmediateHorizontalVelocity.ConvertXy2Xz();
             finalVelocity += TargetVerticalVelocity * Vector3.up;
 
-            return finalVelocity + Displacement;
+            return finalVelocity;
         }
     }
 }

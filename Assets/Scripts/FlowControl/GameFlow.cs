@@ -46,14 +46,18 @@ namespace FlowControl
         private void Start()
         {
             Entity.SetUp(
-                _player.gameObject,
+                _player.transform,
                 c =>
                 {
                     if (c.IsComponentOfType<ICardUser>())
                     {
                         return;
                     }
-                    
+
+                    if (c.IsComponentOfType<IPawn>())
+                    {
+                        print("Pawn!");
+                    }
                     _componentRegistry.Add(c);
                 });
             

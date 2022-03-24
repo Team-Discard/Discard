@@ -52,8 +52,6 @@ namespace ActionSystem.Actions.GreatSwordSlash
 
         public void Begin()
         {
-            _rootMotionFrame.BeginAccumulateDisplacement(this);
-
             _animationHandler.BeginPlayActionAnimation(this);
             _animationHandler.PlayActionAnimation(
                 this,
@@ -63,8 +61,6 @@ namespace ActionSystem.Actions.GreatSwordSlash
 
         public void Finish()
         {
-            _rootMotionFrame.EndAccumulateDisplacement(this);
-
             if (_swordInstance != null)
             {
                 Debug.Assert(_swordDamageId != -1);
@@ -106,17 +102,13 @@ namespace ActionSystem.Actions.GreatSwordSlash
         private void TickExecution(float deltaTime, ref ActionEffects effects)
         {
             effects.Interruptable = false;
-            effects.HorizontalVelocity += _rootMotionFrame.Velocity.ConvertXz2Xy();
-
-            if (_swordInstance != null)
-            {
-                effects.DamageVolumes = _swordInstance.DamageVolumes;
-            }
+            effects.Displacement += _rootMotionFrame.ConsumeDisplacement(this);
 
             if (_executionClipDone)
             {
                 Completed = true;
                 _animationHandler.EndPlayActionAnimation(this);
+                _rootMotionFrame.EndAccumulateDisplacement(this);
             }
         }
 
@@ -131,6 +123,7 @@ namespace ActionSystem.Actions.GreatSwordSlash
                     this,
                     _executionClip,
                     () => { _executionClipDone = true; });
+                _rootMotionFrame.BeginAccumulateDisplacement(this);
             }
 
             _swordInstance = _weaponEquipHandler.EquipSword(new SwordEquipDesc
@@ -141,8 +134,7 @@ namespace ActionSystem.Actions.GreatSwordSlash
             _swordDamageId = DamageManager.SetDamage(new Damage
             {
                 BaseAmount = 47,
-                // to:billy todo: change this to dynamically bind to sword damage volumes
-                DamageBox = _swordInstance.DamageVolumes[0]
+                DamageBox = _swordInstance.DamageBox
             });
         }
     }

@@ -1,41 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
+using Uxt;
 
 namespace EntitySystem
 {
     public static class Entity
     {
-        public static void SetUp(GameObject root, Action<IComponent> visitComponent)
+        private class ComponentVisitor : IComponentRegistry
         {
-            var init = root.GetComponentsInChildren<IInitialize>(true);
-            var components = root.GetComponentsInChildren<IComponent>(true);
-            var src = root.GetComponentsInChildren<IComponentSource>(true);
+            private readonly Action<IComponent> _visitFunc;
 
-            foreach (var i in init)
+            public ComponentVisitor([NotNull] Action<IComponent> visitFunc)
             {
-                i.Init();
+                _visitFunc = visitFunc;
             }
 
-            if (visitComponent != null)
-            {
-                foreach (var c in components)
-                {
-                    visitComponent(c);
-                }
+            public void AddComponent(IComponent component) => _visitFunc.Invoke(component);
+        }
 
-                foreach (var s in src)
-                {
-                    foreach (var c in s.AllComponents)
-                    {
-                        visitComponent(c);
-                    }
-                }
-            }
+        public static IComponentRegistry CreateRegistryFromAction([NotNull] Action<IComponent> visitFunc)
+        {
+            return new ComponentVisitor(visitFunc);
+        }
 
-            foreach (var i in init)
+        public static void SetUp(Transform root, IComponentRegistry registry)
+        {
+            var rcs = new List<IRegisterComponent>();
+            root.GetRootComponents(rcs);
+            foreach (var rc in rcs)
             {
-                i.LateInit();
+                var i = rc as IInitialize;
+                i?.Init();
+                rc.RegisterSelf(registry);
+                i?.LateInit();
             }
+        }
+
+        public static void SetUp(Transform root, [NotNull] Action<IComponent> visitFunc)
+        {
+            SetUp(root, CreateRegistryFromAction(visitFunc));
         }
     }
 }

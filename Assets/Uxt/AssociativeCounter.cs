@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Uxt
 {
@@ -7,16 +8,15 @@ namespace Uxt
     {
         private readonly Dictionary<TKey, int> _dict = new Dictionary<TKey, int>();
 
-        public void IncrementKey(TKey key)
+        public int IncrementKey(TKey key)
         {
             if (_dict.ContainsKey(key))
             {
-                ++_dict[key];
+                return ++_dict[key];
             }
-            else
-            {
-                _dict[key] = 1;
-            }
+
+            _dict[key] = 1;
+            return 1;
         }
 
         public bool DecrementKey(TKey key)
@@ -35,6 +35,19 @@ namespace Uxt
             return false;
         }
 
+        public void SetKey(TKey key, int value)
+        {
+            Debug.Assert(value >= 0);
+            if (value == 0)
+            {
+                _dict.Remove(key);
+            }
+            else
+            {
+                _dict[key] = value;
+            }
+        }
+        
         public int CountKey(TKey key)
         {
             if (_dict.TryGetValue(key, out var count))
