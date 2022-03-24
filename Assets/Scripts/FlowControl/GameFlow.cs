@@ -25,7 +25,6 @@ namespace FlowControl
         private List<EnemySpawnDesc> _enemySpawnBuffer;
         private List<IInteractable> _interactables; // list of interactables, optimally should be handled by each level but it is here for now
         [SerializeField] private float interactableScanRange;
-        private IInteractable _focusedInteractionTarget;
         private ComponentRegistry _componentRegistry;
 
         private void Awake()
@@ -121,8 +120,9 @@ namespace FlowControl
                 .Get<IPrototypeComponent>()
                 .Tick(deltaTime, (p, dt) => p.Tick(dt));
             
-            // Scan for interactable
-            _focusedInteractionTarget = ScanForClosestInteractableWithInRange(interactableScanRange);
+            // Scan for interactable and set it in interactionManager
+            InteractionManager.Instance.SetCurrentFocusedInteractable(ScanForClosestInteractableWithInRange(interactableScanRange));
+            InteractionManager.Instance.DisplayInteractionHintIfNeeded();
         }
 
 
@@ -164,6 +164,7 @@ namespace FlowControl
                 {
                     closestDistanceSq = dSqrToTarget;
 
+                    // if close enough to both player and screen center, set the interactable to be return value
                     if (dSqrToTarget <= range * range)
                     {
                         retVal = interactable;
