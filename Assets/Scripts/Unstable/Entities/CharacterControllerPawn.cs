@@ -38,9 +38,23 @@ namespace Unstable.Entities
             var finalVelocity = _translation.CombineVelocity(
                 deltaTime,
                 ref _horizontalVelocity);
+
+            // First move by displacement. This is not factored into velocity
+            // calculation because this can be supplied from animation but animation
+            // speed is also determined by velocity
+            // to:billy todo: make a separate field in Translation to account for displacement not affecting effective final velocity.
             _controller.Move(_translation.Displacement);
+            var transform = _controller.transform;
+            var oldPosition = transform.position;
+
+            // Then move by velocity
+            // This factors into velocity calculation
             _controller.Move(finalVelocity * deltaTime);
-            _velocity = _controller.velocity;
+
+            // ReSharper disable once Unity.InefficientPropertyAccess
+            var deltaPos = transform.position - oldPosition;
+
+            _velocity = deltaTime > 1e-5 ? deltaPos / deltaTime : Vector3.zero;
         }
 
         public void TickRotation(float deltaTime)

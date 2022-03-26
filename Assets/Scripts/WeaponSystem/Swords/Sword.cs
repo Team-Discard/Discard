@@ -5,7 +5,6 @@ using Unstable;
 
 namespace WeaponSystem.Swords
 {
-    // to:billy consider changing weapon system to use components as well
     public sealed class Sword : MonoBehaviour
     {
         [SerializeField] private Transform _swordCenter;
