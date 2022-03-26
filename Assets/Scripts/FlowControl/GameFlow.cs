@@ -74,7 +74,7 @@ namespace FlowControl
 
             _componentRegistry
                 .Get<IActionExecutorComponent>()
-                .Tick(deltaTime, (ae, dt) => ae.Execute(dt));
+                .Tick(deltaTime, (ae, dt) => ae.ExecuteAllActions(dt));
 
             _componentRegistry
                 .Get<IPawnControllerComponent>()

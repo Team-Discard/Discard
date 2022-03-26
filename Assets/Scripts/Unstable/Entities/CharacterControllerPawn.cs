@@ -9,8 +9,8 @@ namespace Unstable.Entities
         IPawnComponent
     {
         private readonly CharacterController _controller;
-        private TranslationFrame _translationFrame;
-        private RotationFrame _rotationFrame;
+        private Translation _translation;
+        private Rotation _rotation;
         private Vector2 _horizontalVelocity;
         private Vector3 _velocity;
         private bool _enabledInternal;
@@ -24,21 +24,21 @@ namespace Unstable.Entities
         public Vector3 CurrentVelocity => _velocity;
         public Vector3 CurrentForward => _controller.transform.forward;
 
-        public void SetTranslationFrame(TranslationFrame translationFrame) =>
-            _translationFrame.UpdateAndAccumulate(translationFrame);
+        public void SetTranslationFrame(Translation translation) =>
+            _translation.UpdateAndAccumulate(translation);
 
-        public RotationFrame GetRotationFrame() =>
-            _rotationFrame;
+        public Rotation GetRotationFrame() =>
+            _rotation;
 
-        public void SetRotationFrame(RotationFrame rotationFrame) =>
-            _rotationFrame = rotationFrame;
+        public void SetRotationFrame(Rotation rotation) =>
+            _rotation = rotation;
 
         public void TickTranslation(float deltaTime)
         {
-            var finalVelocity = _translationFrame.CombineVelocity(
+            var finalVelocity = _translation.CombineVelocity(
                 deltaTime,
                 ref _horizontalVelocity);
-            _controller.Move(_translationFrame.Displacement);
+            _controller.Move(_translation.Displacement);
             _controller.Move(finalVelocity * deltaTime);
             _velocity = _controller.velocity;
         }
@@ -46,7 +46,7 @@ namespace Unstable.Entities
         public void TickRotation(float deltaTime)
         {
             var transform = _controller.transform;
-            transform.rotation = _rotationFrame.Apply(deltaTime, transform.rotation);
+            transform.rotation = _rotation.Apply(deltaTime, transform.rotation);
         }
     }
 }

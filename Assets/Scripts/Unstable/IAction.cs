@@ -5,19 +5,22 @@ namespace Unstable
 {
     public interface IAction
     {
-        ActionEffects Execute(float deltaTime);
+        public void Execute(float deltaTime);
 
-        bool Completed { get; }
+        public bool Completed { get; }
 
-        void Begin()
+        public IReadOnlyFrameData<Translation> TranslationFrame => FrameData<Translation>.NoValue;
+        public IReadOnlyFrameData<Rotation> RotationFrame => FrameData<Rotation>.NoValue;
+
+        public void Begin()
         {
         }
 
-        void Finish()
+        public void Finish()
         {
         }
 
-        void Init(DependencyBag bag)
+        public void Init(DependencyBag bag)
         {
         }
     }

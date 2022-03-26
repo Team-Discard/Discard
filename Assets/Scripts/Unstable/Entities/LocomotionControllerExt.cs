@@ -16,8 +16,8 @@ namespace Unstable.Entities
             this LocomotionController locomotionController,
             float deltaTime,
             in MoveTowardsParams moveTowardsParams,
-            ref TranslationFrame translationFrame,
-            ref RotationFrame rotationFrame)
+            ref Translation translation,
+            ref Rotation rotation)
         {
             var inputDirection = Vector2.up;
             var controlDirection = (moveTowardsParams.TargetPos - moveTowardsParams.MyPos).ConvertXz2Xy();
@@ -28,8 +28,8 @@ namespace Unstable.Entities
                 inputDirection,
                 controlDirection,
                 maxSpeed,
-                ref translationFrame,
-                ref rotationFrame);
+                ref translation,
+                ref rotation);
         }
     }
 }

@@ -79,7 +79,7 @@ namespace Unstable.Entities
 
             DebugMessageManager.AddOnScreen($"Attack playing: {_enemyAI.IsMoving}", 42, Color.blue, 0.0f);
 
-            var translationFrame = new TranslationFrame();
+            var translationFrame = new Translation();
             var rotationFrame = _pawn.GetRotationFrame().PrepareNextFrame();
 
             if (!Destroyed)
@@ -93,8 +93,8 @@ namespace Unstable.Entities
             _animationHandler.SetAbsoluteSpeed(_pawn.CalculateForwardSpeed());
         }
 
-        private void DoThingsAccordingToAI(float deltaTime, ref TranslationFrame translationFrame,
-            ref RotationFrame rotationFrame)
+        private void DoThingsAccordingToAI(float deltaTime, ref Translation translation,
+            ref Rotation rotation)
         {
             if (_enemyAI.IsMoving)
             {
@@ -106,8 +106,8 @@ namespace Unstable.Entities
                 };
                 _locomotionController.MoveTowards(
                     deltaTime, moveTowardsParams,
-                    ref translationFrame,
-                    ref rotationFrame);
+                    ref translation,
+                    ref rotation);
             }
             else
             {
@@ -133,7 +133,7 @@ namespace Unstable.Entities
                 }
                 else
                 {
-                    translationFrame.Displacement += _rootMotionFrame.ConsumeDisplacement(this);
+                    translation.Displacement += _rootMotionFrame.ConsumeDisplacement(this);
                 }
 
                 var angleDiff = Vector3.SignedAngle(
@@ -145,7 +145,7 @@ namespace Unstable.Entities
                 {
                     var deltaAngle = Mathf.MoveTowardsAngle(0.0f, angleDiff,
                         _maxAngularVelocityDuringAttack * Time.deltaTime);
-                    rotationFrame.AddOverrideLinearRotation(deltaAngle);
+                    rotation.AddOverrideLinearRotation(deltaAngle);
                 }
             }
         }

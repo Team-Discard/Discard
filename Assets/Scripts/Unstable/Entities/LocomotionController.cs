@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ActionSystem;
 using UnityEngine;
 using Unstable.Utils;
 
@@ -20,23 +21,23 @@ namespace Unstable.Entities
             _useGravity = true;
         }
 
-        public static void ApplyActionEffects(float deltaTime, IReadOnlyList<ActionEffects> effects,
-            ref TranslationFrame translationFrame)
+        public static void ApplyActionEffects(float deltaTime, IActionExecutorComponent executor,
+            ref Translation translation)
         {
-            foreach (var effect in effects)
+            if (executor.TranslationFrame.TryReadValue(out var actionTranslation))
             {
-                ExtractTranslation(effect, ref translationFrame);
+                translation += actionTranslation;
             }
         }
 
-        public void ApplyGravity(float deltaTime, ref TranslationFrame translationFrame)
+        public void ApplyGravity(float deltaTime, ref Translation translation)
         {
             if (!_useGravity)
             {
                 return;
             }
 
-            UpdateGravity(_fallAndPushConfig, ref translationFrame);
+            UpdateGravity(_fallAndPushConfig, ref translation);
         }
 
         public static void ApplyDirectionalMovement(
@@ -44,8 +45,8 @@ namespace Unstable.Entities
             Vector2 inputDirection,
             Vector2 controlDirection,
             float maxSpeed,
-            ref TranslationFrame translationFrame,
-            ref RotationFrame rotationFrame)
+            ref Translation translation,
+            ref Rotation rotation)
         {
             if (controlDirection.magnitude < 0.01f)
             {
@@ -63,16 +64,16 @@ namespace Unstable.Entities
             var moveDirection = inputDirection.x * right + inputDirection.y * forward;
             moveDirection.Normalize();
 
-            translationFrame.TargetHorizontalVelocity += speed * moveDirection;
+            translation.TargetHorizontalVelocity += speed * moveDirection;
             if (!Mathf.Approximately(moveDirection.sqrMagnitude, 0))
             {
-                rotationFrame.TargetForwardDirection = moveDirection;
+                rotation.TargetForwardDirection = moveDirection;
             }
 
-            rotationFrame.Responsiveness = 15.0f;
+            rotation.Responsiveness = 15.0f;
         }
 
-        private static void UpdateGravity(FallAndPushConfig config, ref TranslationFrame translationFrame)
+        private static void UpdateGravity(FallAndPushConfig config, ref Translation translation)
         {
             var fallAndPush = FallAndPush.Calculate(
                 config.GetOrigin(),
@@ -84,7 +85,7 @@ namespace Unstable.Entities
             {
                 case FallAndPushType.Fall:
                 {
-                    translationFrame.TargetVerticalVelocity += -10.0f;
+                    translation.TargetVerticalVelocity += -10.0f;
                     break;
                 }
                 case FallAndPushType.Push:
@@ -93,12 +94,6 @@ namespace Unstable.Entities
                     break;
                 }
             }
-        }
-
-        private static void ExtractTranslation(ActionEffects effect, ref TranslationFrame translationFrame)
-        {
-            translationFrame.TargetHorizontalVelocity += effect.HorizontalVelocity;
-            translationFrame.Displacement += effect.Displacement;
         }
     }
 }

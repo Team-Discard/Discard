@@ -2,6 +2,7 @@
 using CombatSystem;
 using UnityEngine;
 using Unstable;
+using Unstable.Entities;
 using Uxt;
 
 namespace ActionSystem.Actions.Charge
@@ -17,12 +18,16 @@ namespace ActionSystem.Actions.Charge
         private Transform _transform;
         private Vector2 _direction;
 
+        private FrameData<Translation> _translationFrame;
+        public IReadOnlyFrameData<Translation> TranslationFrame => _translationFrame;
+
         public bool Completed { get; private set; }
 
         private void Awake()
         {
             _speed = CalculateSpeed();
             _transform = null;
+            _translationFrame = new FrameData<Translation>();
             Completed = false;
         }
 
@@ -32,13 +37,13 @@ namespace ActionSystem.Actions.Charge
             return _distance / _duration;
         }
 
-        public ActionEffects Execute(float deltaTime)
+        public void Execute(float deltaTime)
         {
             var effects = new ActionEffects();
 
             if (Completed)
             {
-                return effects;
+                return;
             }
 
             _duration -= deltaTime;
@@ -47,11 +52,11 @@ namespace ActionSystem.Actions.Charge
                 Completed = true;
             }
 
-            effects.HorizontalVelocity = _speed * _direction;
-
-            return effects;
+            var translation = _translationFrame.ForceReadValue();
+            translation.TargetHorizontalVelocity += _speed * _direction;
+            _translationFrame.SetValue(translation);
         }
-        
+
         public void Init(DependencyBag bag)
         {
             _transform = bag.ForceGet<Transform>();

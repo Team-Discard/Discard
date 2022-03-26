@@ -33,6 +33,9 @@ namespace ActionSystem.Actions.GreatSwordSlash
 
         public bool Completed { get; private set; }
 
+        private FrameData<Translation> _translationFrame;
+        public IReadOnlyFrameData<Translation> TranslationFrame => _translationFrame;
+
         public void Init(DependencyBag bag)
         {
             _animationHandler = bag.ForceGet<PawnAnimationHandler>();
@@ -48,6 +51,7 @@ namespace ActionSystem.Actions.GreatSwordSlash
         private void Awake()
         {
             _swordInstance = null;
+            _translationFrame = new FrameData<Translation>();
         }
 
         public void Begin()
@@ -70,7 +74,7 @@ namespace ActionSystem.Actions.GreatSwordSlash
             }
         }
 
-        public ActionEffects Execute(float deltaTime)
+        public void Execute(float deltaTime)
         {
             var effects = new ActionEffects
             {
@@ -80,12 +84,12 @@ namespace ActionSystem.Actions.GreatSwordSlash
             {
                 case ActionStage.Preparation:
                 {
-                    TickPreparation(deltaTime, ref effects);
+                    TickPreparation(deltaTime);
                     break;
                 }
                 case ActionStage.Execution:
                 {
-                    TickExecution(deltaTime, ref effects);
+                    TickExecution(deltaTime);
                     break;
                 }
                 case ActionStage.Recovery:
@@ -95,14 +99,15 @@ namespace ActionSystem.Actions.GreatSwordSlash
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            return effects;
         }
 
-        private void TickExecution(float deltaTime, ref ActionEffects effects)
+        private void TickExecution(float deltaTime)
         {
-            effects.Interruptable = false;
-            effects.Displacement += _rootMotionFrame.ConsumeDisplacement(this);
+            var translation = _translationFrame.ForceReadValue();
+            {
+                translation.Displacement += _rootMotionFrame.ConsumeDisplacement(this);            
+            }
+            _translationFrame.SetValue(translation);
 
             if (_executionClipDone)
             {
@@ -112,9 +117,8 @@ namespace ActionSystem.Actions.GreatSwordSlash
             }
         }
 
-        private void TickPreparation(float deltaTime, ref ActionEffects effects)
+        private void TickPreparation(float deltaTime)
         {
-            effects.Interruptable = true;
             _preparationTimer -= deltaTime;
             if (_preparationClipDone || _preparationTimer <= 0)
             {

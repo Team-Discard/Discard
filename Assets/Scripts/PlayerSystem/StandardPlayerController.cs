@@ -29,10 +29,10 @@ namespace PlayerSystem
         public void Tick(float deltaTime)
         {
             var rotationFrame = _pawn.GetRotationFrame().PrepareNextFrame();
-            var translationFrame = new TranslationFrame();
+            var translationFrame = new Translation();
 
             var controlDirection = _controlCameraTransform.transform.forward.ConvertXz2Xy();
-            var hasControl = _actionExecutor.Effects.All(e => e.FreeMovementEnabled);
+            var hasControl = !_actionExecutor.TranslationFrame.HasValue && !_actionExecutor.RotationFrame.HasValue;
 
             if (hasControl)
             {
@@ -43,7 +43,7 @@ namespace PlayerSystem
             }
             
             translationFrame.TargetVerticalVelocity -= 5.0f;
-            LocomotionController.ApplyActionEffects(deltaTime, _actionExecutor.Effects, ref translationFrame);
+            LocomotionController.ApplyActionEffects(deltaTime, _actionExecutor, ref translationFrame);
             
             _pawn.SetTranslationFrame(translationFrame);
             _pawn.SetRotationFrame(rotationFrame);

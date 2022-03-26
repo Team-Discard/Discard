@@ -20,7 +20,7 @@ MonoBehaviour:
     - rid: 7770666985652224000
       type: {class: LinearMixerTransition, ns: Animancer, asm: Animancer}
       data:
-        _FadeDuration: 0.25
+        _FadeDuration: 0.5
         _Events:
           _NormalizedTimes: []
           _Callbacks: []
