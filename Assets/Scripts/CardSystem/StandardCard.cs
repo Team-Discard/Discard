@@ -2,6 +2,7 @@
 using Unstable;
 using Unstable.Entities;
 using Uxt;
+using Uxt.InterModuleCommunication;
 
 namespace CardSystem
 {

@@ -4,6 +4,7 @@ using ActionSystem;
 using EntitySystem;
 using UnityEngine;
 using Uxt;
+using Uxt.InterModuleCommunication;
 
 namespace CardSystem
 {

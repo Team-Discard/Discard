@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Uxt
+namespace Uxt.InterModuleCommunication
 {
     /// <summary>
     /// Represents data that is only valid for a specific number of frames (default is 1)

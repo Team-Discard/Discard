@@ -4,6 +4,7 @@ using UnityEngine;
 using Unstable;
 using Unstable.Entities;
 using Uxt;
+using Uxt.InterModuleCommunication;
 
 namespace ActionSystem.Actions.Charge
 {

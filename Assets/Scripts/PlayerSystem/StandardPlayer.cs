@@ -8,6 +8,7 @@ using EntitySystem;
 using UnityEngine;
 using Unstable.Entities;
 using Uxt;
+using Uxt.InterModuleCommunication;
 using WeaponSystem;
 
 namespace PlayerSystem

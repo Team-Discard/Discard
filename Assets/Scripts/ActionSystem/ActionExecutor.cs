@@ -6,6 +6,7 @@ using Unstable;
 using Unstable.Entities;
 using Uxt;
 using Uxt.Debugging;
+using Uxt.InterModuleCommunication;
 
 namespace ActionSystem
 {

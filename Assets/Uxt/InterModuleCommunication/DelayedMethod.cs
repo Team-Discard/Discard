@@ -1,7 +1,6 @@
 ﻿using System;
-using JetBrains.Annotations;
 
-namespace Uxt
+namespace Uxt.InterModuleCommunication
 {
     public class DelayedMethod<TParam, TRet>
     {

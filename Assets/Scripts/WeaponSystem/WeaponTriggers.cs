@@ -1,4 +1,5 @@
 ﻿using Uxt;
+using Uxt.InterModuleCommunication;
 using WeaponSystem.Swords;
 
 namespace WeaponSystem
