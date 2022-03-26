@@ -13,7 +13,7 @@ namespace Unstable.Entities
     public class StandardEnemy :
         GameObjectComponent,
         IEnemyComponent,
-        IRegisterComponent
+        IRegisterSelf
     {
         private IPawnComponent _pawn;
         [SerializeField] private LocomotionController _locomotionController;
@@ -25,7 +25,7 @@ namespace Unstable.Entities
         [SerializeField] private float _maxAngularVelocityDuringAttack;
         [SerializeField] private float _rotationThreshold;
         [SerializeField] private Sword _sword;
-        private IHealthBar _healthBar;
+        private IHealthBarComponent _healthBar;
         [SerializeField] private StandardDamageTaker _damageTaker;
 
         private PawnAnimationHandler _animationHandler;

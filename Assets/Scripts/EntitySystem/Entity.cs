@@ -27,7 +27,7 @@ namespace EntitySystem
 
         public static void SetUp(Transform root, IComponentRegistry registry)
         {
-            var rcs = new List<IRegisterComponent>();
+            var rcs = new List<IRegisterSelf>();
             root.GetRootComponents(rcs);
             foreach (var rc in rcs)
             {

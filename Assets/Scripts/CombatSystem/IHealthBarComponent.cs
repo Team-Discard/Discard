@@ -4,7 +4,7 @@ using Unstable;
 
 namespace CombatSystem
 {
-    public interface IHealthBar : IComponent, ITicker
+    public interface IHealthBarComponent : IComponent, ITicker
     {
         public float MaxHealth => float.PositiveInfinity;
 
@@ -14,6 +14,6 @@ namespace CombatSystem
             set => _ = value;
         }
 
-        Type IComponent.GetComponentType() => typeof(IHealthBar);
+        Type IComponent.GetComponentType() => typeof(IHealthBarComponent);
     }
 }

@@ -2,19 +2,17 @@
 
 namespace CombatSystem
 {
-    public class StandardHealthBar : IHealthBar
+    public class StandardHealthBar : IHealthBarComponent
     {
         public bool Destroyed { get; private set; }
         public float MaxHealth { get; }
         public float CurrentHealth { get; set; }
 
-        private readonly StandardDamageTaker _damageTaker;
-
-        public StandardHealthBar(float maxHealth, StandardDamageTaker damageTaker)
+        // to:billy todo: remove dependency on damage taker. Make damage taker reference health bar instead
+        public StandardHealthBar(float maxHealth, StandardDamageTaker damageTaker = null)
         {
             MaxHealth = maxHealth;
             CurrentHealth = maxHealth;
-            _damageTaker = damageTaker;
         }
 
         public void Destroy()
@@ -24,12 +22,10 @@ namespace CombatSystem
 
         bool IComponent.EnabledInternal => true;
 
+        // to:billy todo: remove this tick function
+
         public void Tick(float deltaTime)
         {
-            while (_damageTaker.TryDequeueDamage(out var dmg))
-            {
-                CurrentHealth -= dmg.BaseAmount;
-            }
         }
     }
 }

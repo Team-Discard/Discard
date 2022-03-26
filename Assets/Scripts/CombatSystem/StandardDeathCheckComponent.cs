@@ -7,10 +7,10 @@ namespace CombatSystem
         StandardComponent,
         IDeathCheckComponent
     {
-        private readonly IHealthBar _healthBar;
+        private readonly IHealthBarComponent _healthBar;
         private readonly GameObject _objectToDestroy;
 
-        public StandardDeathCheckComponent(IHealthBar healthBar, GameObject objectToDestroy)
+        public StandardDeathCheckComponent(IHealthBarComponent healthBar, GameObject objectToDestroy)
         {
             _healthBar = healthBar;
             _objectToDestroy = objectToDestroy;

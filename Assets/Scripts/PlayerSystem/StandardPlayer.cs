@@ -15,7 +15,7 @@ namespace PlayerSystem
 {
     [RequireComponent(typeof(CharacterController))]
     public class StandardPlayer :
-        GameObjectComponent, IRegisterComponent
+        GameObjectComponent, IRegisterSelf
     {
         [SerializeField] private StandardWeaponLocomotionAnimationSet _noWeaponAnimationSet;
 

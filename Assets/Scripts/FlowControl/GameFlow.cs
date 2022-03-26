@@ -32,7 +32,7 @@ namespace FlowControl
                     .AllowType<IPawnComponent>()
                     .AllowType<PawnAnimationHandler>()
                     .AllowType<IDamageTakerComponent>()
-                    .AllowType<IHealthBar>()
+                    .AllowType<IHealthBarComponent>()
                     .AllowType<IPawnControllerComponent>()
                     .AllowType<IWeaponEquipComponent>()
                     .AllowType<IActionExecutorComponent>()
@@ -101,7 +101,7 @@ namespace FlowControl
             DamageManager.ResolveDamages(_componentRegistry.Get<IDamageTakerComponent>());
 
             _componentRegistry
-                .Get<IHealthBar>()
+                .Get<IHealthBarComponent>()
                 .Tick(deltaTime, (hb, dt) => hb.Tick(dt));
             
             _componentRegistry

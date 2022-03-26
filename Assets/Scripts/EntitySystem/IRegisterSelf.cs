@@ -2,7 +2,7 @@
 
 namespace EntitySystem
 {
-    public interface IRegisterComponent
+    public interface IRegisterSelf
     {
         public void RegisterSelf(IComponentRegistry registry);
     }
