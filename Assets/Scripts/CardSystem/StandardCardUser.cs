@@ -7,12 +7,12 @@ using Uxt;
 
 namespace CardSystem
 {
-    public class StandardCardUser : StandardComponent, ICardUser
+    public class StandardCardUser : StandardComponent, ICardUserComponent
     {
-        private readonly IActionExecutor _actionExecutor;
+        private readonly IActionExecutorComponent _actionExecutor;
         private readonly List<Card> _hand;
 
-        public StandardCardUser(IActionExecutor actionExecutor, IEnumerable<Card> hand)
+        public StandardCardUser(IActionExecutorComponent actionExecutor, IEnumerable<Card> hand)
         {
             _actionExecutor = actionExecutor;
             _hand = hand.ToList();

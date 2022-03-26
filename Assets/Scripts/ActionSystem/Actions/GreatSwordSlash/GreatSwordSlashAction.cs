@@ -29,14 +29,14 @@ namespace ActionSystem.Actions.GreatSwordSlash
         private bool _executionClipDone;
 
         private RootMotionFrame _rootMotionFrame;
-        private IWeaponEquipHandler _weaponEquipHandler;
+        private IWeaponEquipComponent _weaponEquipHandler;
 
         public bool Completed { get; private set; }
 
         public void Init(DependencyBag bag)
         {
             _animationHandler = bag.ForceGet<PawnAnimationHandler>();
-            _weaponEquipHandler = bag.ForceGet<IWeaponEquipHandler>();
+            _weaponEquipHandler = bag.ForceGet<IWeaponEquipComponent>();
             _rootMotionFrame = bag.ForceGet<RootMotionFrame>();
 
             _stage = ActionStage.Preparation;

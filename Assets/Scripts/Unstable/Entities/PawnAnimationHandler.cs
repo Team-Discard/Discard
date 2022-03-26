@@ -17,7 +17,7 @@ namespace Unstable.Entities
     {
         private const string SystemName = "Pawn Animation Handler";
 
-        private readonly IPawn _pawn;
+        private readonly IPawnComponent _pawn;
         private readonly AnimancerComponent _animancer;
         private readonly List<IAction> _activeActions = new();
         private bool _hasActionAnimations;
@@ -31,7 +31,7 @@ namespace Unstable.Entities
         private int _freeAnimationCount = 0;
 
         public PawnAnimationHandler(
-            IPawn pawn,
+            IPawnComponent pawn,
             AnimancerComponent animancer,
             [NotNull] StandardWeaponLocomotionAnimationSet startingLocomotionAnimationSet)
         {

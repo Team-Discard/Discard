@@ -18,7 +18,7 @@ namespace CombatSystem
         private class DamageRecord
         {
             public Damage damage;
-            public Dictionary<IDamageTaker, float> invincibilityFrames = new();
+            public Dictionary<IDamageTakerComponent, float> invincibilityFrames = new();
         }
 
         private static Dictionary<int, DamageRecord> _damages;
@@ -29,7 +29,7 @@ namespace CombatSystem
         {
             _damages = new Dictionary<int, DamageRecord>();
             _nextDamageId = 0;
-            _removeInvincibilityFrameBuffer = new List<IDamageTaker>();
+            _removeInvincibilityFrameBuffer = new List<IDamageTakerComponent>();
         }
 
         public static void GetAllDamages(List<DamageIdPair> outList)
@@ -92,7 +92,7 @@ namespace CombatSystem
         /// <param name="newFrame">The amount of time to ignore the damage</param>
         /// <returns>False if <paramref name="damageTaker"/> is already invincible to <paramref name="dmgId"/>
         /// or <paramref name="dmgId"/> is invalid. True otherwise.</returns>
-        public static bool SetInvincibilityFrame(IDamageTaker damageTaker, int dmgId, float newFrame)
+        public static bool SetInvincibilityFrame(IDamageTakerComponent damageTaker, int dmgId, float newFrame)
         {
             if (!_damages.TryGetValue(dmgId, out var damageRec))
             {
@@ -109,7 +109,7 @@ namespace CombatSystem
         }
 
         /// A buffer that stores invincibility frames records to remove
-        private static List<IDamageTaker> _removeInvincibilityFrameBuffer;
+        private static List<IDamageTakerComponent> _removeInvincibilityFrameBuffer;
 
         /// <summary>
         /// Subtracts <paramref name="deltaTime"/> from all recorded invincibility frames,
@@ -142,7 +142,7 @@ namespace CombatSystem
         /// <summary>
         /// Perform the interaction between each pair of damage and damage taker.
         /// </summary>
-        public static void ResolveDamages(ComponentList<IDamageTaker> damageTakers)
+        public static void ResolveDamages(ComponentList<IDamageTakerComponent> damageTakers)
         {
             GetAllDamages(DamageBuffer);
 

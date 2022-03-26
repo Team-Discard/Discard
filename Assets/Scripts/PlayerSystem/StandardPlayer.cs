@@ -3,6 +3,7 @@ using ActionSystem;
 using Animancer;
 using CardSystem;
 using CharacterSystem;
+using CombatSystem;
 using EntitySystem;
 using UnityEngine;
 using Unstable.Entities;
@@ -29,16 +30,20 @@ namespace PlayerSystem
         // to:billy todo: hand should not be stored on standard player
         [SerializeField] private List<Card> _hand;
 
+        [SerializeField] private StandardDamageTaker _damageTaker;
+        
         private RootMotionFrame _rootMotionFrame;
 
-        private IPawn _pawn;
-        private IActionExecutor _actionExecutor;
+        private IPawnComponent _pawn;
+        private IActionExecutorComponent _actionExecutor;
         private PawnAnimationHandler _animationHandler;
-        private IPawnController _controller;
-        private IWeaponEquipHandler _weaponEquipHandler;
+        private IPawnControllerComponent _controller;
+        private IWeaponEquipComponent _weaponEquipHandler;
         private TemporaryCardTextUI _cardUi;
-        private ICardUser _cardUser;
+        private ICardUserComponent _cardUser;
         private CardButtonHandler _cardButtonHandler;
+        private StandardHealthBar _healthBar;
+        private IDeathCheckComponent _deathCheckComponent;
 
         public override void Init()
         {
@@ -62,6 +67,9 @@ namespace PlayerSystem
 
             _cardUi = new TemporaryCardTextUI(_hand);
             _cardUser = new StandardCardUser(_actionExecutor, _hand);
+            
+            _healthBar = new StandardHealthBar(10.0f, _damageTaker);
+            _deathCheckComponent = new StandardDeathCheckComponent(_healthBar, gameObject);
 
             var cardUseDependencies = new DependencyBag
             {
@@ -76,6 +84,7 @@ namespace PlayerSystem
 
         public void RegisterSelf(IComponentRegistry registry)
         {
+            registry.AddComponent(_damageTaker);            
             registry.AddComponent(_pawn);
             registry.AddComponent(_actionExecutor);
             registry.AddComponent(_animationHandler);
@@ -84,6 +93,8 @@ namespace PlayerSystem
             registry.AddComponent(_cardUi);
             registry.AddComponent(_cardUser);
             registry.AddComponent(_cardButtonHandler);
+            registry.AddComponent(_healthBar);
+            registry.AddComponent(_deathCheckComponent);
         }
 
         protected override void OnDestroy()
@@ -98,6 +109,8 @@ namespace PlayerSystem
             _cardUi.Destroy();
             _cardUser.Destroy();
             _cardButtonHandler.Destroy();
+            _healthBar.Destroy();
+            _deathCheckComponent.Destroy();
         }
     }
 }

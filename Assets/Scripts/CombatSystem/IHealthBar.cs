@@ -1,9 +1,10 @@
 ﻿using System;
 using EntitySystem;
+using Unstable;
 
 namespace CombatSystem
 {
-    public interface IHealthBar : IComponent
+    public interface IHealthBar : IComponent, ITicker
     {
         public float MaxHealth => float.PositiveInfinity;
 

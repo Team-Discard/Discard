@@ -2,7 +2,7 @@
 
 namespace CombatSystem
 {
-    public interface IDamageTaker : IComponent<IDamageTaker>
+    public interface IDamageTakerComponent : IComponent<IDamageTakerComponent>
     {
         void HandleDamage(int id, in Damage damage);
         void ReckonAllDamage();

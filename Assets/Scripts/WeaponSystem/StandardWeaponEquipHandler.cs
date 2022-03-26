@@ -6,7 +6,7 @@ using WeaponSystem.Swords;
 
 namespace WeaponSystem
 {
-    public class StandardWeaponEquipHandler : StandardComponent, IWeaponEquipHandler
+    public class StandardWeaponEquipHandler : StandardComponent, IWeaponEquipComponent
     {
         /*
          * to:billy | review: as a hack we use the prefab to uniquely identify different weapons

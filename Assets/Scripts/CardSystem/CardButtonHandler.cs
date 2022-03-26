@@ -10,12 +10,12 @@ namespace CardSystem
     public class CardButtonHandler : StandardComponent, IPrototypeComponent
     {
         private readonly PlayerInputHandler _inputHandler;
-        private readonly ICardUser _cardUser;
+        private readonly ICardUserComponent _cardUser;
         private readonly DependencyBag _cardUseDependencies;
 
         public CardButtonHandler(
             PlayerInputHandler inputHandler,
-            ICardUser cardUser,
+            ICardUserComponent cardUser,
             DependencyBag cardUseDependencies)
         {
             _inputHandler = inputHandler;

@@ -4,7 +4,7 @@ using WeaponSystem.Swords;
 
 namespace WeaponSystem
 {
-    public interface IWeaponEquipHandler : IComponent<IWeaponEquipHandler>, ITicker
+    public interface IWeaponEquipComponent : IComponent<IWeaponEquipComponent>, ITicker
     {
         Sword EquipSword(SwordEquipDesc parameters);
     }

@@ -17,8 +17,8 @@ namespace FlowControl
         }
 
         private readonly ComponentRegistry _gameCompRegistry;
-        private readonly ComponentList<IEnemySpawner> _enemySpawners = new();
-        private readonly ComponentList<IEnemy> _enemies = new();
+        private readonly ComponentList<IEnemySpawnerComponent> _enemySpawners = new();
+        private readonly ComponentList<IEnemyComponent> _enemies = new();
         private readonly List<EnemySpawnDesc> _enemySpawnBuffer = new();
 
         private LevelState _state;
@@ -32,7 +32,7 @@ namespace FlowControl
 
             Entity.SetUp(levelRoot.transform, c =>
             {
-                if (c.IsComponentOfType(out IEnemySpawner spawner))
+                if (c.IsComponentOfType(out IEnemySpawnerComponent spawner))
                 {
                     _enemySpawners.Add(spawner);
                 }
@@ -61,7 +61,7 @@ namespace FlowControl
                 
                 Entity.SetUp(enemyObj.transform, c =>
                 {
-                    if (c.IsComponentOfType(out IEnemy enemy))
+                    if (c.IsComponentOfType(out IEnemyComponent enemy))
                     {
                         _enemies.Add(enemy);
                     }

@@ -3,7 +3,7 @@ using EntitySystem;
 
 namespace SpawnerSystem
 {
-    public interface IEnemySpawner : IComponent<IEnemySpawner>
+    public interface IEnemySpawnerComponent : IComponent<IEnemySpawnerComponent>
     {
         public void TickSpawner(float deltaTime, List<EnemySpawnDesc> outputList);
     }

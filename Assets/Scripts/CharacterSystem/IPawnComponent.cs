@@ -5,7 +5,7 @@ using Unstable.Utils;
 
 namespace CharacterSystem
 {
-    public interface IPawn : IComponent<IPawn>
+    public interface IPawnComponent : IComponent<IPawnComponent>
     {
         Vector3 CurrentVelocity { get; }
         Vector3 CurrentForward { get; }
@@ -18,7 +18,7 @@ namespace CharacterSystem
 
     public static class PawnUtilities
     {
-        public static float CalculateForwardSpeed(this IPawn pawn)
+        public static float CalculateForwardSpeed(this IPawnComponent pawn)
         {
             var velocity2D = pawn.CurrentVelocity.ConvertXz2Xy();
             var direction2D = pawn.CurrentForward.ConvertXz2Xy();

@@ -8,15 +8,15 @@ using Unstable.Utils;
 
 namespace PlayerSystem
 {
-    public class StandardPlayerController : StandardComponent, IPawnController
+    public class StandardPlayerController : StandardComponent, IPawnControllerComponent
     {
-        private readonly IPawn _pawn;
+        private readonly IPawnComponent _pawn;
         private readonly Transform _controlCameraTransform;
-        private readonly IActionExecutor _actionExecutor;
+        private readonly IActionExecutorComponent _actionExecutor;
         private readonly PlayerInputHandler _inputHandler;
         private float _maxSpeed;
 
-        public StandardPlayerController(IPawn pawn, Transform controlCameraTransform, IActionExecutor actionExecutor,
+        public StandardPlayerController(IPawnComponent pawn, Transform controlCameraTransform, IActionExecutorComponent actionExecutor,
             PlayerInputHandler inputHandler, float maxSpeed)
         {
             _pawn = pawn;

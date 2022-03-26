@@ -6,7 +6,7 @@ namespace Unstable.Entities
 {
     public class CharacterControllerPawn :
         StandardComponent,
-        IPawn
+        IPawnComponent
     {
         private readonly CharacterController _controller;
         private TranslationFrame _translationFrame;

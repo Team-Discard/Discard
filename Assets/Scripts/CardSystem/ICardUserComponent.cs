@@ -3,7 +3,7 @@ using Uxt;
 
 namespace CardSystem
 {
-    public interface ICardUser : IComponent<ICardUser>
+    public interface ICardUserComponent : IComponent<ICardUserComponent>
     {
         public void UseCard(int index, DependencyBag dependencies);
     }

@@ -12,10 +12,10 @@ namespace Unstable.Entities
 {
     public class StandardEnemy :
         GameObjectComponent,
-        IEnemy,
+        IEnemyComponent,
         IRegisterComponent
     {
-        private IPawn _pawn;
+        private IPawnComponent _pawn;
         [SerializeField] private LocomotionController _locomotionController;
         [SerializeField] private EnemyAI _enemyAI;
         [SerializeField] private float _speed;
@@ -24,13 +24,9 @@ namespace Unstable.Entities
         [SerializeField] private RootMotionFrame _rootMotionFrame;
         [SerializeField] private float _maxAngularVelocityDuringAttack;
         [SerializeField] private float _rotationThreshold;
-
         [SerializeField] private Sword _sword;
-
-        [SerializeField] private HurtBox _hurtBox;
-
         private IHealthBar _healthBar;
-        private StandardHealthModifier _healthModifier;
+        [SerializeField] private StandardDamageTaker _damageTaker;
 
         private PawnAnimationHandler _animationHandler;
 
@@ -40,16 +36,8 @@ namespace Unstable.Entities
         {
             base.Init();
 
-            _healthBar = new StandardHealthBar(4);
+            _healthBar = new StandardHealthBar(4, _damageTaker);
             _pawn = new CharacterControllerPawn(GetComponent<CharacterController>());
-            _healthModifier = new StandardHealthModifier(
-                DamageLayer.Enemy,
-                0.5f,
-                new List<HurtBox>
-                {
-                    _hurtBox
-                });
-
             _animationHandler = new PawnAnimationHandler(
                 _pawn,
                 GetComponentInChildren<AnimancerComponent>(),
@@ -61,10 +49,10 @@ namespace Unstable.Entities
         public void RegisterSelf(IComponentRegistry registry)
         {
             registry.AddComponent(this);
-
+            registry.AddComponent(_damageTaker);
+            
             registry.AddComponent(_healthBar);
             registry.AddComponent(_pawn);
-            registry.AddComponent(_healthModifier);
             registry.AddComponent(_animationHandler);
         }
 
@@ -74,14 +62,11 @@ namespace Unstable.Entities
 
             _healthBar.Destroy();
             _pawn.Destroy();
-            _healthModifier.Destroy();
             _animationHandler.Destroy();
         }
 
         public void Tick(float deltaTime)
         {
-            _healthBar.CurrentHealth -= _healthModifier.ConsumeAllDamage();
-
             if (_healthBar.CurrentHealth <= 0.0f)
             {
                 Destroy();

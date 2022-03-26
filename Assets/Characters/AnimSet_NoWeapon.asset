@@ -27,9 +27,9 @@ MonoBehaviour:
           _Names: []
         _Speed: 1
         _Animations:
-        - {fileID: -203655887218126122, guid: 2cc64f6088758474097fd68a32143ec6, type: 3}
-        - {fileID: -203655887218126122, guid: 22748321ac4ec0d418c2b213f682e989, type: 3}
-        - {fileID: -203655887218126122, guid: 37b55accae5c4f24da7ac14dbbacde9d, type: 3}
+        - {fileID: 7400000, guid: c2ecee9424461bf4e864486b30ec0e9e, type: 2}
+        - {fileID: 7400000, guid: fd6e0d48a65905843a5f784b7acb18f0, type: 2}
+        - {fileID: 7400000, guid: c63f72fd084b58f48aee5221a4429f51, type: 2}
         _Speeds: []
         _SynchronizeChildren: 
         _Thresholds:

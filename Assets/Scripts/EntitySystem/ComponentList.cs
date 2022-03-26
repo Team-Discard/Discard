@@ -54,7 +54,14 @@ namespace EntitySystem
                 foreach (var comp in _list)
                 {
                     if (!comp.Enabled) continue;
-                    tickAction.Invoke(comp, deltaTime);
+                    try
+                    {
+                        tickAction.Invoke(comp, deltaTime);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                    }
                 }
             }
             finally

@@ -28,14 +28,15 @@ namespace FlowControl
             _enemySpawnBuffer = new List<EnemySpawnDesc>();
             _componentRegistry =
                 new ComponentRegistry()
-                    .AllowType<IEnemy>()
-                    .AllowType<IPawn>()
+                    .AllowType<IEnemyComponent>()
+                    .AllowType<IPawnComponent>()
                     .AllowType<PawnAnimationHandler>()
-                    .AllowType<IDamageTaker>()
+                    .AllowType<IDamageTakerComponent>()
                     .AllowType<IHealthBar>()
-                    .AllowType<IPawnController>()
-                    .AllowType<IWeaponEquipHandler>()
-                    .AllowType<IActionExecutor>()
+                    .AllowType<IPawnControllerComponent>()
+                    .AllowType<IWeaponEquipComponent>()
+                    .AllowType<IActionExecutorComponent>()
+                    .AllowType<IDeathCheckComponent>()
                     .AllowType<IPrototypeComponent>();
         }
 
@@ -45,12 +46,12 @@ namespace FlowControl
                 _player.transform,
                 c =>
                 {
-                    if (c.IsComponentOfType<ICardUser>())
+                    if (c.IsComponentOfType<ICardUserComponent>())
                     {
                         return;
                     }
 
-                    if (c.IsComponentOfType<IPawn>())
+                    if (c.IsComponentOfType<IPawnComponent>())
                     {
                         print("Pawn!");
                     }
@@ -72,19 +73,19 @@ namespace FlowControl
             }
 
             _componentRegistry
-                .Get<IActionExecutor>()
+                .Get<IActionExecutorComponent>()
                 .Tick(deltaTime, (ae, dt) => ae.Execute(dt));
 
             _componentRegistry
-                .Get<IPawnController>()
+                .Get<IPawnControllerComponent>()
                 .Tick(deltaTime, (pc, dt) => pc.Tick(dt));
 
             _componentRegistry
-                .Get<IEnemy>()
+                .Get<IEnemyComponent>()
                 .Tick(deltaTime, (enemy, dt) => enemy.Tick(dt));
 
             _componentRegistry
-                .Get<IPawn>()
+                .Get<IPawnComponent>()
                 .Tick(deltaTime, (pawn, dt) =>
                 {
                     pawn.TickRotation(dt);
@@ -97,10 +98,14 @@ namespace FlowControl
             }
 
             DamageManager.TickInvincibilityFrames(deltaTime);
-            DamageManager.ResolveDamages(_componentRegistry.Get<IDamageTaker>());
+            DamageManager.ResolveDamages(_componentRegistry.Get<IDamageTakerComponent>());
 
             _componentRegistry
-                .Get<IWeaponEquipHandler>()
+                .Get<IHealthBar>()
+                .Tick(deltaTime, (hb, dt) => hb.Tick(dt));
+            
+            _componentRegistry
+                .Get<IWeaponEquipComponent>()
                 .Tick(deltaTime, (eh, dt) => eh.Tick(dt));
 
             _componentRegistry
@@ -110,6 +115,10 @@ namespace FlowControl
             _componentRegistry
                 .Get<IPrototypeComponent>()
                 .Tick(deltaTime, (p, dt) => p.Tick(dt));
+            
+            _componentRegistry
+                .Get<IDeathCheckComponent>()
+                .Tick(deltaTime, (dc, dt) => dc.Tick(dt));
         }
 
 
@@ -127,7 +136,7 @@ namespace FlowControl
             return levelRoot != _currentLevelRoot;
         }
 
-        private ComponentList<IPawn> _pawns;
+        private ComponentList<IPawnComponent> _pawns;
         private ComponentList<PawnAnimationHandler> _animationHandlers;
     }
 }

@@ -6,7 +6,7 @@ namespace CombatSystem
 {
     public class StandardHealthModifier : 
         StandardComponent, 
-        IDamageTaker
+        IDamageTakerComponent
     {
         // todo: this class has too many responsibilities. Maybe refactor later?
 

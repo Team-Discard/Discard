@@ -6,7 +6,7 @@ namespace SpawnerSystem
 {
     public class StandardEnemySpawner :
         GameObjectComponent,
-        IEnemySpawner,
+        IEnemySpawnerComponent,
         IRegisterComponent
     {
         [SerializeField] private GameObject _prefab;

@@ -5,7 +5,7 @@ using Unstable;
 
 namespace ActionSystem
 {
-    public interface IActionExecutor : IComponent<IActionExecutor>
+    public interface IActionExecutorComponent : IComponent<IActionExecutorComponent>
     {
         IReadOnlyList<ActionEffects> Effects { get; }
         void GetAllActions(List<IAction> outActions);

@@ -6,7 +6,7 @@ using Unstable;
 
 namespace ActionSystem
 {
-    public class ActionExecutor : StandardComponent, IActionExecutor
+    public class ActionExecutor : StandardComponent, IActionExecutorComponent
     {
         private readonly List<IAction> _pendingActions = new();
         private readonly List<IAction> _activeActions = new();
