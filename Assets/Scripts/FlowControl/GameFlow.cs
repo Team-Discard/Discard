@@ -6,6 +6,8 @@ using CombatSystem;
 using EntitySystem;
 using PlayerSystem;
 using SpawnerSystem;
+using UI;
+using UI.HealthBar;
 using UnityEngine;
 using Unstable;
 using Unstable.Entities;
@@ -16,6 +18,7 @@ namespace FlowControl
     public class GameFlow : MonoBehaviour
     {
         [SerializeField] private StandardPlayer _player;
+        [SerializeField] private PlayerStatsDisplay _playerStatsDisplay;
 
         private GameObject _currentLevelRoot;
         private LevelFlow _currentLevelFlow;
@@ -37,7 +40,10 @@ namespace FlowControl
                     .AllowType<IWeaponEquipComponent>()
                     .AllowType<IActionExecutorComponent>()
                     .AllowType<IDeathCheckComponent>()
-                    .AllowType<IPrototypeComponent>();
+                    .AllowType<IPrototypeComponent>()
+                    .AllowType<IHealthBarWatcherComponent>()
+                    .AllowType<IHealthBarRendererComponent>()
+                    .AllowType<ICardUserComponent>();
         }
 
         private void Start()
@@ -46,17 +52,20 @@ namespace FlowControl
                 _player.transform,
                 c =>
                 {
-                    if (c.IsComponentOfType<ICardUserComponent>())
-                    {
-                        return;
-                    }
-
                     if (c.IsComponentOfType<IPawnComponent>())
                     {
                         print("Pawn!");
                     }
+
                     _componentRegistry.Add(c);
                 });
+
+            Entity.SetUp(
+                _playerStatsDisplay.transform,
+                _componentRegistry.Add
+            );
+            
+            _playerStatsDisplay.BindHealthBar(_player.HealthBar);
         }
 
         private void Update()
@@ -101,24 +110,28 @@ namespace FlowControl
             DamageManager.ResolveDamages(_componentRegistry.Get<IDamageTakerComponent>());
 
             _componentRegistry
-                .Get<IHealthBarComponent>()
-                .Tick(deltaTime, (hb, dt) => hb.Tick(dt));
-            
-            _componentRegistry
                 .Get<IWeaponEquipComponent>()
                 .Tick(deltaTime, (eh, dt) => eh.Tick(dt));
 
             _componentRegistry
                 .Get<PawnAnimationHandler>()
                 .Tick(deltaTime, (handler, dt) => handler.Tick(dt));
-            
+
             _componentRegistry
                 .Get<IPrototypeComponent>()
                 .Tick(deltaTime, (p, dt) => p.Tick(dt));
-            
+
             _componentRegistry
                 .Get<IDeathCheckComponent>()
                 .Tick(deltaTime, (dc, dt) => dc.Tick(dt));
+
+            _componentRegistry
+                .Get<IHealthBarWatcherComponent>()
+                .Tick(deltaTime, (hbw, dt) => hbw.Tick(dt));
+
+            _componentRegistry
+                .Get<IHealthBarRendererComponent>()
+                .Tick(deltaTime, (hbr, dt) => hbr.Tick(dt));
         }
 
 

@@ -146,6 +146,8 @@ namespace CombatSystem
         {
             GetAllDamages(DamageBuffer);
 
+            damageTakers.RemoveDestroyed();
+            
             foreach (var damageTaker in damageTakers)
             {
                 foreach (var pair in DamageBuffer)
@@ -160,8 +162,6 @@ namespace CombatSystem
             }
 
             DamageBuffer.Clear();
-
-            damageTakers.RemoveDestroyed();
         }
     }
 }

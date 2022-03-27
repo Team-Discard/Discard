@@ -1,11 +1,10 @@
-﻿using System;
-using CombatSystem;
-using EntitySystem;
+﻿using CombatSystem;
 using UI.HealthBar;
 using UnityEngine;
 
 namespace Tests.HealthBar
 {
+    [RequireComponent(typeof(StandardHealthBar))]
     public class ManualHealthBarTest : MonoBehaviour
     {
         [SerializeField] private GameObject _healthBarObject;
@@ -15,7 +14,7 @@ namespace Tests.HealthBar
 
         private void Start()
         {
-            _healthBar = new StandardHealthBar(120.0f);
+            _healthBar = GetComponent<IHealthBarComponent>();
             _watcher = new HealthBarWatcher(_healthBar, 0.75f);
             _renderer.BindWatcher(_watcher);
 

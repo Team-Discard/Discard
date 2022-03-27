@@ -4,7 +4,7 @@ using Unstable;
 
 namespace CombatSystem
 {
-    public interface IHealthBarComponent : IComponent, ITicker
+    public interface IHealthBarComponent : IComponent
     {
         public float MaxHealth => float.PositiveInfinity;
 

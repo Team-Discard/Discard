@@ -5,9 +5,9 @@ using CardSystem;
 using CharacterSystem;
 using CombatSystem;
 using EntitySystem;
+using UI.HealthBar;
 using UnityEngine;
 using Unstable.Entities;
-using Uxt;
 using Uxt.InterModuleCommunication;
 using WeaponSystem;
 
@@ -32,6 +32,7 @@ namespace PlayerSystem
         [SerializeField] private List<Card> _hand;
 
         [SerializeField] private StandardDamageTaker _damageTaker;
+        [SerializeField] private StandardHealthBar _healthBar;
         
         private RootMotionFrame _rootMotionFrame;
 
@@ -43,8 +44,10 @@ namespace PlayerSystem
         private TemporaryCardTextUI _cardUi;
         private ICardUserComponent _cardUser;
         private CardButtonHandler _cardButtonHandler;
-        private StandardHealthBar _healthBar;
         private IDeathCheckComponent _deathCheckComponent;
+
+        private IHealthBarWatcherComponent _healthBarWatcher;
+        public IHealthBarComponent HealthBar => _healthBar;
 
         public override void Init()
         {
@@ -68,8 +71,10 @@ namespace PlayerSystem
 
             _cardUi = new TemporaryCardTextUI(_hand);
             _cardUser = new StandardCardUser(_actionExecutor, _hand);
-            
-            _healthBar = new StandardHealthBar(10.0f, _damageTaker);
+
+            _healthBar = GetComponent<StandardHealthBar>();
+            _damageTaker.BindHealthBar(_healthBar);
+
             _deathCheckComponent = new StandardDeathCheckComponent(_healthBar, gameObject);
 
             var cardUseDependencies = new DependencyBag
@@ -85,7 +90,7 @@ namespace PlayerSystem
 
         public void RegisterSelf(IComponentRegistry registry)
         {
-            registry.AddComponent(_damageTaker);            
+            registry.AddComponent(_damageTaker);
             registry.AddComponent(_pawn);
             registry.AddComponent(_actionExecutor);
             registry.AddComponent(_animationHandler);

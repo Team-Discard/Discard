@@ -11,6 +11,7 @@ namespace CombatSystem
         [SerializeField] private HurtBox _hurtBox;
         [SerializeField] private float _invincibilityFrame;
         [SerializeField] private DamageLayer _damageLayer;
+        private IHealthBarComponent _healthBar;
         private Queue<Damage> _damageQueue;
 
         private void Awake()
@@ -18,11 +19,12 @@ namespace CombatSystem
             _damageQueue = new Queue<Damage>();
         }
 
-        public bool TryDequeueDamage(out Damage dmg)
+        public void BindHealthBar(IHealthBarComponent healthBar)
         {
-            return _damageQueue.TryDequeue(out dmg);
+            Debug.Assert(_healthBar == null, "_healthBar == null");
+            _healthBar = healthBar;
         }
-
+        
         public void HandleDamage(int id, in Damage damage)
         {
             if (!damage.DamageBox.CheckOverlap(_hurtBox))
@@ -47,6 +49,11 @@ namespace CombatSystem
 
         public void ReckonAllDamage()
         {
+            Debug.Assert(_healthBar != null, "The damage taker must reference a health bar", gameObject);
+            while (_damageQueue.TryDequeue(out var dmg))
+            {
+                _healthBar.CurrentHealth -= dmg.BaseAmount;
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ namespace UI.HealthBar
 {
     public class HealthBarWatcher : StandardComponent, IHealthBarWatcherComponent
     {
-        private readonly IHealthBarComponent _healthBar;
+        private IHealthBarComponent _healthBar;
         private readonly float _damageStickyDelay;
         private float _healthBeforeDamage;
         private float _damageStickyTimer;
@@ -15,10 +15,19 @@ namespace UI.HealthBar
         {
             _healthBar = healthBar;
             _damageStickyDelay = damageStickyDelay;
+            if (healthBar != null)
+            {
+                BindHealthBar(healthBar);
+            }
+        }
+
+        public void BindHealthBar(IHealthBarComponent healthBar)
+        {
+            _healthBar = healthBar;
             _healthBeforeDamage = healthBar.CurrentHealth;
             _healthLastFrame = healthBar.CurrentHealth;
         }
-
+        
         public void Tick(float deltaTime)
         {
             // In the case that the health bar has taken damage, reset the damage timer

@@ -15,14 +15,19 @@ MonoBehaviour:
   ScenesTabs:
   - pin: 0
     path:
-    - 
-    guid:
-    - 
-  - pin: 0
-    path:
     - Assets/Scenes/SampleScene.unity
     guid:
     - 9fc0d4010bbf28b4594072e72b8655ab
+  - pin: 0
+    path:
+    - Assets/Tests/HealthBar/TEST_Manual_Health_Bar_Test.unity
+    guid:
+    - dc0d77a03a18e5c4292e297fd5bca6b3
+  - pin: 0
+    path:
+    - 
+    guid:
+    - 
   - pin: 0
     path:
     - Assets/animations/Souls-like Essentials/Demo.unity

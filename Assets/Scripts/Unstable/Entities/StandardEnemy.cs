@@ -10,6 +10,7 @@ using WeaponSystem.Swords;
 
 namespace Unstable.Entities
 {
+    [RequireComponent(typeof(StandardHealthBar))]
     public class StandardEnemy :
         GameObjectComponent,
         IEnemyComponent,
@@ -25,9 +26,9 @@ namespace Unstable.Entities
         [SerializeField] private float _maxAngularVelocityDuringAttack;
         [SerializeField] private float _rotationThreshold;
         [SerializeField] private Sword _sword;
-        private IHealthBarComponent _healthBar;
+        private StandardHealthBar _healthBar;
         [SerializeField] private StandardDamageTaker _damageTaker;
-
+        
         private PawnAnimationHandler _animationHandler;
 
         private bool _attackAnimationPlayed;
@@ -36,7 +37,9 @@ namespace Unstable.Entities
         {
             base.Init();
 
-            _healthBar = new StandardHealthBar(4, _damageTaker);
+            _healthBar = GetComponent<StandardHealthBar>();
+            _damageTaker.BindHealthBar(_healthBar);
+            
             _pawn = new CharacterControllerPawn(GetComponent<CharacterController>());
             _animationHandler = new PawnAnimationHandler(
                 _pawn,
