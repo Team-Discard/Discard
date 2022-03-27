@@ -11,12 +11,14 @@ namespace UI.HealthBar
         [SerializeField] private RectTransform _redBar;
         [SerializeField] private RectTransform _whiteBar;
         private IHealthBarWatcherComponent _healthBarWatcher;
-        private float _actualWhiteTip;
+        private float _renderedWhiteTip;
+        private float _renderedRedTip;
 
         private void Awake()
         {
             _healthBarWatcher = null;
-            _actualWhiteTip = 1.0f;
+            _renderedWhiteTip = 1.0f;
+            _renderedRedTip = 1.0f;
         }
 
         public void BindWatcher(IHealthBarWatcherComponent watcher)
@@ -41,12 +43,18 @@ namespace UI.HealthBar
         private void UpdateUI(float deltaTime, float maxHealth, float health, float healthBeforeDamage)
         {
             CalculateRedAndWhiteTips(maxHealth, health, healthBeforeDamage, out var redTip, out var whiteTip);
-            _actualWhiteTip = Mathf.MoveTowards(_actualWhiteTip, whiteTip, deltaTime * 0.5f);
-            _whiteBar.gameObject.SetActive(Mathf.Abs(redTip - _actualWhiteTip) > 0.01f);
+            _renderedRedTip = Mathf.MoveTowards(_renderedRedTip, redTip, deltaTime * 2.0f);
+            _renderedWhiteTip = Mathf.MoveTowards(_renderedWhiteTip, whiteTip, deltaTime * 0.5f);
+            UpdateUI(_renderedRedTip, _renderedWhiteTip);
+        }
+
+        private void UpdateUI(float redTip, float whiteTip)
+        {
+            _whiteBar.gameObject.SetActive(Mathf.Abs(redTip - whiteTip) > 0.01f);
             _redBar.anchorMin = Vector2.zero;
             _redBar.anchorMax = new Vector2(redTip, 1.0f);
             _whiteBar.anchorMin = new Vector2(redTip, 0.0f);
-            _whiteBar.anchorMax = new Vector2(_actualWhiteTip, 1.0f);
+            _whiteBar.anchorMax = new Vector2(whiteTip, 1.0f);
         }
 
         private void CalculateRedAndWhiteTips(float maxHealth, float health, float healthBeforeDamage, out float redTip,
