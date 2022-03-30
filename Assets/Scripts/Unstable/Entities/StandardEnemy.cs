@@ -3,6 +3,7 @@ using Animancer;
 using CharacterSystem;
 using CombatSystem;
 using EntitySystem;
+using UI.HealthBar;
 using UnityEngine;
 using Uxt.Debugging;
 using WeaponSystem;
@@ -27,6 +28,7 @@ namespace Unstable.Entities
         [SerializeField] private float _rotationThreshold;
         [SerializeField] private Sword _sword;
         private StandardHealthBar _healthBar;
+        private EnemyHealthBarTransform _healthBarTransform; 
         [SerializeField] private StandardDamageTaker _damageTaker;
         
         private PawnAnimationHandler _animationHandler;
@@ -46,6 +48,8 @@ namespace Unstable.Entities
                 GetComponentInChildren<AnimancerComponent>(),
                 _defaultAnimationSet);
 
+            _healthBarTransform = new EnemyHealthBarTransform(transform, _healthBar);
+
             _attackAnimationPlayed = false;
         }
 
@@ -54,6 +58,7 @@ namespace Unstable.Entities
             registry.AddComponent(this);
             registry.AddComponent(_damageTaker);
             
+            _healthBarTransform.RegisterSelf(registry);
             registry.AddComponent(_healthBar);
             registry.AddComponent(_pawn);
             registry.AddComponent(_animationHandler);
@@ -63,6 +68,7 @@ namespace Unstable.Entities
         {
             base.OnDestroy();
 
+            _healthBarTransform.Destroy();
             _healthBar.Destroy();
             _pawn.Destroy();
             _animationHandler.Destroy();

@@ -11,14 +11,16 @@ using UI.HealthBar;
 using UnityEngine;
 using Unstable;
 using Unstable.Entities;
+using Uxt.Debugging;
 using WeaponSystem;
 
 namespace FlowControl
 {
-    public class GameFlow : MonoBehaviour
+    public class GameFlow : MonoBehaviour, IComponentRegistry
     {
         [SerializeField] private StandardPlayer _player;
         [SerializeField] private PlayerStatsDisplay _playerStatsDisplay;
+        [SerializeField] private NpcHealthBarRendererManager _npcHealthBarRendererMgr;
 
         private GameObject _currentLevelRoot;
         private LevelFlow _currentLevelFlow;
@@ -43,28 +45,23 @@ namespace FlowControl
                     .AllowType<IPrototypeComponent>()
                     .AllowType<IHealthBarWatcherComponent>()
                     .AllowType<IHealthBarRendererComponent>()
-                    .AllowType<ICardUserComponent>();
+                    .AllowType<ICardUserComponent>()
+                    .AllowType<IHealthBarTransformComponent>();
+
+            _npcHealthBarRendererMgr.BindComponentRegistry(this);
         }
 
         private void Start()
         {
             Entity.SetUp(
                 _player.transform,
-                c =>
-                {
-                    if (c.IsComponentOfType<IPawnComponent>())
-                    {
-                        print("Pawn!");
-                    }
-
-                    _componentRegistry.Add(c);
-                });
+                AddComponent);
 
             Entity.SetUp(
                 _playerStatsDisplay.transform,
-                _componentRegistry.Add
+                AddComponent
             );
-            
+
             _playerStatsDisplay.BindHealthBar(_player.HealthBar);
         }
 
@@ -132,6 +129,12 @@ namespace FlowControl
             _componentRegistry
                 .Get<IHealthBarRendererComponent>()
                 .Tick(deltaTime, (hbr, dt) => hbr.Tick(dt));
+            
+            _npcHealthBarRendererMgr.Tick(_componentRegistry.Get<IHealthBarTransformComponent>());
+
+            DebugMessageManager.AddOnScreen(
+                $"Enemy count = {_componentRegistry.Get<IHealthBarTransformComponent>().Count}",
+                "enemy_count".GetHashCode(), Color.cyan);
         }
 
 
@@ -149,7 +152,9 @@ namespace FlowControl
             return levelRoot != _currentLevelRoot;
         }
 
-        private ComponentList<IPawnComponent> _pawns;
-        private ComponentList<PawnAnimationHandler> _animationHandlers;
+        public void AddComponent(IComponent component)
+        {
+            _componentRegistry.AddComponent(component);
+        }
     }
 }

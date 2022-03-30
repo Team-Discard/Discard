@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EntitySystem
 {
-    public class ComponentRegistry
+    public class ComponentRegistry : IComponentRegistry
     {
         private readonly Dictionary<Type, ComponentList> _componentLists = new();
 
@@ -25,7 +25,7 @@ namespace EntitySystem
             return this;
         }
 
-        public void Add(IComponent component)
+        public void AddComponent(IComponent component)
         {
             var type = component.GetComponentType();
             if (!_componentLists.TryGetValue(type, out var list))

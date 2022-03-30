@@ -38,7 +38,7 @@ namespace FlowControl
                 }
                 else
                 {
-                    _gameCompRegistry.Add(c);
+                    _gameCompRegistry.AddComponent(c);
                 }
             });
 
@@ -65,7 +65,7 @@ namespace FlowControl
                     {
                         _enemies.Add(enemy);
                     }
-                    _gameCompRegistry.Add(c);
+                    _gameCompRegistry.AddComponent(c);
                 });
             }
 

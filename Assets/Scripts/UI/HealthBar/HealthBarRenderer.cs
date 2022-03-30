@@ -40,6 +40,7 @@ namespace UI.HealthBar
             UpdateUI(deltaTime, _healthBarWatcher.MaxHealth, _healthBarWatcher.Health, _healthBarWatcher.HealthBeforeDamage);
         }
 
+        // eval: should those update functions be made common to support different types of health bar rendering?
         private void UpdateUI(float deltaTime, float maxHealth, float health, float healthBeforeDamage)
         {
             CalculateRedAndWhiteTips(maxHealth, health, healthBeforeDamage, out var redTip, out var whiteTip);

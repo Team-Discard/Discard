@@ -11,7 +11,7 @@ namespace UI.HealthBar
         private float _damageStickyTimer;
         private float _healthLastFrame;
 
-        public HealthBarWatcher(IHealthBarComponent healthBar, float damageStickyDelay)
+        public HealthBarWatcher(IHealthBarComponent healthBar, float damageStickyDelay = 0.75f)
         {
             _healthBar = healthBar;
             _damageStickyDelay = damageStickyDelay;
