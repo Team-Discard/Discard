@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ActionSystem;
 using CardSystem;
 using CharacterSystem;
@@ -51,7 +52,10 @@ namespace FlowControl
                     .AllowType<ICardUserComponent>()
                     .AllowType<IHealthBarTransformComponent>();
 
-            _npcHealthBarRendererMgr.BindComponentRegistry(this);
+            if (_npcHealthBarRendererMgr != null)
+            {
+                _npcHealthBarRendererMgr.BindComponentRegistry(this);
+            }
         }
 
         private void Start()
@@ -141,16 +145,24 @@ namespace FlowControl
             _componentRegistry
                 .Get<IHealthBarRendererComponent>()
                 .Tick(deltaTime, (hbr, dt) => hbr.Tick(dt));
-            
-            _npcHealthBarRendererMgr.Tick(_componentRegistry.Get<IHealthBarTransformComponent>());
+
+            if (_npcHealthBarRendererMgr != null)
+            {
+                _npcHealthBarRendererMgr.Tick(_componentRegistry.Get<IHealthBarTransformComponent>());
+            }
 
             DebugMessageManager.AddOnScreen(
                 $"Enemy count = {_componentRegistry.Get<IHealthBarTransformComponent>().Count}",
                 "enemy_count".GetHashCode(), Color.cyan);
-            
-            // Scan for interactable and set it in interactionManager
-            InteractionManager.Instance.SetCurrentFocusedInteractable(ScanForClosestInteractableWithInRange(interactableScanRange));
-            InteractionManager.Instance.DisplayInteractionHintIfNeeded();
+
+            if (InteractionManager.Instance != null)
+            {
+                // Scan for interactable and set it in interactionManager
+                _interactables = GetAllInteractables();
+                InteractionManager.Instance.SetCurrentFocusedInteractable(ScanForClosestInteractableWithInRange(interactableScanRange));
+                InteractionManager.Instance.DisplayInteractionHintIfNeeded();
+            }
+
         }
 
 
@@ -172,7 +184,6 @@ namespace FlowControl
         private static List<IInteractable> GetAllInteractables()
         {
             var interactablesFound = FindObjectsOfType<MonoBehaviour>(true).OfType<IInteractable>();
-
             return interactablesFound.ToList();
         }
         
