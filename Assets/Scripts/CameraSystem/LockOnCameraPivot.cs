@@ -9,8 +9,13 @@ namespace CameraSystem
     {
         [SerializeField] private Transform _pivotTransform;
         [SerializeField] private Transform _targetTransform;
+        public Transform TargetTransform
+        {
+            get => _targetTransform;
+            set => _targetTransform = value;
+        }
 
-        private void LateUpdate()
+        private void Update()
         {
             if (_targetTransform == null || _pivotTransform == null) return;
             var targetPos = _targetTransform.position;

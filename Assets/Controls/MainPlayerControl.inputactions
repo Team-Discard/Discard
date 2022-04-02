@@ -24,6 +24,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Toggle Lock On",
+                    "type": "Button",
+                    "id": "7f659f9d-e845-4e68-b20d-af93c3d3d5d8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Roll",
                     "type": "Button",
                     "id": "3c9fd7ef-adc1-45fc-8e20-5d8c6a218a33",
@@ -210,6 +219,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Card West",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "217fd9df-a435-4e46-b9c8-2f8fe5e7887b",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle Lock On",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

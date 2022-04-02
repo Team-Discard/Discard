@@ -46,6 +46,15 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""Toggle Lock On"",
+                    ""type"": ""Button"",
+                    ""id"": ""7f659f9d-e845-4e68-b20d-af93c3d3d5d8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Roll"",
                     ""type"": ""Button"",
                     ""id"": ""3c9fd7ef-adc1-45fc-8e20-5d8c6a218a33"",
@@ -234,6 +243,17 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                     ""action"": ""Card West"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""217fd9df-a435-4e46-b9c8-2f8fe5e7887b"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Toggle Lock On"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -244,6 +264,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
         m_Standard = asset.FindActionMap("Standard", throwIfNotFound: true);
         m_Standard_Locomotion = m_Standard.FindAction("Locomotion", throwIfNotFound: true);
         m_Standard_CameraRotate = m_Standard.FindAction("Camera Rotate", throwIfNotFound: true);
+        m_Standard_ToggleLockOn = m_Standard.FindAction("Toggle Lock On", throwIfNotFound: true);
         m_Standard_Roll = m_Standard.FindAction("Roll", throwIfNotFound: true);
         m_Standard_CardSouth = m_Standard.FindAction("Card South", throwIfNotFound: true);
         m_Standard_CardEast = m_Standard.FindAction("Card East", throwIfNotFound: true);
@@ -310,6 +331,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
     private IStandardActions m_StandardActionsCallbackInterface;
     private readonly InputAction m_Standard_Locomotion;
     private readonly InputAction m_Standard_CameraRotate;
+    private readonly InputAction m_Standard_ToggleLockOn;
     private readonly InputAction m_Standard_Roll;
     private readonly InputAction m_Standard_CardSouth;
     private readonly InputAction m_Standard_CardEast;
@@ -321,6 +343,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
         public StandardActions(@MainPlayerControl wrapper) { m_Wrapper = wrapper; }
         public InputAction @Locomotion => m_Wrapper.m_Standard_Locomotion;
         public InputAction @CameraRotate => m_Wrapper.m_Standard_CameraRotate;
+        public InputAction @ToggleLockOn => m_Wrapper.m_Standard_ToggleLockOn;
         public InputAction @Roll => m_Wrapper.m_Standard_Roll;
         public InputAction @CardSouth => m_Wrapper.m_Standard_CardSouth;
         public InputAction @CardEast => m_Wrapper.m_Standard_CardEast;
@@ -341,6 +364,9 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                 @CameraRotate.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnCameraRotate;
                 @CameraRotate.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnCameraRotate;
                 @CameraRotate.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnCameraRotate;
+                @ToggleLockOn.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnToggleLockOn;
+                @ToggleLockOn.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnToggleLockOn;
+                @ToggleLockOn.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnToggleLockOn;
                 @Roll.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnRoll;
                 @Roll.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnRoll;
                 @Roll.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnRoll;
@@ -366,6 +392,9 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                 @CameraRotate.started += instance.OnCameraRotate;
                 @CameraRotate.performed += instance.OnCameraRotate;
                 @CameraRotate.canceled += instance.OnCameraRotate;
+                @ToggleLockOn.started += instance.OnToggleLockOn;
+                @ToggleLockOn.performed += instance.OnToggleLockOn;
+                @ToggleLockOn.canceled += instance.OnToggleLockOn;
                 @Roll.started += instance.OnRoll;
                 @Roll.performed += instance.OnRoll;
                 @Roll.canceled += instance.OnRoll;
@@ -389,6 +418,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
     {
         void OnLocomotion(InputAction.CallbackContext context);
         void OnCameraRotate(InputAction.CallbackContext context);
+        void OnToggleLockOn(InputAction.CallbackContext context);
         void OnRoll(InputAction.CallbackContext context);
         void OnCardSouth(InputAction.CallbackContext context);
         void OnCardEast(InputAction.CallbackContext context);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using ActionSystem;
 using Animancer;
+using CameraSystem;
 using CardSystem;
 using CharacterSystem;
 using CombatSystem;
@@ -33,6 +34,8 @@ namespace PlayerSystem
 
         [SerializeField] private StandardDamageTaker _damageTaker;
         [SerializeField] private StandardHealthBar _healthBar;
+
+        [SerializeField] private CharacterCameraSetup _cameraSetup;
         
         private RootMotionFrame _rootMotionFrame;
 
@@ -86,6 +89,18 @@ namespace PlayerSystem
             };
 
             _cardButtonHandler = new CardButtonHandler(_inputHandler, _cardUser, cardUseDependencies);
+
+            _inputHandler.onToggleLockOn += () =>
+            {
+                if (_cameraSetup.CurrentMode != CharacterCameraMode.TargetLockOn)
+                {
+                    _cameraSetup.BeginLockOn(GameObject.FindGameObjectWithTag("Enemy").transform.Find("Lock On Point"));
+                }
+                else
+                {
+                    _cameraSetup.EndLockOn();
+                }
+            };
         }
 
         public void RegisterSelf(IComponentRegistry registry)

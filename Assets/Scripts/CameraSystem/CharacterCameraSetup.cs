@@ -1,15 +1,68 @@
-﻿using Cinemachine;
+﻿using System;
+using Cinemachine;
 using UnityEngine;
 
 namespace CameraSystem
 {
     public class CharacterCameraSetup : MonoBehaviour
     {
-        [SerializeField] private CinemachineVirtualCamera _freeLookCamera;
-        [SerializeField] private CinemachineVirtualCamera _lockOnCamera;
+        [Header("Shared")]
         [SerializeField] private CinemachineTargetGroup _targetGroup;
-        
-        
 
+        [Header("Free Look")]
+        [SerializeField] private CinemachineVirtualCamera _freeLookCamera;
+        [SerializeField] private FreeOrbitalCameraPivot _freeLookPivot;
+
+        [Header("Lock On")]
+        [SerializeField] private CinemachineVirtualCamera _lockOnCamera;
+        [SerializeField] private LockOnCameraPivot _lockOnPivot;
+
+        public CharacterCameraMode CurrentMode { get; private set; }
+        private Transform _lockOnTarget;
+
+        private void Awake()
+        {
+            CurrentMode = CharacterCameraMode.FreeMovement;
+        }
+
+        public void BeginLockOn(Transform target)
+        {
+            Debug.Assert(target != null);
+
+            if (CurrentMode == CharacterCameraMode.TargetLockOn)
+            {
+                throw new Exception(
+                    $"The character's camera is already in lock on mode, with target '{_lockOnTarget.gameObject}'");
+            }
+
+            CurrentMode = CharacterCameraMode.TargetLockOn;
+            _lockOnTarget = target;
+            
+            _freeLookCamera.Priority = -1;
+            _freeLookPivot.enabled = false;
+            
+            _lockOnCamera.Priority = 10;
+            _lockOnPivot.enabled = true;
+            _lockOnPivot.TargetTransform = target;
+
+            _targetGroup.m_Targets[1].target = target;
+        }
+
+        public void EndLockOn()
+        {
+            Debug.Assert(CurrentMode == CharacterCameraMode.TargetLockOn);
+
+            CurrentMode = CharacterCameraMode.FreeMovement;
+            _lockOnTarget = null;
+            
+            _freeLookCamera.Priority = 10;
+            _freeLookPivot.enabled = true;
+            
+            _lockOnCamera.Priority = -1;
+            _lockOnPivot.enabled = false;
+            _lockOnPivot.TargetTransform = null;
+            
+            _targetGroup.m_Targets[1].target = null;
+        }
     }
 }

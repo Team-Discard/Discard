@@ -19,13 +19,12 @@ namespace CameraSystem
             _yaw = 0;
         }
 
-        private void LateUpdate()
+        private void Update()
         {
             var rotation = Quaternion.Euler(-_pitch, _yaw, 0.0f);
             _pivotTransform.rotation = rotation;
         }
 
-        // todo: to:billy minPitch and maxPitch should be properties of the pivot not the controller?
         public void Rotate(Vector2 delta)
         {
             _pitch += delta.y;

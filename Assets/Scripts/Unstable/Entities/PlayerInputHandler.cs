@@ -12,6 +12,7 @@ namespace Unstable.Entities
         public Action onEastButton;
         public Action onNorthButton;
         public Action onWestButton;
+        public Action onToggleLockOn;
 
         private void Awake()
         {
@@ -19,7 +20,8 @@ namespace Unstable.Entities
             onEastButton = null;
             onNorthButton = null;
             onWestButton = null;
-
+            onToggleLockOn = null;
+            
             _control = new MainPlayerControl();
             _control.Enable();
             
@@ -57,12 +59,18 @@ namespace Unstable.Entities
             onWestButton?.Invoke();
         }
 
+        private void OnToggleLockOn(InputAction.CallbackContext callbackContext)
+        {
+            onToggleLockOn?.Invoke();
+        }
+
         private void RegisterInput()
         {
             _control.Standard.CardSouth.performed += OnSouthButton;
             _control.Standard.CardEast.performed += OnEastButton;
             _control.Standard.CardNorth.performed += OnNorthButton;
             _control.Standard.CardWest.performed += OnWestButton;
+            _control.Standard.ToggleLockOn.performed += OnToggleLockOn;
         }
 
         private void UnregisterInput()
@@ -71,6 +79,7 @@ namespace Unstable.Entities
             _control.Standard.CardEast.performed -= OnEastButton;
             _control.Standard.CardNorth.performed -= OnNorthButton;
             _control.Standard.CardWest.performed -= OnWestButton;
+            _control.Standard.ToggleLockOn.performed -= OnToggleLockOn;
         }
     }
 }
