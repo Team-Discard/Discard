@@ -1,10 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Serialization;
 
-[ExecuteInEditMode]
+[ExecuteAlways]
 public class PositionConstraint : MonoBehaviour
 {
-    [SerializeField] private Transform _followTransform;
+    [FormerlySerializedAs("_followTransform")] [SerializeField] private Transform _followTarget;
     [SerializeField] private Transform _follower;
 
     private void Awake()
@@ -17,6 +17,9 @@ public class PositionConstraint : MonoBehaviour
 
     private void Update()
     {
-        _follower.position = _followTransform.position;
+        if (_follower != null && _followTarget != null)
+        {
+            _follower.position = _followTarget.position;
+        }
     }
 }
