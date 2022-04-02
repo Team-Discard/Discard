@@ -1,4 +1,5 @@
 ﻿using Annotations;
+using CameraSystem;
 using UnityEngine;
 
 [Feature(FeatureTag.CameraController)]
@@ -6,10 +7,8 @@ using UnityEngine;
 public class ThirdPersonOrbitalCameraInputHandler : MonoBehaviour
 {
     [SerializeField] private float _sensitivity;
-    [SerializeField] private CameraPivot _pivot;
-    [SerializeField] private float _minPitch;
-    [SerializeField] private float _maxPitch;
-    
+    [SerializeField] private FreeOrbitalCameraPivot _pivot;
+
     private MainPlayerControl _control;
 
     private void Awake()
@@ -22,6 +21,6 @@ public class ThirdPersonOrbitalCameraInputHandler : MonoBehaviour
     {
         var mouseDelta = _control.Standard.CameraRotate.ReadValue<Vector2>();
         var rotationDelta = mouseDelta * _sensitivity;
-        _pivot.Rotate(rotationDelta, _minPitch, _maxPitch);
+        _pivot.Rotate(rotationDelta);
     }
 }

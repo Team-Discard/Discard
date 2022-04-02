@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Uxt;
 using Uxt.Debugging;
+using Uxt.Utils;
 
 namespace Unstable.Entities
 {

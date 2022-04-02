@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Uxt
+namespace Uxt.Utils
 {
     public static class EnumerableExt
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Uxt
+namespace Uxt.Utils
 {
     public class AssociativeCounter<TKey>
     {

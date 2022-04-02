@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Uxt
+namespace Uxt.Utils
 {
     public static class IkUtility
     {

@@ -15,6 +15,16 @@ MonoBehaviour:
   ScenesTabs:
   - pin: 0
     path:
+    - Assets/Scenes/SampleScene.unity
+    guid:
+    - 9fc0d4010bbf28b4594072e72b8655ab
+  - pin: 0
+    path:
+    - Assets/Tests/LockOnSystem/TEST_Lock_On_System_Test.unity
+    guid:
+    - 401194b015669924aab2e713fe90fe75
+  - pin: 0
+    path:
     - Assets/Scenes/GeorgeDemoScene.unity
     guid:
     - e549b1aad50ad7041b2306463ef07f2e
@@ -23,11 +33,6 @@ MonoBehaviour:
     - 
     guid:
     - 
-  - pin: 0
-    path:
-    - Assets/Scenes/SampleScene.unity
-    guid:
-    - 9fc0d4010bbf28b4594072e72b8655ab
   - pin: 0
     path:
     - Assets/animations/Souls-like Essentials/Demo.unity

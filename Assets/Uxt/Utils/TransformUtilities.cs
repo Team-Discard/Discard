@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Uxt
+namespace Uxt.Utils
 {
     public static class TransformUtilities
     {
@@ -22,6 +22,19 @@ namespace Uxt
             for (var i = 0; i < root.childCount; ++i)
             {
                 GetRootComponents(root.GetChild(i), outputList);
+            }
+        }
+
+        public static void UnParentAllChildren(this Transform root, bool destroySelf = true)
+        {
+            for (var i = root.childCount; i >= 0; --i)
+            {
+                root.GetChild(i).SetParent(root.parent);
+            }
+
+            if (destroySelf)
+            {
+                Object.Destroy(root.gameObject);
             }
         }
     }

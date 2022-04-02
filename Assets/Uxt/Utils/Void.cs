@@ -1,4 +1,4 @@
-﻿namespace Uxt
+﻿namespace Uxt.Utils
 {
     /// <summary>
     /// An empty struct that serves as a "void" generic type parameter.

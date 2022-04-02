@@ -1,15 +1,16 @@
-﻿using System;
-using Annotations;
+﻿using Annotations;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [Feature(FeatureTag.CameraController)]
+[ExecuteAlways]
 public class CameraBoom : MonoBehaviour
 {
     [SerializeField] private float _maxLength;
-    [SerializeField] private Transform _cameraTransform;
+    [FormerlySerializedAs("_cameraTransform")] [SerializeField] private Transform _boomEndTransform;
     [SerializeField] private Transform _cameraPivot;
-
     [SerializeField] private bool _useSpring;
+    
     private Vector3 _effectivePivotPos;
     private Vector3 _moveToIdealPivotVelocity;
 
@@ -21,8 +22,15 @@ public class CameraBoom : MonoBehaviour
 
     private void Update()
     {
-        Debug.Assert(_cameraTransform != null);
-        Debug.Assert(_cameraPivot != null);
+        if (Application.isPlaying)
+        {
+            Debug.Assert(_boomEndTransform != null);
+            Debug.Assert(_cameraPivot != null);
+        }
+        else if (_boomEndTransform == null || _cameraPivot == null)
+        {
+            return;
+        }
 
         if (_useSpring)
         {
@@ -34,8 +42,9 @@ public class CameraBoom : MonoBehaviour
         {
             _effectivePivotPos = _cameraPivot.transform.position;
         }
-        _cameraTransform.position = GetIdealCameraPos();
-        _cameraTransform.LookAt(_effectivePivotPos);
+
+        _boomEndTransform.position = GetIdealCameraPos();
+        _boomEndTransform.LookAt(_effectivePivotPos);
     }
 
     private Vector3 GetIdealCameraPos()
