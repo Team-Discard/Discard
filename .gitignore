@@ -74,4 +74,6 @@ Assets/Plugins/NintendoSDKPlugin/nn/account.meta
 
 .sonarqube
 
-/Assets/Plugins/HierarchyPro/Editor/_SAVED_DATA/.EditorSettings/
+/Assets/Plugins/HierarchyPro/Editor/_SAVED_DATA/
+
+/UserSettings/
