@@ -39,10 +39,8 @@ namespace CameraSystem
             _lockOnTarget = target;
             
             _freeLookCamera.Priority = -1;
-            _freeLookPivot.enabled = false;
             
             _lockOnCamera.Priority = 10;
-            _lockOnPivot.enabled = true;
             _lockOnPivot.TargetTransform = target;
 
             _targetGroup.m_Targets[1].target = target;
@@ -56,11 +54,8 @@ namespace CameraSystem
             _lockOnTarget = null;
             
             _freeLookCamera.Priority = 10;
-            _freeLookPivot.enabled = true;
-            
+            _freeLookPivot.SyncWith(_lockOnPivot.PivotTransform);
             _lockOnCamera.Priority = -1;
-            _lockOnPivot.enabled = false;
-            _lockOnPivot.TargetTransform = null;
             
             _targetGroup.m_Targets[1].target = null;
         }

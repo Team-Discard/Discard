@@ -25,13 +25,33 @@ namespace CameraSystem
             _pivotTransform.rotation = rotation;
         }
 
+        /// <summary>
+        /// Matches the rotation to another pivot so that the transition between them can be seamless.
+        /// Example use: when the player gets out of lock-on, sync the free look camera with the lock
+        /// on camera
+        /// </summary>
+        /// <param name="otherPivot">The other camera pivot to sync with</param>
+        public void SyncWith(Transform otherPivot)
+        {
+            var forward = otherPivot.forward;
+            var forwardXz = Vector3.ProjectOnPlane(forward, Vector3.up);
+            _pitch = Vector3.SignedAngle(forwardXz, forward, Vector3.Cross(forwardXz, forward));
+            _yaw = Vector3.SignedAngle(Vector3.forward, forwardXz, Vector3.up);
+            SanitizePitchAndYaw();
+        }
+
+        private void SanitizePitchAndYaw()
+        {
+            _pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
+            _yaw = Mathf.Repeat(_yaw, 360.0f);
+        }
+
         public void Rotate(Vector2 delta)
         {
             _pitch += delta.y;
             _yaw += delta.x;
-        
-            _pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
-            _yaw = Mathf.Repeat(_yaw, 360.0f);
+            SanitizePitchAndYaw();
+
         }
     }
 }

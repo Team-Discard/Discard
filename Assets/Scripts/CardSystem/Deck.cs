@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Uxt;
 using Uxt.Utils;
 
 namespace CardSystem

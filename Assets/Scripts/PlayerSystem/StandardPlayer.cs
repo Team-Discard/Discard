@@ -22,23 +22,18 @@ namespace PlayerSystem
 
         [SerializeField] private Transform _leftHandSocket;
         [SerializeField] private Transform _rightHandSocket;
-
         [SerializeField] private Transform _controlCamera;
-
         [SerializeField] private PlayerInputHandler _inputHandler;
 
         [SerializeField] private float _maxSpeed;
 
         // to:billy todo: hand should not be stored on standard player
         [SerializeField] private List<Card> _hand;
-
         [SerializeField] private StandardDamageTaker _damageTaker;
         [SerializeField] private StandardHealthBar _healthBar;
-
         [SerializeField] private CharacterCameraSetup _cameraSetup;
-        
-        private RootMotionFrame _rootMotionFrame;
 
+        private RootMotionFrame _rootMotionFrame;
         private IPawnComponent _pawn;
         private IActionExecutorComponent _actionExecutor;
         private PawnAnimationHandler _animationHandler;
@@ -132,6 +127,11 @@ namespace PlayerSystem
             _cardButtonHandler.Destroy();
             _healthBar.Destroy();
             _deathCheckComponent.Destroy();
+        }
+
+        public void BindControlCamera(Transform controlCamera)
+        {
+            _controlCamera = controlCamera;
         }
     }
 }

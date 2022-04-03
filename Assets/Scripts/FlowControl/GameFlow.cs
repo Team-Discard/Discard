@@ -14,6 +14,7 @@ using UnityEngine;
 using Unstable;
 using Unstable.Entities;
 using Uxt.Debugging;
+using Uxt.PropertyDrawers;
 using WeaponSystem;
 
 namespace FlowControl
@@ -29,7 +30,7 @@ namespace FlowControl
 
         private List<EnemySpawnDesc> _enemySpawnBuffer;
         private List<IInteractable> _interactables; // list of interactables, optimally should be handled by each level but it is here for now
-        [SerializeField] private float interactableScanRange;
+        [SerializeField, EditInPrefabOnly] private float interactableScanRange;
         private ComponentRegistry _componentRegistry;
 
         private void Awake()
