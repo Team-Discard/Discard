@@ -41,23 +41,6 @@ namespace InteractionSystem
         {
             InteractionEventSystem.TriggerOnEndInteraction(interactableObjId, Type);
         }
-        
-        // in case we want to execute a coroutine for interaction, not used now
-        private IEnumerator ExecuteInteractionCoroutine(int id)
-        {
-            if (interactableObjId != id)
-            {
-                yield return null;
-            }
-            
-            yield return null;
-        }
-        
-        // force stop all running coroutines on this script when interaction ends, now used now
-        private void ForceStopAllCoroutines()
-        {
-            StopAllCoroutines();
-        }
 
         private void MyStartInteraction(int id)
         {
