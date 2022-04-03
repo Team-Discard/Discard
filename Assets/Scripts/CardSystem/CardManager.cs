@@ -7,19 +7,18 @@ using Uxt.Utils;
 
 namespace CardSystem
 {
-    public class CardManager
+    public class CardManager : MonoBehaviour
     {
-        private readonly int _size;
-        private readonly List<Card> _hand;
-        private readonly List<Card> _buffer;
+        [SerializeField] private int _size;
+        private List<Card> _hand;
+        private List<Card> _buffer;
 
         public Action onStateChanged;
 
-        public CardManager(int size)
+        private void Awake()
         {
-            _size = size;
-            _hand = ListUtility.MakeEmptyList<Card>(size);
-            _buffer = ListUtility.MakeEmptyList<Card>(size);
+            _hand = ListUtility.MakeEmptyList<Card>(_size);
+            _buffer = ListUtility.MakeEmptyList<Card>(_size);
             onStateChanged = null;
         }
 
@@ -30,6 +29,12 @@ namespace CardSystem
         {
             Debug.Assert(index >= 0 && index < _size);
             return _hand[index];
+        }
+
+        public Card GetCardInBuffer(int index)
+        {
+            Debug.Assert(index >= 0 && index < _size);
+            return _buffer[index];
         }
 
         public CardLocation? AcquireCard(Card card, int preferredIndex)
@@ -49,13 +54,13 @@ namespace CardSystem
         }
 
         private static bool IsListFull(List<Card> list) => list.TrueForAll(c => c != null);
-        
-        private static int InsertCard(List<Card> list, Card card, int preferredIndex)
+
+        private int InsertCard(List<Card> list, Card card, int preferredIndex)
         {
             Debug.Assert(!IsListFull(list));
-            
+
             var iterationCount = 0;
-            while (list[preferredIndex] != null && iterationCount < list.Count)
+            while (list[preferredIndex] != null && iterationCount <= list.Count)
             {
                 preferredIndex = (preferredIndex + 1) % list.Count;
                 ++iterationCount;
@@ -63,6 +68,10 @@ namespace CardSystem
 
             Debug.Assert(list[preferredIndex] == null);
             list[preferredIndex] = card;
+            
+            // to:billy rev: minor issue here. This really should be called in AcquireCard
+            onStateChanged?.Invoke();
+            
             return preferredIndex;
         }
 
@@ -77,6 +86,8 @@ namespace CardSystem
             {
                 MoveBufferToHand();
             }
+
+            onStateChanged?.Invoke();
 
             return card.Use(userDependencies);
         }

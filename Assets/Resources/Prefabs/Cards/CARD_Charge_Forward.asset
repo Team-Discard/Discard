@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Charge Forward
   _description: 
-  _illustration: {fileID: 0}
+  _illustration: {fileID: 21300000, guid: bbd55ad184a0d7c4ab4f16a67ec84b1b, type: 3}
   _actionPrefab: {fileID: 7795206100984528140, guid: 34f0706850411594d8fef13a5283954d, type: 3}

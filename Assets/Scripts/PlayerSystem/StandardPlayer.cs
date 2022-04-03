@@ -30,7 +30,8 @@ namespace PlayerSystem
         [SerializeField] private StandardDamageTaker _damageTaker;
         [SerializeField] private StandardHealthBar _healthBar;
         [SerializeField] private CharacterCameraSetup _cameraSetup;
-
+        [SerializeField] private CardManager _cardManager;
+        
         private RootMotionFrame _rootMotionFrame;
         private IPawnComponent _pawn;
         private IActionExecutorComponent _actionExecutor;
@@ -40,7 +41,6 @@ namespace PlayerSystem
         private ICardUserComponent _cardUser;
         private CardButtonHandler _cardButtonHandler;
         private IDeathCheckComponent _deathCheckComponent;
-        private CardManager _cardManager;
         private IHealthBarWatcherComponent _healthBarWatcher;
 
         // todo: to:billy implement a proper system for giving player cards for debug and testing purposes
@@ -68,7 +68,6 @@ namespace PlayerSystem
             _controller =
                 new StandardPlayerController(_pawn, _controlCamera, _actionExecutor, _inputHandler, _maxSpeed);
 
-            _cardManager = new CardManager(4);
             foreach (var card in _debugPlayerCards)
             {
                 _cardManager.AcquireCard(card, 0);
