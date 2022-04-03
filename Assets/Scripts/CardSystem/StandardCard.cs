@@ -18,15 +18,14 @@ namespace CardSystem
         public override string Description => _description;
         public override Sprite Illustration => _illustration;
 
-        public override CardUseResult Use(DependencyBag bag)
+        public override CardUseResult Use(DependencyBag userDependencies)
         {
             var result = new CardUseResult();
             var actionObj = Instantiate(_actionPrefab);
             var action = actionObj.GetComponent<IAction>();
-            action.Init(bag);
+            action.Init(userDependencies);
 
             Debug.Assert(action != null, "The game object does not contain any action");
-            result.ConsumesCard = true;
             result.Action = action;
             return result;
         }

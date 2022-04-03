@@ -27,8 +27,6 @@ namespace PlayerSystem
 
         [SerializeField] private float _maxSpeed;
 
-        // to:billy todo: hand should not be stored on standard player
-        [SerializeField] private List<Card> _hand;
         [SerializeField] private StandardDamageTaker _damageTaker;
         [SerializeField] private StandardHealthBar _healthBar;
         [SerializeField] private CharacterCameraSetup _cameraSetup;
@@ -39,12 +37,15 @@ namespace PlayerSystem
         private PawnAnimationHandler _animationHandler;
         private IPawnControllerComponent _controller;
         private IWeaponEquipComponent _weaponEquipHandler;
-        private TemporaryCardTextUI _cardUi;
         private ICardUserComponent _cardUser;
         private CardButtonHandler _cardButtonHandler;
         private IDeathCheckComponent _deathCheckComponent;
-
+        private CardManager _cardManager;
         private IHealthBarWatcherComponent _healthBarWatcher;
+
+        // todo: to:billy implement a proper system for giving player cards for debug and testing purposes
+        [SerializeField] private List<Card> _debugPlayerCards;
+
         public IHealthBarComponent HealthBar => _healthBar;
 
         public override void Init()
@@ -67,8 +68,13 @@ namespace PlayerSystem
             _controller =
                 new StandardPlayerController(_pawn, _controlCamera, _actionExecutor, _inputHandler, _maxSpeed);
 
-            _cardUi = new TemporaryCardTextUI(_hand);
-            _cardUser = new StandardCardUser(_actionExecutor, _hand);
+            _cardManager = new CardManager(4);
+            foreach (var card in _debugPlayerCards)
+            {
+                _cardManager.AcquireCard(card, 0);
+            }
+            
+            _cardUser = new StandardCardUser(_actionExecutor, _cardManager);
 
             _healthBar = GetComponent<StandardHealthBar>();
             _damageTaker.BindHealthBar(_healthBar);
@@ -106,7 +112,6 @@ namespace PlayerSystem
             registry.AddComponent(_animationHandler);
             registry.AddComponent(_weaponEquipHandler);
             registry.AddComponent(_controller);
-            registry.AddComponent(_cardUi);
             registry.AddComponent(_cardUser);
             registry.AddComponent(_cardButtonHandler);
             registry.AddComponent(_healthBar);
@@ -122,7 +127,6 @@ namespace PlayerSystem
             _animationHandler.Destroy();
             _weaponEquipHandler.Destroy();
             _controller.Destroy();
-            _cardUi.Destroy();
             _cardUser.Destroy();
             _cardButtonHandler.Destroy();
             _healthBar.Destroy();

@@ -13,5 +13,17 @@ namespace Uxt.Utils
                 (list[src], list[dest]) = (list[dest], list[src]);
             }
         }
+
+        public static List<T> MakeEmptyList<T>(int size)
+        {
+            Debug.Assert(size >= 0);
+            var list = new List<T>(size);
+            for (var i = 0; i < size; ++i)
+            {
+                list.Add(default);
+            }
+
+            return list;
+        }
     }
 }

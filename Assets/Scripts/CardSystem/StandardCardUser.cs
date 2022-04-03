@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using ActionSystem;
+﻿using ActionSystem;
 using EntitySystem;
-using UnityEngine;
-using Uxt;
 using Uxt.InterModuleCommunication;
 
 namespace CardSystem
@@ -11,24 +7,20 @@ namespace CardSystem
     public class StandardCardUser : StandardComponent, ICardUserComponent
     {
         private readonly IActionExecutorComponent _actionExecutor;
-        private readonly List<Card> _hand;
+        private readonly CardManager _cardManager;
 
-        public StandardCardUser(IActionExecutorComponent actionExecutor, IEnumerable<Card> hand)
+        public StandardCardUser(IActionExecutorComponent actionExecutor, CardManager cardManager)
         {
             _actionExecutor = actionExecutor;
-            _hand = hand.ToList();
+            _cardManager = cardManager;
         }
 
         public void UseCard(int index, DependencyBag dependencies)
         {
-            Debug.Assert(0 <= index && index < _hand.Count);
+            if (_actionExecutor.HasPendingOrActiveActions) return;
+            if (_cardManager.GetCardInHand(index) == null) return;
 
-            if (_actionExecutor.HasPendingOrActiveActions)
-            {
-                return;
-            }
-
-            var useResult = _hand[index].Use(dependencies);
+            var useResult = _cardManager.UseCard(index, dependencies);
             var action = useResult.Action;
             if (action != null)
             {
