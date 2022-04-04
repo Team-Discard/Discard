@@ -16,7 +16,7 @@ namespace FlowControl
             Completed
         }
 
-        private readonly ComponentRegistry _gameCompRegistry;
+        private readonly IComponentRegistry _gameCompRegistry;
         private readonly ComponentList<IEnemySpawnerComponent> _enemySpawners = new();
         private readonly ComponentList<IEnemyComponent> _enemies = new();
         private readonly List<EnemySpawnDesc> _enemySpawnBuffer = new();
@@ -25,7 +25,7 @@ namespace FlowControl
 
         private GameObject _rewardChest;
 
-        public LevelFlow(ComponentRegistry gameCompRegistry, GameObject levelRoot)
+        public LevelFlow(IComponentRegistry gameCompRegistry, GameObject levelRoot)
         {
             _gameCompRegistry = gameCompRegistry;
             _rewardChest = levelRoot.transform.Find("Reward Chest")?.gameObject;
