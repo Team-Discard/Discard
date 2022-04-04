@@ -18,6 +18,7 @@ namespace Unstable.Entities
         public CharacterControllerPawn(CharacterController controller)
         {
             _controller = controller;
+            _rotation.TargetForwardDirection = Vector2.up;
         }
 
         bool IComponent.EnabledInternal => true;

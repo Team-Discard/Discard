@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ActionSystem;
 using Animancer;
 using CharacterSystem;
 using EntitySystem;
@@ -92,7 +93,7 @@ namespace Unstable.Entities
             Debug.Log($"[{SystemName}] Stop playing animation for {action}", _animancer);
         }
 
-        public void PlayActionAnimation(IAction action, ITransition transition, Action doneCallback)
+        public void PlayActionAnimation(IAction action, ITransition transition, Action doneCallback = null)
         {
             if (!_activeActions.Contains(action))
             {
