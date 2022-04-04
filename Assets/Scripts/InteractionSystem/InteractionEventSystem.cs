@@ -6,8 +6,8 @@ namespace InteractionSystem
     {
         // bool variable that ONLY allow a single interaction with an interactable at a time
         // may change in the future
-        private static bool _IsInteracting = false;
-        
+        public static bool IsInteracting { get; private set; } = false;
+
         // on start interaction event
         private static event Action<int> OnStartInteraction;
         public static void SubscribeToOnStartInteraction(Action<int> subscriber) => OnStartInteraction += subscriber;
@@ -15,13 +15,13 @@ namespace InteractionSystem
         public static void TriggerOnStartInteraction(int interactableObjId, InteractionType type)
         {
             // if we are already interacting with something, do not trigger more interactions
-            if (_IsInteracting)
+            if (IsInteracting)
             {
                 return;
             }
             
             // else set interacting to true and trigger interaction event
-            _IsInteracting = true;
+            IsInteracting = true;
             OnStartInteraction?.Invoke(interactableObjId);
         }
 
@@ -32,7 +32,7 @@ namespace InteractionSystem
 
         public static void TriggerOnEndInteraction(int interactableObjId, InteractionType type)
         {
-            _IsInteracting = false;
+            IsInteracting = false;
             OnEndInteraction?.Invoke(interactableObjId);
         }
     }

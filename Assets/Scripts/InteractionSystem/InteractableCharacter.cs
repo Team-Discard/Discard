@@ -10,6 +10,8 @@ namespace InteractionSystem
         [SerializeField] private int interactionPriority;
         [SerializeField] private InteractionType interactionType;
 
+        private const float RotationSpeed = 1f;
+
         public int InteractableObjId => interactableObjId;
         public int InteractionPriority => interactionPriority;
         
@@ -41,22 +43,34 @@ namespace InteractionSystem
         {
             InteractionEventSystem.TriggerOnEndInteraction(interactableObjId, Type);
         }
-        
-        // in case we want to execute a coroutine for interaction, not used now
-        private IEnumerator ExecuteInteractionCoroutine(int id)
+
+        private Coroutine _lookAtPlayerCoroutine;
+
+        private void StartRotation()
         {
-            if (interactableObjId != id)
+            if (null != _lookAtPlayerCoroutine)
             {
+                StopCoroutine(_lookAtPlayerCoroutine);
+            }
+
+            _lookAtPlayerCoroutine = StartCoroutine(LookAtPlayer());
+        }
+        private IEnumerator LookAtPlayer()
+        {
+            var playerPosition = InteractionManager.PlayerTransform.position;
+            var position = transform.position;
+            
+            // clamp the y coordinate
+            playerPosition.y = position.y;
+            
+            var lookRotation = Quaternion.LookRotation(playerPosition - position);
+            var timeCount = 0f;
+            while (timeCount < 1f)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, timeCount);
+                timeCount += RotationSpeed * Time.deltaTime;
                 yield return null;
             }
-            
-            yield return null;
-        }
-        
-        // force stop all running coroutines on this script when interaction ends, now used now
-        private void ForceStopAllCoroutines()
-        {
-            StopAllCoroutines();
         }
 
         private void MyStartInteraction(int id)
@@ -66,8 +80,12 @@ namespace InteractionSystem
             {
                 return;
             }
+            
+            // rotate character towards player
+            StartRotation();
         }
-
+        
+        // always called when dialogue is over
         private void MyEndInteraction(int id)
         {
             // if interactable object called on is not myself, do nothing
@@ -75,6 +93,8 @@ namespace InteractionSystem
             {
                 return;
             }
+            
+            Debug.Log("Interaction with character: " + gameObject.name + " has ended");
         }
     }
 }
