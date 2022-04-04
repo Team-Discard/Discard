@@ -156,7 +156,7 @@ namespace FlowControl
                 $"Enemy count = {_componentRegistry.Get<IHealthBarTransformComponent>().Count}",
                 "enemy_count".GetHashCode(), Color.cyan);
 
-            if (InteractionManager.Instance != null)
+            if (InteractionManager.Instance != null && !InteractionEventSystem.IsInteracting)
             {
                 // Scan for interactable and set it in interactionManager
                 _interactables = GetAllInteractables();

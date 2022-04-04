@@ -40,6 +40,9 @@ namespace InteractionSystem
 
         public void InteractWithCurrentFocusedInteractable()
         {
+            // hide interaction hint
+            _interactionHintImage.enabled = false;
+            
             // if interacting with a character, prepare the dialogue manager for dialogue
             if (_currentFocusedInteractable.Type == InteractionType.Character)
             {
@@ -47,6 +50,8 @@ namespace InteractionSystem
             }
             
             _currentFocusedInteractable?.StartInteraction();
+            
+            _currentFocusedInteractable = null;
         }
 
         public void DisplayInteractionHintIfNeeded()
