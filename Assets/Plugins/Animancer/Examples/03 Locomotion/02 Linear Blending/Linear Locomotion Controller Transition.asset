@@ -13,17 +13,18 @@ MonoBehaviour:
   m_Name: Linear Locomotion Controller Transition
   m_EditorClassIdentifier: 
   _Transition:
-    id: 0
+    rid: 0
   references:
-    version: 1
-    00000000:
+    version: 2
+    RefIds:
+    - rid: 0
       type: {class: Float1ControllerTransition, ns: Animancer, asm: Animancer}
       data:
         _FadeDuration: 0.25
         _Events:
-          _Names: []
           _NormalizedTimes: []
           _Callbacks: []
+          _Names: []
         _Controller: {fileID: 91242112294343564}
         _NormalizedStartTime: NaN
         _KeepStateOnStop: 0
@@ -97,7 +98,7 @@ BlendTree:
   m_BlendType: 0
 --- !u!1102 &1102252175982360230
 AnimatorState:
-  serializedVersion: 5
+  serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -123,7 +124,7 @@ AnimatorState:
   m_TimeParameter: 
 --- !u!1107 &1107240474225256196
 AnimatorStateMachine:
-  serializedVersion: 5
+  serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}

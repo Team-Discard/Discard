@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Linear Locomotion Mixer Transition
   m_EditorClassIdentifier: 
   _Transition:
-    id: 0
+    rid: 0
   references:
-    version: 1
-    00000000:
+    version: 2
+    RefIds:
+    - rid: 0
       type: {class: LinearMixerTransition, ns: Animancer, asm: Animancer}
       data:
         _FadeDuration: 0.25
