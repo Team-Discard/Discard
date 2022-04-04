@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ namespace InteractionSystem
         [SerializeField] private int interactableObjId;
         [SerializeField] private int interactionPriority;
         [SerializeField] private InteractionType interactionType;
+
+        private const float RotationSpeed = 1f;
 
         public int InteractableObjId => interactableObjId;
         public int InteractionPriority => interactionPriority;
@@ -42,6 +45,33 @@ namespace InteractionSystem
             InteractionEventSystem.TriggerOnEndInteraction(interactableObjId, Type);
         }
 
+        private Coroutine _lookAtPlayerCoroutine;
+
+        private void StartRotation()
+        {
+            if (null != _lookAtPlayerCoroutine)
+            {
+                StopCoroutine(_lookAtPlayerCoroutine);
+            }
+
+            _lookAtPlayerCoroutine = StartCoroutine(LookAtPlayer());
+        }
+        private IEnumerator LookAtPlayer()
+        {
+            var playerPosition = InteractionManager.PlayerTransform.position;
+            var position = transform.position;
+            playerPosition.y = position.y;
+            
+            var lookRotation = Quaternion.LookRotation(playerPosition - position);
+            var timeCount = 0f;
+            while (timeCount < 1f)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, timeCount);
+                timeCount += RotationSpeed * Time.deltaTime;
+                yield return null;
+            }
+        }
+
         private void MyStartInteraction(int id)
         {
             // if interactable object called on is not myself, do nothing
@@ -49,6 +79,12 @@ namespace InteractionSystem
             {
                 return;
             }
+            
+            // rotate character towards player
+            StartRotation();
+            
+            // temporary call to test look at player
+            EndInteraction();
         }
 
         private void MyEndInteraction(int id)

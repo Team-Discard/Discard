@@ -1,4 +1,5 @@
 ﻿using System;
+using InteractionSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,6 +14,7 @@ namespace Unstable.Entities
         public Action onNorthButton;
         public Action onWestButton;
         public Action onToggleLockOn;
+        public Action onInteractButton;
 
         private void Awake()
         {
@@ -21,6 +23,7 @@ namespace Unstable.Entities
             onNorthButton = null;
             onWestButton = null;
             onToggleLockOn = null;
+            onInteractButton = null;
             
             _control = new MainPlayerControl();
             _control.Enable();
@@ -28,9 +31,18 @@ namespace Unstable.Entities
             RegisterInput();
         }
 
+        private void Start()
+        {
+            // maybe bad practice, ask Billy
+            onInteractButton += InteractionManager.Instance.InteractWithCurrentFocusedInteractable;
+        }
+
         private void OnDestroy()
         {
             UnregisterInput();
+            
+            // maybe bad practice, ask Billy
+            onInteractButton -= InteractionManager.Instance.InteractWithCurrentFocusedInteractable;
         }
 
         public void UpdateInput(
@@ -64,6 +76,11 @@ namespace Unstable.Entities
             onToggleLockOn?.Invoke();
         }
 
+        private void OnInteractButton(InputAction.CallbackContext callbackContext)
+        {
+            onInteractButton?.Invoke();
+        }
+
         private void RegisterInput()
         {
             _control.Standard.CardSouth.performed += OnSouthButton;
@@ -71,6 +88,7 @@ namespace Unstable.Entities
             _control.Standard.CardNorth.performed += OnNorthButton;
             _control.Standard.CardWest.performed += OnWestButton;
             _control.Standard.ToggleLockOn.performed += OnToggleLockOn;
+            _control.Standard.Interact.performed += OnInteractButton;
         }
 
         private void UnregisterInput()
@@ -80,6 +98,7 @@ namespace Unstable.Entities
             _control.Standard.CardNorth.performed -= OnNorthButton;
             _control.Standard.CardWest.performed -= OnWestButton;
             _control.Standard.ToggleLockOn.performed -= OnToggleLockOn;
+            _control.Standard.Interact.performed -= OnInteractButton;
         }
     }
 }

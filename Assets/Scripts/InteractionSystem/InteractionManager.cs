@@ -38,6 +38,11 @@ namespace InteractionSystem
             _currentFocusedInteractable = inter;
         }
 
+        public void InteractWithCurrentFocusedInteractable()
+        {
+            _currentFocusedInteractable?.StartInteraction();
+        }
+
         public void DisplayInteractionHintIfNeeded()
         {
             if (_currentFocusedInteractable == null)
@@ -49,7 +54,7 @@ namespace InteractionSystem
             var targetTransform = _currentFocusedInteractable.MyGameObject.transform;
 
             // display interaction hint if currently we have a focused interaction target
-            if (Camera.main == null)
+            if (null == Camera.main)
             {
                 Debug.Log("No main camera found!");
                 return;

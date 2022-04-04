@@ -98,6 +98,15 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""d67fcd6b-6093-467e-b671-2f00460756d5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -254,6 +263,17 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                     ""action"": ""Toggle Lock On"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ca33aae5-39f8-423c-9239-719393242f29"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -270,6 +290,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
         m_Standard_CardEast = m_Standard.FindAction("Card East", throwIfNotFound: true);
         m_Standard_CardNorth = m_Standard.FindAction("Card North", throwIfNotFound: true);
         m_Standard_CardWest = m_Standard.FindAction("Card West", throwIfNotFound: true);
+        m_Standard_Interact = m_Standard.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -337,6 +358,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
     private readonly InputAction m_Standard_CardEast;
     private readonly InputAction m_Standard_CardNorth;
     private readonly InputAction m_Standard_CardWest;
+    private readonly InputAction m_Standard_Interact;
     public struct StandardActions
     {
         private @MainPlayerControl m_Wrapper;
@@ -349,6 +371,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
         public InputAction @CardEast => m_Wrapper.m_Standard_CardEast;
         public InputAction @CardNorth => m_Wrapper.m_Standard_CardNorth;
         public InputAction @CardWest => m_Wrapper.m_Standard_CardWest;
+        public InputAction @Interact => m_Wrapper.m_Standard_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Standard; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -382,6 +405,9 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                 @CardWest.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardWest;
                 @CardWest.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardWest;
                 @CardWest.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnCardWest;
+                @Interact.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnInteract;
             }
             m_Wrapper.m_StandardActionsCallbackInterface = instance;
             if (instance != null)
@@ -410,6 +436,9 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                 @CardWest.started += instance.OnCardWest;
                 @CardWest.performed += instance.OnCardWest;
                 @CardWest.canceled += instance.OnCardWest;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
         }
     }
@@ -424,5 +453,6 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
         void OnCardEast(InputAction.CallbackContext context);
         void OnCardNorth(InputAction.CallbackContext context);
         void OnCardWest(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
 }
