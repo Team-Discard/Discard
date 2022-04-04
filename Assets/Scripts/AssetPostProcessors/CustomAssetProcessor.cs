@@ -14,7 +14,7 @@ namespace AssetPostProcessors
             for (int i = 0; i < paths.Length; ++i)
             {
                 var info = new FileInfo(paths[i]);
-                if (info.Exists && info.IsReadOnly)
+                if (false)
                 {
                     UnityEditor.EditorUtility.DisplayDialog("Can not save.",
                         "Sorry, but '" + paths[i] + "' is Read-Only! Please Save as another name.",
