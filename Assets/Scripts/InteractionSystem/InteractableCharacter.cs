@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -60,6 +59,8 @@ namespace InteractionSystem
         {
             var playerPosition = InteractionManager.PlayerTransform.position;
             var position = transform.position;
+            
+            // clamp the y coordinate
             playerPosition.y = position.y;
             
             var lookRotation = Quaternion.LookRotation(playerPosition - position);
@@ -82,11 +83,9 @@ namespace InteractionSystem
             
             // rotate character towards player
             StartRotation();
-            
-            // temporary call to test look at player
-            EndInteraction();
         }
-
+        
+        // always called when dialogue is over
         private void MyEndInteraction(int id)
         {
             // if interactable object called on is not myself, do nothing
@@ -94,6 +93,8 @@ namespace InteractionSystem
             {
                 return;
             }
+            
+            Debug.Log("Interaction with character: " + gameObject.name + " has ended");
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+using Dialogue;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,6 +40,12 @@ namespace InteractionSystem
 
         public void InteractWithCurrentFocusedInteractable()
         {
+            // if interacting with a character, prepare the dialogue manager for dialogue
+            if (_currentFocusedInteractable.Type == InteractionType.Character)
+            {
+                DialogueManager.Instance.StartDialogueWithCharacter(_currentFocusedInteractable);
+            }
+            
             _currentFocusedInteractable?.StartInteraction();
         }
 
