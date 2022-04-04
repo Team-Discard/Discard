@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace Dialogue
 {
+    // very hacky solution for text color
     public class EnforceOptionTextColor : MonoBehaviour
     {
         [SerializeField] private Color textColor;
