@@ -2,6 +2,7 @@
 using ActionSystem;
 using CharacterSystem;
 using EntitySystem;
+using InteractionSystem;
 using UnityEngine;
 using Unstable.Entities;
 using Unstable.Utils;
@@ -28,6 +29,9 @@ namespace PlayerSystem
 
         public void Tick(float deltaTime)
         {
+            // very hacky
+            if (InteractionEventSystem.IsInteracting) return;
+            
             var rotationFrame = _pawn.GetRotationFrame().PrepareNextFrame();
             var translationFrame = new Translation();
 
