@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using ActionSystem;
 using CharacterSystem;
+using CutSceneSystem;
 using EntitySystem;
 using InteractionSystem;
 using UnityEngine;
@@ -30,7 +31,7 @@ namespace PlayerSystem
         public void Tick(float deltaTime)
         {
             // very hacky
-            if (InteractionEventSystem.IsInteracting) return;
+            if (InteractionEventSystem.IsInteracting || TimelineManager.IsCutScenePlaying) return;
             
             var rotationFrame = _pawn.GetRotation().PrepareNextFrame();
             var translationFrame = new Translation();

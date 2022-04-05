@@ -1,4 +1,5 @@
 ﻿using Annotations;
+using CutSceneSystem;
 using InteractionSystem;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ namespace CameraSystem
         private void Update()
         {
             // very hacky
-            if (InteractionEventSystem.IsInteracting) return;
+            if (InteractionEventSystem.IsInteracting || TimelineManager.IsCutScenePlaying) return;
             
             var rotation = Quaternion.Euler(-_pitch, _yaw, 0.0f);
             _pivotTransform.rotation = rotation;
