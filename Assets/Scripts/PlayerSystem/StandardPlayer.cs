@@ -32,7 +32,7 @@ namespace PlayerSystem
         [SerializeField] private CharacterCameraSetup _cameraSetup;
         [SerializeField] private CardManager _cardManager;
         
-        private RootMotionFrame _rootMotionFrame;
+        private RootMotionSource _rootMotionSource;
         private IPawnComponent _pawn;
         private IActionExecutorComponent _actionExecutor;
         private PawnAnimationHandler _animationHandler;
@@ -55,8 +55,8 @@ namespace PlayerSystem
             var animancer = GetComponentInChildren<AnimancerComponent>();
             Debug.Assert(animancer != null, "Player must have an animancer component in its children");
 
-            _rootMotionFrame = GetComponentInChildren<RootMotionFrame>();
-            Debug.Assert(_rootMotionFrame != null, "Player must have an root motion frame in its children");
+            _rootMotionSource = GetComponentInChildren<RootMotionSource>();
+            Debug.Assert(_rootMotionSource != null, "Player must have an root motion frame in its children");
 
             _pawn = new CharacterControllerPawn(GetComponent<CharacterController>());
             _actionExecutor = new ActionExecutor();
@@ -84,7 +84,7 @@ namespace PlayerSystem
             {
                 _weaponEquipHandler,
                 _animationHandler,
-                _rootMotionFrame,
+                _rootMotionSource,
                 transform
             };
 

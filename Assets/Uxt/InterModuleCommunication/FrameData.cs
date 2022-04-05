@@ -41,8 +41,19 @@ namespace Uxt.InterModuleCommunication
 
         public T ForceReadValue()
         {
+            if (TryReadValue(out var val))
+            {
+                return val;
+            }
+            
             SetValue(default);
             return _val;
+        }
+
+        public T Value
+        {
+            get => ForceReadValue();
+            set => SetValue(value);
         }
 
         public bool Add(IReadOnlyFrameData<T> rhs, Func<T, T, T> op)

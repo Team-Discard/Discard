@@ -5,6 +5,7 @@ using CombatSystem;
 using EntitySystem;
 using UI.HealthBar;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Uxt.Debugging;
 using WeaponSystem;
 using WeaponSystem.Swords;
@@ -23,16 +24,16 @@ namespace Unstable.Entities
         [SerializeField] private float _speed;
         [SerializeField] private StandardWeaponLocomotionAnimationSet _defaultAnimationSet;
         [SerializeField] private ClipTransition _stabAnimation;
-        [SerializeField] private RootMotionFrame _rootMotionFrame;
+        [FormerlySerializedAs("_rootMotionFrame")] [SerializeField] private RootMotionSource rootMotionSource;
         [SerializeField] private float _maxAngularVelocityDuringAttack;
         [SerializeField] private float _rotationThreshold;
         [SerializeField] private Sword _sword;
         private StandardHealthBar _healthBar;
         private EnemyHealthBarTransform _healthBarTransform; 
         [SerializeField] private StandardDamageTaker _damageTaker;
-        
-        private PawnAnimationHandler _animationHandler;
 
+        private RootMotionFrame _rootMotionFrame;
+        private PawnAnimationHandler _animationHandler;
         private bool _attackAnimationPlayed;
 
         public override void Init()
@@ -89,7 +90,7 @@ namespace Unstable.Entities
             DebugMessageManager.AddOnScreen($"Attack playing: {_enemyAI.IsMoving}", 42, Color.blue, 0.0f);
 
             var translationFrame = new Translation();
-            var rotationFrame = _pawn.GetRotationFrame().PrepareNextFrame();
+            var rotationFrame = _pawn.GetRotation().PrepareNextFrame();
 
             if (!Destroyed)
             {
@@ -97,8 +98,8 @@ namespace Unstable.Entities
             }
 
             _locomotionController.ApplyGravity(deltaTime, ref translationFrame);
-            _pawn.SetTranslationFrame(translationFrame);
-            _pawn.SetRotationFrame(rotationFrame);
+            _pawn.SetTranslation(translationFrame);
+            _pawn.SetRotation(rotationFrame);
             _animationHandler.SetAbsoluteSpeed(_pawn.CalculateForwardSpeed());
         }
 
@@ -122,7 +123,7 @@ namespace Unstable.Entities
             {
                 if (!_attackAnimationPlayed)
                 {
-                    _rootMotionFrame.BeginAccumulateDisplacement(this);
+                    _rootMotionFrame = rootMotionSource.BeginAccumulate();
                     _attackAnimationPlayed = true;
                     var damageId = DamageManager.SetDamage(new Damage
                     {
@@ -136,13 +137,13 @@ namespace Unstable.Entities
                         {
                             _enemyAI.IsSlashing = false;
                             _attackAnimationPlayed = false;
-                            _rootMotionFrame.EndAccumulateDisplacement(this);
+                            _rootMotionFrame.Destroy();
                             DamageManager.ClearDamage(ref damageId);
                         });
                 }
                 else
                 {
-                    translation.Displacement += _rootMotionFrame.ConsumeDisplacement(this);
+                    translation.Displacement += _rootMotionFrame.ConsumeDisplacement();
                 }
 
                 var angleDiff = Vector3.SignedAngle(

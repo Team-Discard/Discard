@@ -21,6 +21,7 @@ namespace ActionSystem
 
         private readonly FrameData<Rotation> _rotationFrame = new();
         public IReadOnlyFrameData<Rotation> RotationFrame => _rotationFrame;
+        public float PlayerControlFactor { get; private set; }
 
         public void GetAllActions(List<IAction> outActions)
         {
@@ -63,15 +64,20 @@ namespace ActionSystem
 
         private void UpdateActions()
         {
+            _translationFrame.Value = default;
+            PlayerControlFactor = 1.0f;
+
             foreach (var action in _activeActions)
             {
                 action.Execute(Time.deltaTime);
+                PlayerControlFactor *= Mathf.Clamp01(action.PlayerControlFactor);
                 _translationFrame.Add(action.TranslationFrame, (lhs, rhs) => lhs + rhs);
                 _rotationFrame.Add(action.RotationFrame, (_, rhs) => rhs);
 
                 if (action is MonoBehaviour m)
                 {
-                    DebugMessageManager.AddOnScreen($"Action ({m.gameObject.name}) - translation: {action.TranslationFrame}",
+                    DebugMessageManager.AddOnScreen(
+                        $"Action ({m.gameObject.name}) - translation: {action.TranslationFrame}",
                         m.GetInstanceID(), Color.blue, 0.01f);
                 }
             }
