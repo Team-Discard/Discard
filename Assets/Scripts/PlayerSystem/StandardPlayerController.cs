@@ -46,7 +46,7 @@ namespace PlayerSystem
                 LocomotionController.ApplyDirectionalMovement(
                     deltaTime, inputDirection, controlDirection,
                     _pawn.CurrentForward.ConvertXz2Xy(),
-                    _maxSpeed, 360.0f,
+                    _maxSpeed, 720.0f,
                     ref translationFrame, ref rotationFrame);
             }
 
