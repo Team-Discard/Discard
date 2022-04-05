@@ -9,6 +9,8 @@ namespace Unstable.Entities
         public float Responsiveness { get; set; }
 
         public float? OverrideLinearRotation { get; set; }
+        public Quaternion? Delta { get; set; }
+        public static Rotation Identity { get; private set; } = new();
 
         public void AddOverrideLinearRotation(float angle)
         {
@@ -38,7 +40,19 @@ namespace Unstable.Entities
                 rotation = Quaternion.Slerp(currentRotation, targetRotation, deltaTime * Responsiveness);
             }
 
+            if (Delta.HasValue)
+            {
+                rotation *= Delta.Value;
+                Debug.Log(Delta.Value);
+            }
+            
+            
             return rotation;
+        }
+
+        public override string ToString()
+        {
+            return (Delta ?? Quaternion.identity).ToString();
         }
     }
 }
