@@ -25,14 +25,12 @@ namespace Unstable.Entities
         public Vector3 CurrentVelocity => _velocity;
         public Vector3 CurrentForward => _controller.transform.forward;
 
-        public void SetTranslationFrame(Translation translation) =>
+        public void SetTranslation(Translation translation) =>
             _translation.UpdateAndAccumulate(translation);
 
-        public Rotation GetRotationFrame() =>
-            _rotation;
+        public Rotation GetRotation() => _rotation;
 
-        public void SetRotationFrame(Rotation rotation) =>
-            _rotation = rotation;
+        public void SetRotation(Rotation rotation) => _rotation = rotation;
 
         public void TickTranslation(float deltaTime)
         {

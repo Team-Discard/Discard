@@ -32,11 +32,11 @@ namespace PlayerSystem
             // very hacky
             if (InteractionEventSystem.IsInteracting) return;
             
-            var rotationFrame = _pawn.GetRotationFrame().PrepareNextFrame();
+            var rotationFrame = _pawn.GetRotation().PrepareNextFrame();
             var translationFrame = new Translation();
 
             var controlDirection = _controlCameraTransform.transform.forward.ConvertXz2Xy();
-            var hasControl = !_actionExecutor.TranslationFrame.HasValue && !_actionExecutor.RotationFrame.HasValue;
+            var hasControl = _actionExecutor.PlayerControlFactor > 0.01f;
 
             if (hasControl)
             {
@@ -49,8 +49,8 @@ namespace PlayerSystem
             translationFrame.TargetVerticalVelocity -= 5.0f;
             LocomotionController.ApplyActionEffects(deltaTime, _actionExecutor, ref translationFrame);
             
-            _pawn.SetTranslationFrame(translationFrame);
-            _pawn.SetRotationFrame(rotationFrame);
+            _pawn.SetTranslation(translationFrame);
+            _pawn.SetRotation(rotationFrame);
         }
     }
 }

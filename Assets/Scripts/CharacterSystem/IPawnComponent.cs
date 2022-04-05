@@ -9,9 +9,9 @@ namespace CharacterSystem
     {
         Vector3 CurrentVelocity { get; }
         Vector3 CurrentForward { get; }
-        void SetTranslationFrame(Translation translation);
-        Rotation GetRotationFrame();
-        void SetRotationFrame(Rotation rotation);
+        void SetTranslation(Translation translation);
+        Rotation GetRotation();
+        void SetRotation(Rotation rotation);
         void TickTranslation(float deltaTime);
         void TickRotation(float deltaTime);
     }

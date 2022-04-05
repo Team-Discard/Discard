@@ -29,7 +29,7 @@ namespace ActionSystem.Actions.GreatSwordSlash
         private float _preparationTimer;
         private bool _executionClipDone;
 
-        private RootMotionFrame _rootMotionFrame;
+        private RootMotionSource _rootMotionSource;
         private IWeaponEquipComponent _weaponEquipHandler;
 
         public bool Completed { get; private set; }
@@ -37,11 +37,13 @@ namespace ActionSystem.Actions.GreatSwordSlash
         private FrameData<Translation> _translationFrame;
         public IReadOnlyFrameData<Translation> TranslationFrame => _translationFrame;
 
+        private RootMotionFrame _rootMotionFrame;
+
         public void Init(DependencyBag bag)
         {
             _animationHandler = bag.ForceGet<PawnAnimationHandler>();
             _weaponEquipHandler = bag.ForceGet<IWeaponEquipComponent>();
-            _rootMotionFrame = bag.ForceGet<RootMotionFrame>();
+            _rootMotionSource = bag.ForceGet<RootMotionSource>();
 
             _stage = ActionStage.Preparation;
             _preparationClipDone = false;
@@ -77,10 +79,6 @@ namespace ActionSystem.Actions.GreatSwordSlash
 
         public void Execute(float deltaTime)
         {
-            var effects = new ActionEffects
-            {
-                FreeMovementEnabled = false
-            };
             switch (_stage)
             {
                 case ActionStage.Preparation:
@@ -105,16 +103,15 @@ namespace ActionSystem.Actions.GreatSwordSlash
         private void TickExecution(float deltaTime)
         {
             var translation = _translationFrame.ForceReadValue();
-            {
-                translation.Displacement += _rootMotionFrame.ConsumeDisplacement(this);            
-            }
+            var displacement = _rootMotionFrame.ConsumeDisplacement();
+            translation.Displacement = displacement;
             _translationFrame.SetValue(translation);
 
             if (_executionClipDone)
             {
                 Completed = true;
                 _animationHandler.EndPlayActionAnimation(this);
-                _rootMotionFrame.EndAccumulateDisplacement(this);
+                _rootMotionFrame.Destroy();
             }
         }
 
@@ -128,7 +125,7 @@ namespace ActionSystem.Actions.GreatSwordSlash
                     this,
                     _executionClip,
                     () => { _executionClipDone = true; });
-                _rootMotionFrame.BeginAccumulateDisplacement(this);
+                _rootMotionFrame = _rootMotionSource.BeginAccumulate();
             }
 
             _swordInstance = _weaponEquipHandler.EquipSword(new SwordEquipDesc

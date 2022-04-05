@@ -10,11 +10,12 @@ namespace ActionSystem
 {
     public interface IActionExecutorComponent : IComponent<IActionExecutorComponent>
     {
-        void GetAllActions(List<IAction> outActions);
-        bool HasPendingOrActiveActions { get; }
-        IReadOnlyFrameData<Translation> TranslationFrame { get; }
-        IReadOnlyFrameData<Rotation> RotationFrame { get; }
-        void ExecuteAllActions(float deltaTime);
-        void AddAction([NotNull] IAction action);
+        public void GetAllActions(List<IAction> outActions);
+        public bool HasPendingOrActiveActions { get; }
+        public IReadOnlyFrameData<Translation> TranslationFrame { get; }
+        public IReadOnlyFrameData<Rotation> RotationFrame { get; }
+        public float PlayerControlFactor { get; }
+        public void ExecuteAllActions(float deltaTime);
+        public void AddAction([NotNull] IAction action);
     }
 }

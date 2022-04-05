@@ -1,127 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using Uxt;
-using Uxt.Debugging;
-using Uxt.Utils;
+﻿using UnityEngine;
+using Uxt.InterModuleCommunication;
 
 namespace Unstable.Entities
 {
-    public class RootMotionFrame : MonoBehaviour
+    public class RootMotionFrame
     {
-        private Animator _animator;
+        private readonly FrameData<Vector3> _deltaPosition = new();
+        private readonly FrameData<Quaternion> _deltaRotation = new();
 
-        private Dictionary<object, Vector3> _displacements;
+        public bool Destroyed { get; private set; } = false;
 
-#if UNITY_ASSERTIONS
-        private AssociativeCounter<object> _frameCount;
-#endif
-
-        public Vector3 Velocity { get; private set; }
-
-        private Vector3 _temp;
-        
-        private void Awake()
+        public RootMotionFrame()
         {
-            _temp = Vector3.zero;
-            
-            _animator = GetComponent<Animator>();
-            _animator.applyRootMotion = true;
-            
-            _displacements = new Dictionary<object, Vector3>();
-            _animator = GetComponent<Animator>();
-
-            _displacementKeyBuffer = new List<object>();
-
-#if UNITY_ASSERTIONS
-            _frameCount = new AssociativeCounter<object>();
-#endif
+            _deltaRotation.SetValue(Quaternion.identity);
+            _deltaPosition.SetValue(Vector3.zero);
         }
 
-        [Obsolete("Use the parameterized version instead")]
-        public void BeginAccumulateDisplacement()
+        public void AddRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)
         {
-            BeginAccumulateDisplacement(this);
+            _deltaPosition.Value += deltaPosition;
+            _deltaRotation.Value *= deltaRotation;
         }
 
-        [Obsolete("Use the parameterized version instead")]
-        public void EndAccumulateDisplacement()
+        public void Destroy()
         {
-            EndAccumulateDisplacement(this);
+            Destroyed = true;
         }
 
-        [Obsolete("Use the parameterized version instead")]
         public Vector3 ConsumeDisplacement()
         {
-            return ConsumeDisplacement(this);
+            var temp = _deltaPosition.Value;
+            _deltaPosition.Value = Vector3.zero;
+            return temp;
         }
 
-        public void BeginAccumulateDisplacement(object key)
+        public Quaternion ConsumeRotation()
         {
-            if (_displacements.ContainsKey(key))
-            {
-                Debug.LogError($"Key '{key}' is already accumulating displacement on this root motion frame.");
-                return;
-            }
-
-            _displacements[key] = Vector3.zero;
-        }
-
-        public void EndAccumulateDisplacement(object key)
-        {
-            if (!_displacements.Remove(key))
-            {
-                Debug.LogError($"Key '{key}' is NOT accumulating displacement on this root motion frame.");
-                return;
-            }
-#if UNITY_ASSERTIONS
-            _frameCount.SetKey(key, 0);
-#endif
-        }
-
-        public Vector3 ConsumeDisplacement(object key)
-        {
-            if (!_displacements.ContainsKey(key))
-            {
-                Debug.LogError($"Key '{key}' is already accumulating displacement on this root motion frame.");
-                return Vector3.zero;
-            }
-
-            var ret = _displacements[key];
-            _displacements[key] = Vector3.zero;
-#if UNITY_ASSERTIONS
-            _frameCount.SetKey(key, 0);
-#endif
-            return ret;
-        }
-
-        private List<object> _displacementKeyBuffer;
-
-        private void OnAnimatorMove()
-        {
-            var deltaPosition = _animator.deltaPosition;
-            
-            _temp += deltaPosition;
-            DebugMessageManager.AddOnScreen($"distance: {_temp}", 77, Color.red, 0.1f);
-
-            var deltaTime = Mathf.Max(0.001f, Time.deltaTime);
-            Velocity = deltaPosition / deltaTime;
-
-            _displacements.Keys.ToList(_displacementKeyBuffer);
-            
-            foreach (var key in _displacementKeyBuffer)
-            {
-                _displacements[key] += deltaPosition;
-#if UNITY_ASSERTIONS
-                if (_frameCount.IncrementKey(key) >= 2)
-                {
-                    Debug.LogError("You have been accumulating displacement on this root motion frame " +
-                                   "for more than 2 frames, but haven't consumed it. Possible bug?");
-                    _displacements[key] = deltaPosition;
-                }
-#endif
-            }
+            var temp = _deltaRotation.Value;
+            _deltaRotation.Value = Quaternion.identity;
+            return temp;
         }
     }
 }

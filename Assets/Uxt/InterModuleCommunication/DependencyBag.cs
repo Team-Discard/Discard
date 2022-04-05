@@ -56,6 +56,11 @@ namespace Uxt.InterModuleCommunication
 #endif
         }
 
+        public void ForceGet<T>(out T output)
+        {
+            output = ForceGet<T>();
+        }
+
         public void Add(object item)
         {
             _bags.Add(item);
