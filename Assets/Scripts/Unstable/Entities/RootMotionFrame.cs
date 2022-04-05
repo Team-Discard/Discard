@@ -12,7 +12,7 @@ namespace Unstable.Entities
 
         public RootMotionFrame()
         {
-            _deltaRotation = new FrameData<Quaternion>();
+            _deltaRotation = new FrameData<Quaternion>(Quaternion.identity);
             _deltaPosition = new FrameData<Vector3>();
         }
 

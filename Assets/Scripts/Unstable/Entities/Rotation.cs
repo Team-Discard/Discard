@@ -12,11 +12,13 @@ namespace Unstable.Entities
             YawVelocity = 0.0f,
             Delta = Quaternion.identity
         };
-
+ 
         public Quaternion Apply(float deltaTime, Quaternion rotation)
         {
-            rotation = Quaternion.Euler(0.0f, YawVelocity * deltaTime, 0.0f) * Delta * rotation;
-            Debug.Log(Delta);
+            Debug.Assert(Mathf.Abs(new Vector4(Delta.x, Delta.y, Delta.z, Delta.w).magnitude - 1.0f) < 0.01f);
+            
+            rotation *= Delta * Quaternion.Euler(0.0f, YawVelocity * deltaTime, 0.0f);
+            Debug.Log($"{Time.frameCount} {YawVelocity} - {Delta}");
             return rotation;
         }
 

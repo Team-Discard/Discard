@@ -56,9 +56,9 @@ namespace ActionSystem.Actions.ProjectileThrow
 
         public void Execute(float deltaTime)
         {
-            _translationFrame.UpdateValue(_ =>
+            _translationFrame.Value = Translation.Identity;
+            _translationFrame.UpdateValue(translation =>
             {
-                var translation = default(Translation);
                 translation.Displacement += _rootMotionFrame.ConsumeDeltaPosition();
                 return translation;
             });
@@ -66,13 +66,14 @@ namespace ActionSystem.Actions.ProjectileThrow
             
             // todo: to:billy the movement system really needs some clear documentation and refactoring
             // It is currently very hard to understand
-            _rotationFrame.UpdateValue(_ =>
+            
+            _rotationFrame.Value = Rotation.Identity;
+            _rotationFrame.UpdateValue(rotation =>
             {
-                var rotation = default(Rotation);
-                rotation.Delta = _rootMotionFrame.ConsumeDeltaRotation();
+                rotation.Delta *= _rootMotionFrame.ConsumeDeltaRotation();
                 return rotation;
             });
-            
+
             if (_windUpTimer >= 0.0f)
             {
                 _windUpTimer -= deltaTime;

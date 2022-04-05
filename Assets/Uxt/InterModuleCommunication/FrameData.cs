@@ -27,8 +27,22 @@ namespace Uxt.InterModuleCommunication
             _validFrameCount = validFrameCount;
         }
 
+        /// <summary>
+        /// Gets the "identity" value for a type. E.g. int -> 0, vector3 -> 0, quaternion -> (0, 0, 0, 1)
+        /// </summary>
+        /// <returns></returns>
         private static T GetIdentity()
         {
+            if (typeof(Quaternion) == typeof(T))
+            {
+                return (T)(object)Quaternion.identity;
+            }
+
+            if (typeof(Vector3) == typeof(T))
+            {
+                return (T)(object)Vector3.zero;
+            }
+
             var type = typeof(T);
             var identityProperty =
                 type.GetProperty("Identity", BindingFlags.Static | BindingFlags.Public);
