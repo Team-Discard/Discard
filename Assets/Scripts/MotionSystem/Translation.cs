@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Unstable.Utils;
 
-namespace Unstable.Entities
+namespace MotionSystem
 {
     public struct Translation
     {

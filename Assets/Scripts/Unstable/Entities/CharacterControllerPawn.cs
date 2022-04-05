@@ -1,5 +1,6 @@
 ﻿using CharacterSystem;
 using EntitySystem;
+using MotionSystem;
 using UnityEngine;
 
 namespace Unstable.Entities

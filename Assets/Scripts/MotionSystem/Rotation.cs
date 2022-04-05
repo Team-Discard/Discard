@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Unstable.Entities
+namespace MotionSystem
 {
     public struct Rotation
     {

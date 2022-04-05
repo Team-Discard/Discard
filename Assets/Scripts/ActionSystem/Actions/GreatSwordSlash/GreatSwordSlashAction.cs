@@ -1,6 +1,7 @@
 ﻿using System;
 using Animancer;
 using CombatSystem;
+using MotionSystem;
 using UnityEngine;
 using Unstable;
 using Unstable.Entities;

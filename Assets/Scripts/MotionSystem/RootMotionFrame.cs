@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Uxt.InterModuleCommunication;
 
-namespace Unstable.Entities
+namespace MotionSystem
 {
     public class RootMotionFrame
     {

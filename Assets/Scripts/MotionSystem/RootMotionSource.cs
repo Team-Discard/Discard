@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Unstable.Entities
+namespace MotionSystem
 {
     public class RootMotionSource : MonoBehaviour
     {
