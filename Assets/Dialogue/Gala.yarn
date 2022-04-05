@@ -5,6 +5,7 @@ position: 789,276
 ---
 Gala: Hi player, how are you today?
 -> Fantastic
+    <<static_example "argument string">>
     Gala: Glad to hear that!
 -> I'm OK
     Gala: OK that's good to hear.
@@ -32,5 +33,6 @@ tags:
 colorID: 0
 position: 1014,590
 ---
+<<non_static_example DialogueManager "argument string">>
 Gala: Yep. So you need to go find some skeleton, pick up card, and fight your ass through this!
 ===
