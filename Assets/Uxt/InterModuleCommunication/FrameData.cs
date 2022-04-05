@@ -67,5 +67,10 @@ namespace Uxt.InterModuleCommunication
         {
             return HasValue ? _val.ToString() : "<no value>";
         }
+
+        public void UpdateValue(Func<T, T> updater)
+        {
+            Value = updater(Value);
+        }
     }
 }

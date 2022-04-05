@@ -103,7 +103,7 @@ namespace ActionSystem.Actions.GreatSwordSlash
         private void TickExecution(float deltaTime)
         {
             var translation = _translationFrame.ForceReadValue();
-            var displacement = _rootMotionFrame.ConsumeDisplacement();
+            var displacement = _rootMotionFrame.ConsumeDeltaPosition();
             translation.Displacement = displacement;
             _translationFrame.SetValue(translation);
 

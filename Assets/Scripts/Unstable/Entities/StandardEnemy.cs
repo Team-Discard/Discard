@@ -143,7 +143,7 @@ namespace Unstable.Entities
                 }
                 else
                 {
-                    translation.Displacement += _rootMotionFrame.ConsumeDisplacement();
+                    translation.Displacement += _rootMotionFrame.ConsumeDeltaPosition();
                 }
 
                 var angleDiff = Vector3.SignedAngle(

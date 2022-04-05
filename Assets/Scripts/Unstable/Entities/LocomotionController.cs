@@ -20,12 +20,23 @@ namespace Unstable.Entities
             _useGravity = true;
         }
 
-        public static void ApplyActionEffects(float deltaTime, IActionExecutorComponent executor,
-            ref Translation translation)
+        public static void ApplyActionEffects(
+            float deltaTime, 
+            IActionExecutorComponent executor,
+            ref Translation translation,
+            ref Rotation rotation)
         {
+            // todo: to:billy the motion system needs to propagate through multiple levels and adding features
+            // to it is super painful.
+            
             if (executor.TranslationFrame.TryReadValue(out var actionTranslation))
             {
                 translation += actionTranslation;
+            }
+
+            if (executor.RotationFrame.TryReadValue(out var actionRotation))
+            {
+                rotation = actionRotation;
             }
         }
 

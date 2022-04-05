@@ -47,7 +47,7 @@ namespace PlayerSystem
             }
             
             translationFrame.TargetVerticalVelocity -= 5.0f;
-            LocomotionController.ApplyActionEffects(deltaTime, _actionExecutor, ref translationFrame);
+            LocomotionController.ApplyActionEffects(deltaTime, _actionExecutor, ref translationFrame, ref rotationFrame);
             
             _pawn.SetTranslation(translationFrame);
             _pawn.SetRotation(rotationFrame);

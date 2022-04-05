@@ -27,14 +27,14 @@ namespace Unstable.Entities
             Destroyed = true;
         }
 
-        public Vector3 ConsumeDisplacement()
+        public Vector3 ConsumeDeltaPosition()
         {
             var temp = _deltaPosition.Value;
             _deltaPosition.Value = Vector3.zero;
             return temp;
         }
 
-        public Quaternion ConsumeRotation()
+        public Quaternion ConsumeDeltaRotation()
         {
             var temp = _deltaRotation.Value;
             _deltaRotation.Value = Quaternion.identity;
