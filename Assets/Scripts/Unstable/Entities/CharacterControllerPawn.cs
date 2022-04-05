@@ -1,5 +1,6 @@
 ﻿using CharacterSystem;
 using EntitySystem;
+using MotionSystem;
 using UnityEngine;
 
 namespace Unstable.Entities
@@ -18,7 +19,7 @@ namespace Unstable.Entities
         public CharacterControllerPawn(CharacterController controller)
         {
             _controller = controller;
-            _rotation.TargetForwardDirection = Vector2.up;
+            _rotation = Rotation.Identity;
         }
 
         bool IComponent.EnabledInternal => true;

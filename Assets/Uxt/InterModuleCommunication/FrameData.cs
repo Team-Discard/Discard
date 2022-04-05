@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace Uxt.InterModuleCommunication
@@ -8,64 +9,76 @@ namespace Uxt.InterModuleCommunication
     /// </summary>
     public class FrameData<T> : IReadOnlyFrameData<T> where T : struct
     {
+        private static readonly T InternalIdentity = GetIdentity();
+
         private readonly int _validFrameCount;
         private int _lastUpdatedFrame = -9999;
         private T _val;
 
-        public static IReadOnlyFrameData<T> NoValue { get; } = new FrameData<T>();
+        public static IReadOnlyFrameData<T> Identity { get; } = new FrameData<T>(GetIdentity(), 1);
 
-        public FrameData(int validFrameCount = 1)
+        public FrameData(int validFrameCount = 1) : this(InternalIdentity, validFrameCount)
         {
+        }
+
+        public FrameData(T val, int validFrameCount = 1)
+        {
+            _val = val;
             _validFrameCount = validFrameCount;
         }
 
-        public void SetValue(T val)
+        /// <summary>
+        /// Gets the "identity" value for a type. E.g. int -> 0, vector3 -> 0, quaternion -> (0, 0, 0, 1)
+        /// </summary>
+        /// <returns></returns>
+        private static T GetIdentity()
         {
-            _lastUpdatedFrame = Time.frameCount;
-            _val = val;
-        }
-
-        public bool TryReadValue(out T val)
-        {
-            if (HasValue)
+            if (typeof(Quaternion) == typeof(T))
             {
-                val = _val;
-                return true;
+                return (T)(object)Quaternion.identity;
             }
 
-            val = default;
-            return false;
-        }
-
-        public bool HasValue => Time.frameCount - _lastUpdatedFrame <= _validFrameCount;
-
-        public T ForceReadValue()
-        {
-            if (TryReadValue(out var val))
+            if (typeof(Vector3) == typeof(T))
             {
-                return val;
+                return (T)(object)Vector3.zero;
             }
-            
-            SetValue(default);
-            return _val;
+
+            var type = typeof(T);
+            var identityProperty =
+                type.GetProperty("Identity", BindingFlags.Static | BindingFlags.Public);
+            var getter = identityProperty?.GetGetMethod();
+            if (getter == null || getter.ReturnType != typeof(T))
+            {
+                return default;
+            }
+
+            return (T)getter.Invoke(null, Array.Empty<object>());
         }
+
+        private bool Valid => Time.frameCount - _lastUpdatedFrame <= _validFrameCount;
 
         public T Value
         {
-            get => ForceReadValue();
-            set => SetValue(value);
-        }
-
-        public bool Add(IReadOnlyFrameData<T> rhs, Func<T, T, T> op)
-        {
-            if (!rhs.TryReadValue(out var rhsVal)) return false;
-            SetValue(op(ForceReadValue(), rhsVal));
-            return true;
+            get
+            {
+                if (!Valid) _val = InternalIdentity;
+                return _val;
+            }
+            set
+            {
+                _val = value;
+                _lastUpdatedFrame = Time.frameCount;
+            }
         }
 
         public override string ToString()
         {
-            return HasValue ? _val.ToString() : "<no value>";
+            return _val.ToString();
+        }
+
+        public void UpdateValue(Func<T, T> updater)
+        {
+            Value = updater(Value);
         }
     }
 }

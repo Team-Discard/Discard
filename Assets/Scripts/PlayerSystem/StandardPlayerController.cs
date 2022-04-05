@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using ActionSystem;
+﻿using ActionSystem;
 using CharacterSystem;
 using CutSceneSystem;
 using EntitySystem;
 using InteractionSystem;
+using MotionSystem;
 using UnityEngine;
 using Unstable.Entities;
 using Unstable.Utils;
@@ -18,7 +18,8 @@ namespace PlayerSystem
         private readonly PlayerInputHandler _inputHandler;
         private float _maxSpeed;
 
-        public StandardPlayerController(IPawnComponent pawn, Transform controlCameraTransform, IActionExecutorComponent actionExecutor,
+        public StandardPlayerController(IPawnComponent pawn, Transform controlCameraTransform,
+            IActionExecutorComponent actionExecutor,
             PlayerInputHandler inputHandler, float maxSpeed)
         {
             _pawn = pawn;
@@ -32,9 +33,9 @@ namespace PlayerSystem
         {
             // very hacky
             if (InteractionEventSystem.IsInteracting || TimelineManager.IsCutScenePlaying) return;
-            
-            var rotationFrame = _pawn.GetRotation().PrepareNextFrame();
-            var translationFrame = new Translation();
+
+            var rotationFrame = Rotation.Identity;
+            var translationFrame = Translation.Identity;
 
             var controlDirection = _controlCameraTransform.transform.forward.ConvertXz2Xy();
             var hasControl = _actionExecutor.PlayerControlFactor > 0.01f;
@@ -43,13 +44,16 @@ namespace PlayerSystem
             {
                 _inputHandler.UpdateInput(out var inputDirection);
                 LocomotionController.ApplyDirectionalMovement(
-                    deltaTime, inputDirection, controlDirection, _maxSpeed,
+                    deltaTime, inputDirection, controlDirection,
+                    _pawn.CurrentForward.ConvertXz2Xy(),
+                    _maxSpeed, 360.0f,
                     ref translationFrame, ref rotationFrame);
             }
-            
+
             translationFrame.TargetVerticalVelocity -= 5.0f;
-            LocomotionController.ApplyActionEffects(deltaTime, _actionExecutor, ref translationFrame);
-            
+            LocomotionController.ApplyActionEffects(deltaTime, _actionExecutor, ref translationFrame,
+                ref rotationFrame);
+
             _pawn.SetTranslation(translationFrame);
             _pawn.SetRotation(rotationFrame);
         }

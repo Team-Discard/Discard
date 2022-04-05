@@ -1,6 +1,7 @@
 ﻿using System;
 using Animancer;
 using CombatSystem;
+using MotionSystem;
 using UnityEngine;
 using Unstable;
 using Unstable.Entities;
@@ -102,10 +103,13 @@ namespace ActionSystem.Actions.GreatSwordSlash
 
         private void TickExecution(float deltaTime)
         {
-            var translation = _translationFrame.ForceReadValue();
-            var displacement = _rootMotionFrame.ConsumeDisplacement();
-            translation.Displacement = displacement;
-            _translationFrame.SetValue(translation);
+            _translationFrame.Value = Translation.Identity;
+            
+            _translationFrame.UpdateValue(translation =>
+            {
+                translation.Displacement += _rootMotionFrame.ConsumeDeltaPosition();
+                return translation;
+            });
 
             if (_executionClipDone)
             {

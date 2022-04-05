@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Uxt.InterModuleCommunication;
 
-namespace Unstable.Entities
+namespace MotionSystem
 {
     public class RootMotionFrame
     {
@@ -12,8 +12,8 @@ namespace Unstable.Entities
 
         public RootMotionFrame()
         {
-            _deltaRotation.SetValue(Quaternion.identity);
-            _deltaPosition.SetValue(Vector3.zero);
+            _deltaRotation = new FrameData<Quaternion>(Quaternion.identity);
+            _deltaPosition = new FrameData<Vector3>();
         }
 
         public void AddRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)
@@ -27,14 +27,14 @@ namespace Unstable.Entities
             Destroyed = true;
         }
 
-        public Vector3 ConsumeDisplacement()
+        public Vector3 ConsumeDeltaPosition()
         {
             var temp = _deltaPosition.Value;
             _deltaPosition.Value = Vector3.zero;
             return temp;
         }
 
-        public Quaternion ConsumeRotation()
+        public Quaternion ConsumeDeltaRotation()
         {
             var temp = _deltaRotation.Value;
             _deltaRotation.Value = Quaternion.identity;

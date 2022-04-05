@@ -1,4 +1,5 @@
-﻿using Unstable.Entities;
+﻿using MotionSystem;
+using Unstable.Entities;
 using Uxt.InterModuleCommunication;
 
 namespace ActionSystem
@@ -9,8 +10,8 @@ namespace ActionSystem
 
         public bool Completed { get; }
 
-        public IReadOnlyFrameData<Translation> TranslationFrame => FrameData<Translation>.NoValue;
-        public IReadOnlyFrameData<Rotation> RotationFrame => FrameData<Rotation>.NoValue;
+        public IReadOnlyFrameData<Translation> TranslationFrame => FrameData<Translation>.Identity;
+        public IReadOnlyFrameData<Rotation> RotationFrame => FrameData<Rotation>.Identity;
         public float PlayerControlFactor => 0.0f;
 
         public void Begin()
