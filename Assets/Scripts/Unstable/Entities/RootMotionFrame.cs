@@ -12,8 +12,8 @@ namespace Unstable.Entities
 
         public RootMotionFrame()
         {
-            _deltaRotation.SetValue(Quaternion.identity);
-            _deltaPosition.SetValue(Vector3.zero);
+            _deltaRotation = new FrameData<Quaternion>();
+            _deltaPosition = new FrameData<Vector3>();
         }
 
         public void AddRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)

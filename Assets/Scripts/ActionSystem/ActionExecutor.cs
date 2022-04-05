@@ -62,23 +62,19 @@ namespace ActionSystem
 
         private void UpdateActions()
         {
-            _translationFrame.Value = default;
+            _translationFrame.Value = Translation.Identity;
             _rotationFrame.Value = Rotation.Identity;
+            
             PlayerControlFactor = 1.0f;
 
             foreach (var action in _activeActions)
             {
                 action.Execute(Time.deltaTime);
+                
                 PlayerControlFactor *= Mathf.Clamp01(action.PlayerControlFactor);
-                _translationFrame.Add(action.TranslationFrame, (lhs, rhs) => lhs + rhs);
-                _rotationFrame.Add(action.RotationFrame, (_, rhs) => rhs);
-
-                if (action is MonoBehaviour m)
-                {
-                    DebugMessageManager.AddOnScreen(
-                        $"Action ({m.gameObject.name}) - rotation: {action.RotationFrame}",
-                        m.GetInstanceID(), Color.blue, 0.01f);
-                }
+                
+                _translationFrame.Value += action.TranslationFrame.Value;
+                _rotationFrame.Value *= action.RotationFrame.Value;
             }
         }
 

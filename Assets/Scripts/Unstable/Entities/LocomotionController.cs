@@ -28,16 +28,9 @@ namespace Unstable.Entities
         {
             // todo: to:billy the motion system needs to propagate through multiple levels and adding features
             // to it is super painful.
-            
-            if (executor.TranslationFrame.TryReadValue(out var actionTranslation))
-            {
-                translation += actionTranslation;
-            }
 
-            if (executor.RotationFrame.TryReadValue(out var actionRotation))
-            {
-                rotation = actionRotation;
-            }
+            translation += executor.TranslationFrame.Value;
+            rotation *= executor.RotationFrame.Value;
         }
 
         public void ApplyGravity(float deltaTime, ref Translation translation)
@@ -50,11 +43,13 @@ namespace Unstable.Entities
             UpdateGravity(_fallAndPushConfig, ref translation);
         }
 
-        public static void ApplyDirectionalMovement(
-            float deltaTime,
+        // todo: to:billy this function takes a lot of arguments. Can it be simplified?
+        public static void ApplyDirectionalMovement(float deltaTime,
             Vector2 inputDirection,
             Vector2 controlDirection,
+            Vector2 currentForward,
             float maxSpeed,
+            float maxAngularSpeed,
             ref Translation translation,
             ref Rotation rotation)
         {
@@ -75,12 +70,15 @@ namespace Unstable.Entities
             moveDirection.Normalize();
 
             translation.TargetHorizontalVelocity += speed * moveDirection;
+            
             if (!Mathf.Approximately(moveDirection.sqrMagnitude, 0))
             {
-                rotation.TargetForwardDirection = moveDirection;
+                var angleDiff = -Vector2.SignedAngle(currentForward, moveDirection);
+                if (Mathf.Abs(angleDiff) >= 0.1f)
+                {
+                    rotation.YawVelocity += Mathf.Sign(angleDiff) * maxAngularSpeed;
+                }
             }
-
-            rotation.Responsiveness = 15.0f;
         }
 
         private static void UpdateGravity(FallAndPushConfig config, ref Translation translation)

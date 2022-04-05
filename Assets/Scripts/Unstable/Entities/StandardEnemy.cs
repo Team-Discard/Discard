@@ -6,6 +6,7 @@ using EntitySystem;
 using UI.HealthBar;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Unstable.Utils;
 using Uxt.Debugging;
 using WeaponSystem;
 using WeaponSystem.Swords;
@@ -24,12 +25,15 @@ namespace Unstable.Entities
         [SerializeField] private float _speed;
         [SerializeField] private StandardWeaponLocomotionAnimationSet _defaultAnimationSet;
         [SerializeField] private ClipTransition _stabAnimation;
-        [FormerlySerializedAs("_rootMotionFrame")] [SerializeField] private RootMotionSource rootMotionSource;
+
+        [FormerlySerializedAs("_rootMotionFrame")] [SerializeField]
+        private RootMotionSource rootMotionSource;
+
         [SerializeField] private float _maxAngularVelocityDuringAttack;
         [SerializeField] private float _rotationThreshold;
         [SerializeField] private Sword _sword;
         private StandardHealthBar _healthBar;
-        private EnemyHealthBarTransform _healthBarTransform; 
+        private EnemyHealthBarTransform _healthBarTransform;
         [SerializeField] private StandardDamageTaker _damageTaker;
 
         private RootMotionFrame _rootMotionFrame;
@@ -42,7 +46,7 @@ namespace Unstable.Entities
 
             _healthBar = GetComponent<StandardHealthBar>();
             _damageTaker.BindHealthBar(_healthBar);
-            
+
             _pawn = new CharacterControllerPawn(GetComponent<CharacterController>());
             _animationHandler = new PawnAnimationHandler(
                 _pawn,
@@ -58,7 +62,7 @@ namespace Unstable.Entities
         {
             registry.AddComponent(this);
             registry.AddComponent(_damageTaker);
-            
+
             _healthBarTransform.RegisterSelf(registry);
             registry.AddComponent(_healthBar);
             registry.AddComponent(_pawn);
@@ -89,8 +93,8 @@ namespace Unstable.Entities
 
             DebugMessageManager.AddOnScreen($"Attack playing: {_enemyAI.IsMoving}", 42, Color.blue, 0.0f);
 
-            var translationFrame = new Translation();
-            var rotationFrame = _pawn.GetRotation().PrepareNextFrame();
+            var translationFrame = Translation.Identity;
+            var rotationFrame = Rotation.Identity;
 
             if (!Destroyed)
             {
@@ -115,7 +119,7 @@ namespace Unstable.Entities
                     Speed = _speed
                 };
                 _locomotionController.MoveTowards(
-                    deltaTime, moveTowardsParams,
+                    deltaTime, transform.forward.ConvertXz2Xy(), 120.0f, moveTowardsParams,
                     ref translation,
                     ref rotation);
             }
@@ -154,8 +158,8 @@ namespace Unstable.Entities
                 if (Mathf.Abs(angleDiff) >= _rotationThreshold)
                 {
                     var deltaAngle = Mathf.MoveTowardsAngle(0.0f, angleDiff,
-                        _maxAngularVelocityDuringAttack * Time.deltaTime);
-                    rotation.AddOverrideLinearRotation(deltaAngle);
+                        _maxAngularVelocityDuringAttack * deltaTime);
+                    rotation.YawVelocity += deltaAngle / deltaTime;
                 }
             }
         }

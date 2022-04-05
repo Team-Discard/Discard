@@ -53,9 +53,11 @@ namespace ActionSystem.Actions.Charge
                 Completed = true;
             }
 
-            var translation = _translationFrame.ForceReadValue();
-            translation.TargetHorizontalVelocity += _speed * _direction;
-            _translationFrame.SetValue(translation);
+            _translationFrame.UpdateValue(translation =>
+            {
+                translation.TargetHorizontalVelocity += _speed * _direction;
+                return translation;
+            });
         }
 
         public void Init(DependencyBag bag)

@@ -102,10 +102,13 @@ namespace ActionSystem.Actions.GreatSwordSlash
 
         private void TickExecution(float deltaTime)
         {
-            var translation = _translationFrame.ForceReadValue();
-            var displacement = _rootMotionFrame.ConsumeDeltaPosition();
-            translation.Displacement = displacement;
-            _translationFrame.SetValue(translation);
+            _translationFrame.Value = Translation.Identity;
+            
+            _translationFrame.UpdateValue(translation =>
+            {
+                translation.Displacement += _rootMotionFrame.ConsumeDeltaPosition();
+                return translation;
+            });
 
             if (_executionClipDone)
             {

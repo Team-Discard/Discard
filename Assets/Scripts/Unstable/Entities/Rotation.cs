@@ -1,58 +1,46 @@
 ﻿using UnityEngine;
-using Unstable.Utils;
 
 namespace Unstable.Entities
 {
     public struct Rotation
     {
-        public Vector2 TargetForwardDirection { get; set; }
-        public float Responsiveness { get; set; }
+        public float YawVelocity { get; set; }
+        public Quaternion Delta { get; set; }
 
-        public float? OverrideLinearRotation { get; set; }
-        public Quaternion? Delta { get; set; }
-        public static Rotation Identity { get; private set; } = new();
-
-        public void AddOverrideLinearRotation(float angle)
+        public static Rotation Identity { get; } = new()
         {
-            OverrideLinearRotation ??= 0.0f;
-            OverrideLinearRotation += angle;
-        }
-
-        public Rotation PrepareNextFrame()
-        {
-            var ret = this;
-            ret.Responsiveness = 15.0f;
-            ret.OverrideLinearRotation = null;
-            return ret;
-        }
+            YawVelocity = 0.0f,
+            Delta = Quaternion.identity
+        };
 
         public Quaternion Apply(float deltaTime, Quaternion rotation)
         {
-            if (OverrideLinearRotation is { } linearRotation)
-            {
-                rotation *= Quaternion.Euler(0.0f, linearRotation, 0.0f);
-            }
-            else
-            {
-                var targetForward = TargetForwardDirection.ConvertXy2Xz();
-                var targetRotation = Quaternion.LookRotation(targetForward);
-                var currentRotation = rotation;
-                rotation = Quaternion.Slerp(currentRotation, targetRotation, deltaTime * Responsiveness);
-            }
-
-            if (Delta.HasValue)
-            {
-                rotation *= Delta.Value;
-                Debug.Log(Delta.Value);
-            }
-            
-            
+            rotation = Quaternion.Euler(0.0f, YawVelocity * deltaTime, 0.0f) * Delta * rotation;
+            Debug.Log(Delta);
             return rotation;
         }
 
+        public static Rotation operator *(in Rotation lhs, in Rotation rhs)
+        {
+            return new Rotation
+            {
+                YawVelocity = lhs.YawVelocity + rhs.YawVelocity,
+                Delta = lhs.Delta * rhs.Delta
+            };
+        }
+
+        public static Rotation operator *(float lhs, in Rotation rhs)
+        {
+            return new Rotation
+            {
+                YawVelocity = lhs * rhs.YawVelocity,
+                Delta = Quaternion.Slerp(Quaternion.identity, rhs.Delta, lhs)
+            };
+        }
+        
         public override string ToString()
         {
-            return (Delta ?? Quaternion.identity).ToString();
+            return $"[Delta: {Delta}, Yaw Velocity: {YawVelocity}]";
         }
     }
 }

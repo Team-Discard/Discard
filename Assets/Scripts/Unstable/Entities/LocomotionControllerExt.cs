@@ -15,6 +15,8 @@ namespace Unstable.Entities
         public static void MoveTowards(
             this LocomotionController locomotionController,
             float deltaTime,
+            Vector2 currentForward,
+            float maxAngularSpeed,
             in MoveTowardsParams moveTowardsParams,
             ref Translation translation,
             ref Rotation rotation)
@@ -26,8 +28,8 @@ namespace Unstable.Entities
             LocomotionController.ApplyDirectionalMovement(
                 deltaTime,
                 inputDirection,
-                controlDirection,
-                maxSpeed,
+                controlDirection, currentForward,
+                maxSpeed, maxAngularSpeed,
                 ref translation,
                 ref rotation);
         }

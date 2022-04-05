@@ -5,13 +5,15 @@ namespace Unstable.Entities
 {
     public struct Translation
     {
-        [FrameData(FrameDataType.Sample)] public Vector2 TargetHorizontalVelocity { get; set; }
+        public Vector2 TargetHorizontalVelocity { get; set; }
 
-        [FrameData(FrameDataType.Sample)] public Vector2 ImmediateHorizontalVelocity { get; set; }
+        public Vector2 ImmediateHorizontalVelocity { get; set; }
 
-        [FrameData(FrameDataType.Sample)] public float TargetVerticalVelocity { get; set; }
+        public float TargetVerticalVelocity { get; set; }
 
-        [FrameData(FrameDataType.Sample)] public Vector3 Displacement { get; set; }
+        public Vector3 Displacement { get; set; }
+
+        public static Translation Identity { get; } = new();
 
         public static Translation operator +(Translation lhs, in Translation rhs)
         {
@@ -21,7 +23,7 @@ namespace Unstable.Entities
             lhs.Displacement += rhs.Displacement;
             return lhs;
         }
-        
+
         public void UpdateAndAccumulate(Translation other)
         {
             TargetHorizontalVelocity = other.TargetHorizontalVelocity;
@@ -31,7 +33,7 @@ namespace Unstable.Entities
         }
 
         public Vector3 CombineVelocity(
-            float deltaTime, 
+            float deltaTime,
             ref Vector2 horizontalVelocity,
             float velocityResponsiveness = 15.0f)
         {
