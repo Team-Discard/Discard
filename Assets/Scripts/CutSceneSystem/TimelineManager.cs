@@ -1,4 +1,5 @@
 using DG.Tweening;
+using InteractionSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,19 +33,16 @@ namespace CutSceneSystem
             IsCutScenePlaying = false;
         }
 
-        public void ToggleIsCutScenePlaying(bool toggle)
-        {
-            IsCutScenePlaying = toggle;
-        }
-
         public void SetCutScenePlayingTrue()
         {
             IsCutScenePlaying = true;
+            InteractionEventSystem.PlayerRestraint++;
         }
 
         public void SetCutScenePlayingFalse()
         {
             IsCutScenePlaying = false;
+            InteractionEventSystem.PlayerRestraint--;
         }
 
         public void DestroyManikin()

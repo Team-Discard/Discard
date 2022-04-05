@@ -32,7 +32,7 @@ namespace PlayerSystem
         public void Tick(float deltaTime)
         {
             // very hacky
-            if (InteractionEventSystem.IsInteracting || TimelineManager.IsCutScenePlaying) return;
+            if (InteractionEventSystem.PlayerRestraint > 0) return;
 
             var rotationFrame = Rotation.Identity;
             var translationFrame = Translation.Identity;
