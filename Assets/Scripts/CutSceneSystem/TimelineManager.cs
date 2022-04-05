@@ -37,6 +37,16 @@ namespace CutSceneSystem
             IsCutScenePlaying = toggle;
         }
 
+        public void SetCutScenePlayingTrue()
+        {
+            IsCutScenePlaying = true;
+        }
+
+        public void SetCutScenePlayingFalse()
+        {
+            IsCutScenePlaying = false;
+        }
+
         public void DestroyManikin()
         {
             Destroy(manikin);
