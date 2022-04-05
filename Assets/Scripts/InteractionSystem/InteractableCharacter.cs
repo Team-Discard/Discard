@@ -10,6 +10,8 @@ namespace InteractionSystem
         [SerializeField] private int interactionPriority;
         [SerializeField] private InteractionType interactionType;
 
+        [SerializeField] private string characterName;
+
         private const float RotationSpeed = 1f;
 
         public int InteractableObjId => interactableObjId;
@@ -19,6 +21,8 @@ namespace InteractionSystem
         public InteractionType Type => interactionType;
 
         public GameObject MyGameObject => gameObject;
+
+        public string CharacterName => characterName;
 
         private void OnEnable()
         {
