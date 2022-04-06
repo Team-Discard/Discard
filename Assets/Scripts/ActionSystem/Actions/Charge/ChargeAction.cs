@@ -41,13 +41,13 @@ namespace ActionSystem.Actions.Charge
 
         public void Execute(float deltaTime)
         {
-            var effects = new ActionEffects();
-
             if (Completed)
             {
                 return;
             }
 
+            _translationFrame.Value = Translation.Identity;
+            
             _duration -= deltaTime;
             if (_duration <= 0.0f)
             {

@@ -8,10 +8,8 @@ namespace InteractionSystem
     {
         public static InteractionManager Instance;
         private IInteractable _currentFocusedInteractable;
-        [SerializeField] private GameObject interactionHint;
         [SerializeField] private Transform _playerTransform;
-        private RectTransform _interactionHintRectTransform;
-        private Image _interactionHintImage;
+        [SerializeField] private InteractionHintDisplay _hintDisplay;
 
         public static Transform PlayerTransform => Instance._playerTransform;
 
@@ -29,8 +27,7 @@ namespace InteractionSystem
 
         private void Start()
         {
-            _interactionHintRectTransform = interactionHint.GetComponent<RectTransform>();
-            _interactionHintImage = interactionHint.GetComponent<Image>();
+            _hintDisplay.Hide();
         }
 
         public void SetCurrentFocusedInteractable(IInteractable inter)
@@ -40,17 +37,19 @@ namespace InteractionSystem
 
         public void InteractWithCurrentFocusedInteractable()
         {
+            if (_currentFocusedInteractable == null) return;
+
             // hide interaction hint
-            _interactionHintImage.enabled = false;
-            
+            _hintDisplay.Hide();
+
             // if interacting with a character, prepare the dialogue manager for dialogue
             if (_currentFocusedInteractable.Type == InteractionType.Character)
             {
                 DialogueManager.Instance.StartDialogueWithCharacter(_currentFocusedInteractable);
             }
-            
-            _currentFocusedInteractable?.StartInteraction();
-            
+
+            _currentFocusedInteractable.StartInteraction();
+
             _currentFocusedInteractable = null;
         }
 
@@ -58,7 +57,7 @@ namespace InteractionSystem
         {
             if (_currentFocusedInteractable == null)
             {
-                _interactionHintImage.enabled = false;
+                _hintDisplay.Hide();
                 return;
             }
 
@@ -72,8 +71,10 @@ namespace InteractionSystem
             }
 
             var screenPoint = Camera.main.WorldToScreenPoint(targetTransform.position);
-            _interactionHintRectTransform.position = screenPoint;
-            _interactionHintImage.enabled = true;
+            _hintDisplay.Rect.position = screenPoint;
+            
+            _hintDisplay.SetText(_currentFocusedInteractable.HintText);
+            _hintDisplay.Show();
         }
     }
 }

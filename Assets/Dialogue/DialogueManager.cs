@@ -70,6 +70,8 @@ namespace Dialogue
         // non-static function example: MUST be on a mono-behavior
         // syntax in Yarn script: <<non_static_example DialogueManager "argument string">>
         // the name of the GameObject that this mono-behavior is attached to MUST NOT have any spaces in its name
+        
+        // todo:billy change everything to use underscore naming convention
         public void YarnSpinnerExampleFunc(string arg)
         {
             Debug.Log(arg + ": YarnSpinner called non-static API example function");
