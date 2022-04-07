@@ -39,18 +39,23 @@ namespace CardSystem
 
         public CardLocation? AcquireCard(Card card, int preferredIndex)
         {
+            CardLocation? location = null;
+            
             if (!IsHandFull)
             {
-                return new CardLocation(CardContainerType.Hand, InsertCard(_hand, card, preferredIndex));
+                location = new CardLocation(CardContainerType.Hand, InsertCard(_hand, card, preferredIndex));
             }
             else if (!IsBufferFull)
             {
-                return new CardLocation(CardContainerType.Buffer, InsertCard(_buffer, card, preferredIndex));
+                location = new CardLocation(CardContainerType.Buffer, InsertCard(_buffer, card, preferredIndex));
             }
-            else
+
+            if (location != null)
             {
-                return null;
+                onStateChanged?.Invoke();
             }
+            
+            return location;
         }
 
         private static bool IsListFull(List<Card> list) => list.TrueForAll(c => c != null);
@@ -68,10 +73,7 @@ namespace CardSystem
 
             Debug.Assert(list[preferredIndex] == null);
             list[preferredIndex] = card;
-            
-            // to:billy rev: minor issue here. This really should be called in AcquireCard
-            onStateChanged?.Invoke();
-            
+
             return preferredIndex;
         }
 
