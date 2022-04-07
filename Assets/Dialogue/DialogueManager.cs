@@ -1,10 +1,16 @@
 using System.Collections.Generic;
 using InteractionSystem;
+using JetBrains.Annotations;
 using UnityEngine;
 using Yarn.Unity;
 
 namespace Dialogue
 {
+    // todo: to:george we need a way to disallow interaction with a character based on a variable in yarn.
+    //       don't make it sophisticated though because we don't know how characters will remember things
+    //       between multiple play-through yet
+    
+    
     public class DialogueManager : MonoBehaviour
     {
         public static DialogueManager Instance;
@@ -71,10 +77,25 @@ namespace Dialogue
         // syntax in Yarn script: <<non_static_example DialogueManager "argument string">>
         // the name of the GameObject that this mono-behavior is attached to MUST NOT have any spaces in its name
         
-        // todo:billy change everything to use underscore naming convention
+        // todo: to:billy change everything to use underscore naming convention
         public void YarnSpinnerExampleFunc(string arg)
         {
             Debug.Log(arg + ": YarnSpinner called non-static API example function");
         }
+        
+        // todo: to:billy this is very hacky because
+        // a) it depends on finding a gameObject.
+        // b) it doesn't work well with a save system.
+        // c) There must a way to store state about whether certain conditions are met and show/hide UI based on that,
+        //    instead of relying on a one-time destruction
+        [YarnCommand("destroy_object"), UsedImplicitly]
+        public static void DestroyObject(GameObject gameObject)
+        {
+            if (gameObject != null)
+            {
+                Destroy(gameObject);
+            }
+        }
+
     }
 }

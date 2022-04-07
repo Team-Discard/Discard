@@ -8,7 +8,7 @@ namespace CutSceneSystem
     public class TimelineManager : MonoBehaviour
     {
         public static TimelineManager Instance;
-        
+
         public static bool IsCutScenePlaying { get; private set; } = false;
 
         [SerializeField] private Image blackScreen;
@@ -26,7 +26,7 @@ namespace CutSceneSystem
                 Instance = this;
             }
         }
-        
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void StaticInit()
         {
@@ -53,12 +53,12 @@ namespace CutSceneSystem
 
         public void FadeInBlackScreen()
         {
-            blackScreen.DOFade(1f, blackScreenFadeTime).OnStart(()=>{blackScreen.gameObject.SetActive(true);});
+            blackScreen.DOFade(1f, blackScreenFadeTime).OnStart(() => { blackScreen.gameObject.SetActive(true); });
         }
 
         public void FadeOutBlackScreen()
         {
-            blackScreen.DOFade(0f, blackScreenFadeTime).OnComplete(()=>{blackScreen.gameObject.SetActive(false);});
+            blackScreen.DOFade(0f, blackScreenFadeTime).OnComplete(() => { blackScreen.gameObject.SetActive(false); });
         }
     }
 }

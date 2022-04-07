@@ -16,23 +16,11 @@ Gala: I want you to know how to use card to fight enemies.
     <<set $interested to true>>
 
 <<if $interested>>
-    <<jump GalaInterested>>
+    Gala: OK fine...
 <<else>>
-    <<jump GalaNotInterested>>
+    Gala: Yep. So you need to go find some skeleton, pick up card, and fight your ass through this!
 <<endif>>
+
+<<destroy_object UI_Hider>>
 ===
-title: GalaNotInterested
-tags: 
-colorID: 0
-position: 561,592
----
-Gala: OK fine...
-===
-title: GalaInterested
-tags: 
-colorID: 0
-position: 1014,590
----
-<<non_static_example PFB_Dialogue_Manager "argument string">>
-Gala: Yep. So you need to go find some skeleton, pick up card, and fight your ass through this!
-===
+
