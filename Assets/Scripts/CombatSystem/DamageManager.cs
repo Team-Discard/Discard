@@ -4,6 +4,7 @@ using System.Linq;
 using EntitySystem;
 using UnityEngine;
 using Unstable;
+using Uxt.Utils;
 
 namespace CombatSystem
 {
@@ -29,7 +30,8 @@ namespace CombatSystem
         {
             _damages = new Dictionary<int, DamageRecord>();
             _nextDamageId = 0;
-            _removeInvincibilityFrameBuffer = new List<IDamageTakerComponent>();
+            _invincibilityFrameIterationBuffer = new List<IDamageTakerComponent>();
+            _invincibilityFrameRemovalBuffer = new List<IDamageTakerComponent>();
         }
 
         public static void GetAllDamages(List<DamageIdPair> outList)
@@ -108,9 +110,10 @@ namespace CombatSystem
             return false;
         }
 
-        /// A buffer that stores invincibility frames records to remove
-        private static List<IDamageTakerComponent> _removeInvincibilityFrameBuffer;
-
+        
+        private static List<IDamageTakerComponent> _invincibilityFrameIterationBuffer;
+        private static List<IDamageTakerComponent> _invincibilityFrameRemovalBuffer;
+    
         /// <summary>
         /// Subtracts <paramref name="deltaTime"/> from all recorded invincibility frames,
         /// and removes any frame that has expired.
@@ -120,20 +123,22 @@ namespace CombatSystem
         {
             foreach (var damageRec in _damages.Values)
             {
-                foreach (var damageTaker in damageRec.invincibilityFrames.Keys.ToList())
+                damageRec.invincibilityFrames.Keys.ToList(_invincibilityFrameIterationBuffer);
+                
+                foreach (var damageTaker in _invincibilityFrameIterationBuffer)
                 {
                     if ((damageRec.invincibilityFrames[damageTaker] -= deltaTime) <= 0.0f)
                     {
-                        _removeInvincibilityFrameBuffer.Add(damageTaker);
+                        _invincibilityFrameRemovalBuffer.Add(damageTaker);
                     }
                 }
 
-                foreach (var damageTaker in _removeInvincibilityFrameBuffer)
+                foreach (var damageTaker in _invincibilityFrameRemovalBuffer)
                 {
                     damageRec.invincibilityFrames.Remove(damageTaker);
                 }
 
-                _removeInvincibilityFrameBuffer.Clear();
+                _invincibilityFrameRemovalBuffer.Clear();
             }
         }
 
