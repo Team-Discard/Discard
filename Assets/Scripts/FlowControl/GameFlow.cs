@@ -51,7 +51,11 @@ namespace FlowControl
                     .AllowType<IHealthBarWatcherComponent>()
                     .AllowType<IHealthBarRendererComponent>()
                     .AllowType<ICardUserComponent>()
-                    .AllowType<IHealthBarTransformComponent>();
+                    .AllowType<IHealthBarTransformComponent>()
+                    .AllowType<FollowConstraintComponent>();
+            
+            // todo: to:billy get rid of this singleton
+            ComponentRegistry.Instance = _componentRegistry;
 
             if (_npcHealthBarRendererMgr != null)
             {
@@ -147,6 +151,10 @@ namespace FlowControl
                 .Get<IHealthBarRendererComponent>()
                 .Tick(deltaTime, (hbr, dt) => hbr.Tick(dt));
 
+            _componentRegistry
+                .Get<FollowConstraintComponent>()
+                .Tick(deltaTime, (pcc, dt) => pcc.Tick(dt));
+            
             if (_npcHealthBarRendererMgr != null)
             {
                 _npcHealthBarRendererMgr.Tick(_componentRegistry.Get<IHealthBarTransformComponent>());

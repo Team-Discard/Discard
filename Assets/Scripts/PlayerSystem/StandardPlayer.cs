@@ -86,7 +86,8 @@ namespace PlayerSystem
                 _weaponEquipHandler,
                 _animationHandler,
                 _rootMotionSource,
-                transform
+                transform,
+                GetComponent<SocketGroup>()
             };
 
             _cardButtonHandler = new CardButtonHandler(_inputHandler, _cardUser, cardUseDependencies);

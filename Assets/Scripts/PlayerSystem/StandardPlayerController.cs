@@ -1,5 +1,6 @@
 ﻿using ActionSystem;
 using CharacterSystem;
+using CutSceneSystem;
 using EntitySystem;
 using InteractionSystem;
 using MotionSystem;
@@ -31,7 +32,7 @@ namespace PlayerSystem
         public void Tick(float deltaTime)
         {
             // very hacky
-            if (InteractionEventSystem.IsInteracting) return;
+            if (InteractionEventSystem.PlayerRestraint > 0) return;
 
             var rotationFrame = Rotation.Identity;
             var translationFrame = Translation.Identity;
@@ -45,7 +46,7 @@ namespace PlayerSystem
                 LocomotionController.ApplyDirectionalMovement(
                     deltaTime, inputDirection, controlDirection,
                     _pawn.CurrentForward.ConvertXz2Xy(),
-                    _maxSpeed, 360.0f,
+                    _maxSpeed, 720.0f,
                     ref translationFrame, ref rotationFrame);
             }
 

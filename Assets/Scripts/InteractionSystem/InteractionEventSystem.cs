@@ -8,6 +8,7 @@ namespace InteractionSystem
         // bool variable that ONLY allow a single interaction with an interactable at a time
         // may change in the future
         public static bool IsInteracting { get; private set; } = false;
+        public static int PlayerRestraint = 0;
 
         // to:george to:billy (DO NOT REMOVE)
         // Events can be public, so you don't need methods that wrap around them.
@@ -25,6 +26,7 @@ namespace InteractionSystem
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void StaticInit()
         {
+            PlayerRestraint = 0;
             IsInteracting = false;
             OnStartInteraction = null;
             OnEndInteraction = null;
@@ -42,6 +44,7 @@ namespace InteractionSystem
             
             // else set interacting to true and trigger interaction event
             IsInteracting = true;
+            PlayerRestraint++;
             OnStartInteraction?.Invoke(interactableObjId);
         }
 
@@ -52,6 +55,7 @@ namespace InteractionSystem
         public static void TriggerOnEndInteraction(int interactableObjId, InteractionType type)
         {
             IsInteracting = false;
+            PlayerRestraint--;
             OnEndInteraction?.Invoke(interactableObjId);
         }
     }

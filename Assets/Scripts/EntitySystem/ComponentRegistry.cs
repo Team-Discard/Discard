@@ -8,6 +8,8 @@ namespace EntitySystem
     {
         private readonly Dictionary<Type, ComponentList> _componentLists = new();
 
+        public static ComponentRegistry Instance { get; set; }
+        
         public ComponentRegistry AllowType<T>() where T : IComponent
         {
             return AllowType(typeof(T));
