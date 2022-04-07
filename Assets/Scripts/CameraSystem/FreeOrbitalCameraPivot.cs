@@ -40,7 +40,7 @@ namespace CameraSystem
         {
             var forward = otherPivot.forward;
             var forwardXz = Vector3.ProjectOnPlane(forward, Vector3.up);
-            _pitch = Vector3.SignedAngle(forwardXz, forward, Vector3.Cross(forwardXz, forward));
+            _pitch = -Vector3.SignedAngle(forwardXz, forward, Vector3.Cross(forwardXz, forward));
             _yaw = Vector3.SignedAngle(Vector3.forward, forwardXz, Vector3.up);
             SanitizePitchAndYaw();
         }

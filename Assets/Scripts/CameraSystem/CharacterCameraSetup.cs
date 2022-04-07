@@ -39,7 +39,7 @@ namespace CameraSystem
             _lockOnTarget = target;
             
             _freeLookCamera.Priority = -1;
-            
+
             _lockOnCamera.Priority = 10;
             _lockOnPivot.TargetTransform = target;
 
@@ -58,6 +58,14 @@ namespace CameraSystem
             _lockOnCamera.Priority = -1;
             
             _targetGroup.m_Targets[1].target = null;
+        }
+
+        private void Update()
+        {
+            if (CurrentMode == CharacterCameraMode.TargetLockOn && _lockOnTarget == null)
+            {
+                EndLockOn();
+            }
         }
     }
 }

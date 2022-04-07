@@ -1,4 +1,5 @@
-﻿using Annotations;
+﻿using System;
+using Annotations;
 using UnityEngine;
 using Uxt.PropertyDrawers;
 
@@ -10,10 +11,7 @@ namespace CameraSystem
     {
         [SerializeField, EditInPrefabOnly] private Transform _pivotTransform;
         [SerializeField, EditInPrefabOnly] private Transform _targetTransform;
-
-        [SerializeField, EditInPrefabOnly, Tooltip("The rotation to fallback to if no target is present")]
-        private Transform _fallbackRotation;
-
+        
         public Transform TargetTransform
         {
             get => _targetTransform;
@@ -39,13 +37,6 @@ namespace CameraSystem
                 var targetPos = _targetTransform.position;
                 var destRotation = Quaternion.LookRotation(targetPos - _pivotTransform.position);
                 _pivotTransform.rotation = destRotation;
-            }
-            else
-            {
-                if (_fallbackRotation != null)
-                {
-                    _pivotTransform.rotation = _fallbackRotation.rotation;
-                }
             }
         }
     }
