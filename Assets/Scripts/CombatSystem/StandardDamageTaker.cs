@@ -49,7 +49,7 @@ namespace CombatSystem
 
         public void ReckonAllDamage()
         {
-            Debug.Assert(_healthBar != null, "The damage taker must reference a health bar", gameObject);
+            Debug.Assert(_healthBar != null, "The damage taker must be bound to a health bar", gameObject);
             while (_damageQueue.TryDequeue(out var dmg))
             {
                 _healthBar.CurrentHealth -= dmg.BaseAmount;
