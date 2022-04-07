@@ -4,6 +4,7 @@ using ActionSystem;
 using CardSystem;
 using CharacterSystem;
 using CombatSystem;
+using Debugging;
 using EntitySystem;
 using InteractionSystem;
 using PlayerSystem;
@@ -29,12 +30,19 @@ namespace FlowControl
         private LevelFlow _currentLevelFlow;
 
         private List<EnemySpawnDesc> _enemySpawnBuffer;
-        private List<IInteractable> _interactables; // list of interactables, optimally should be handled by each level but it is here for now
+
+        private List<IInteractable>
+            _interactables; // list of interactables, optimally should be handled by each level but it is here for now
+
         [SerializeField, EditInPrefabOnly] private float interactableScanRange;
         private ComponentRegistry _componentRegistry;
 
         private void Awake()
         {
+            DebugConsole.RegisterHandler(
+                "t",
+                DebugConsole.CreateHandlerFromObject(new TimeScaler()));
+
             _enemySpawnBuffer = new List<EnemySpawnDesc>();
             _componentRegistry =
                 new ComponentRegistry()
@@ -53,7 +61,7 @@ namespace FlowControl
                     .AllowType<ICardUserComponent>()
                     .AllowType<IHealthBarTransformComponent>()
                     .AllowType<FollowConstraintComponent>();
-            
+
             // todo: to:billy get rid of this singleton
             ComponentRegistry.Instance = _componentRegistry;
 
@@ -75,10 +83,10 @@ namespace FlowControl
             );
 
             _playerStatsDisplay.BindHealthBar(_player.HealthBar);
-            
+
             // fill in the interactables
             _interactables = GetAllInteractables();
-            
+
             // log all interactable object names
             foreach (var i in _interactables)
             {
@@ -154,7 +162,7 @@ namespace FlowControl
             _componentRegistry
                 .Get<FollowConstraintComponent>()
                 .Tick(deltaTime, (pcc, dt) => pcc.Tick(dt));
-            
+
             if (_npcHealthBarRendererMgr != null)
             {
                 _npcHealthBarRendererMgr.Tick(_componentRegistry.Get<IHealthBarTransformComponent>());
@@ -168,10 +176,10 @@ namespace FlowControl
             {
                 // Scan for interactable and set it in interactionManager
                 _interactables = GetAllInteractables();
-                InteractionManager.Instance.SetCurrentFocusedInteractable(ScanForClosestInteractableWithInRange(interactableScanRange));
+                InteractionManager.Instance.SetCurrentFocusedInteractable(
+                    ScanForClosestInteractableWithInRange(interactableScanRange));
                 InteractionManager.Instance.DisplayInteractionHintIfNeeded();
             }
-
         }
 
 
@@ -188,26 +196,26 @@ namespace FlowControl
 
             return levelRoot != _currentLevelRoot;
         }
-        
+
         // function to get all interactable objects in the scene (inactive ones included)
         private static List<IInteractable> GetAllInteractables()
         {
             var interactablesFound = FindObjectsOfType<MonoBehaviour>(true).OfType<IInteractable>();
             return interactablesFound.ToList();
         }
-        
+
         // function to find the closest interactable object within certain range of the player
         private IInteractable ScanForClosestInteractableWithInRange(float range)
         {
             IInteractable retVal = null;
             var closestDistanceSq = Mathf.Infinity;
-            
+
             // find the closest interactable within range
             foreach (var interactable in _interactables)
             {
                 var directionToTarget =
                     interactable.MyGameObject.transform.position - _player.gameObject.transform.position;
-                
+
                 var dSqrToTarget = directionToTarget.sqrMagnitude;
 
                 if (dSqrToTarget < closestDistanceSq)
@@ -227,6 +235,7 @@ namespace FlowControl
 
         private ComponentList<IPawnComponent> _pawns;
         private ComponentList<PawnAnimationHandler> _animationHandlers;
+
         public void AddComponent(IComponent component)
         {
             _componentRegistry.AddComponent(component);
