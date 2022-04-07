@@ -8,6 +8,7 @@ using Debugging;
 using EntitySystem;
 using InteractionSystem;
 using PlayerSystem;
+using ProjectileSystem;
 using SpawnerSystem;
 using UI;
 using UI.HealthBar;
@@ -60,7 +61,8 @@ namespace FlowControl
                     .AllowType<IHealthBarRendererComponent>()
                     .AllowType<ICardUserComponent>()
                     .AllowType<IHealthBarTransformComponent>()
-                    .AllowType<FollowConstraintComponent>();
+                    .AllowType<FollowConstraintComponent>()
+                    .AllowType<ProjectileComponent>();
 
             // todo: to:billy get rid of this singleton
             ComponentRegistry.Instance = _componentRegistry;

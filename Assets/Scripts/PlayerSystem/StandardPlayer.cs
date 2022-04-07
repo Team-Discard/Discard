@@ -87,7 +87,8 @@ namespace PlayerSystem
                 _animationHandler,
                 _rootMotionSource,
                 transform,
-                GetComponent<SocketGroup>()
+                GetComponent<SocketGroup>(),
+                GetComponentInChildren<CharacterController>()
             };
 
             _cardButtonHandler = new CardButtonHandler(_inputHandler, _cardUser, cardUseDependencies);

@@ -2,6 +2,9 @@
 
 namespace CombatSystem
 {
+    
+    // todo: to:billy research: does damage box trigger need rigidbody if hurt box already has that?
+    
     public class DamageBoxTrigger : MonoBehaviour
     {
         [SerializeField] private DamageBox _parent;

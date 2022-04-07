@@ -1,7 +1,9 @@
 ﻿using Animancer;
 using CharacterSystem;
+using CombatSystem;
 using EntitySystem;
 using MotionSystem;
+using ProjectileSystem;
 using UnityEngine;
 using Unstable.Entities;
 using Uxt.InterModuleCommunication;
@@ -14,7 +16,7 @@ namespace ActionSystem.Actions.ProjectileThrow
         [SerializeField] private ClipTransition _leadAnimation;
         [SerializeField] private ClipTransition _windUpAnimation;
         [SerializeField] private ClipTransition _throwAnimation;
-        [SerializeField] private GameObject _projectilePrefab;
+        [SerializeField] private ProjectileComponent _projectilePrefab;
 
         private PawnAnimationHandler _animationHandler;
         private float _windUpTimer;
@@ -26,11 +28,13 @@ namespace ActionSystem.Actions.ProjectileThrow
         private RootMotionSource _rootMotionSource;
         private RootMotionFrame _rootMotionFrame;
 
-        private GameObject _projectile;
+        private ProjectileComponent _projectile;
 
         private FollowConstraintComponent _windUpFollowConstraint;
         private FollowConstraintComponent _actFollowConstraint;
 
+        private DependencyBag _dependencyBag;
+        
         public bool Completed { get; private set; }
         public IReadOnlyFrameData<Translation> TranslationFrame => _translationFrame;
         public IReadOnlyFrameData<Rotation> RotationFrame => _rotationFrame;
@@ -47,6 +51,9 @@ namespace ActionSystem.Actions.ProjectileThrow
         public void Init(DependencyBag bag)
         {
             Debug.Assert(_windUpAnimation.Clip.isLooping, "A throwing windup animation must be looping!");
+
+            _dependencyBag = bag;
+            
             bag.ForceGet(out _animationHandler);
             bag.ForceGet(out _rootMotionSource);
             bag.ForceGet(out _socketGroup);
@@ -73,7 +80,16 @@ namespace ActionSystem.Actions.ProjectileThrow
             {
                 _animationHandler.PlayActionAnimation(this, _windUpAnimation);
                 _projectile = Instantiate(_projectilePrefab, _socketGroup.Projectile.position, Quaternion.identity);
+                Entity.SetUp(_projectile.transform, ComponentRegistry.Instance);
 
+                if (_dependencyBag.Get(out Collider throwerCollider))
+                {
+                    _projectile.IgnoreCollisionWith(throwerCollider);
+                }
+                
+                // todo: this damage layer should be a parameter
+                _projectile.BindDamageLayer(DamageLayer.Player);
+                
                 _windUpFollowConstraint = new FollowConstraintComponent(
                     ComponentRegistry.Instance,
                     _projectile.transform,
