@@ -1,4 +1,5 @@
-﻿using InteractionSystem;
+﻿using System;
+using InteractionSystem;
 using PlayerSystem;
 using UnityEngine;
 using Uxt.Utils;
@@ -12,6 +13,10 @@ namespace WarpSystem
         public int InteractableObjId => -1;
         public InteractionType Type => InteractionType.Collectable;
         public GameObject MyGameObject => gameObject;
+
+        private void Start()
+        {
+        }
 
         public void StartInteraction()
         {

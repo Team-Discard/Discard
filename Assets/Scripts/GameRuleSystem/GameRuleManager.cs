@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Dialogue;
 using UnityEngine;
 using Uxt.Utils;
 
@@ -38,6 +39,11 @@ namespace GameRuleSystem
         public static void RevokeRule_PlayerCannotMove(Object src) => RevokeRule(GameRule.PlayerCannotMove, src);
         public static void EnforceRule_NoHUD(Object src) => EnforceRule(GameRule.NoHUD, src);
         public static void RevokeRule_NoHUD(Object src) => RevokeRule(GameRule.NoHUD, src);
+
+        public static bool IsRuleEnforcedBy(GameRule rule, object enforcer)
+        {
+            return _ruleEnforcers.TryGetValue(rule, out var enforcers) && enforcers.Contains(enforcer);
+        }
     }
 
     public enum GameRule

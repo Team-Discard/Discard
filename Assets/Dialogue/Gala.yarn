@@ -21,6 +21,8 @@ Gala: I want you to know how to use card to fight enemies.
     Gala: Yep. So you need to go find some skeleton, pick up card, and fight your ass through this!
 <<endif>>
 
+<<set $talked_to_gala to 1>>
+
 <<destroy_object UI_Hider>>
 ===
 

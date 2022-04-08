@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using GameRuleSystem;
 using InteractionSystem;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -30,6 +32,8 @@ namespace Dialogue
             var charName = inter.MyGameObject.GetComponent<InteractableCharacter>().CharacterName;
             
             dialogueRunner.StartDialogue(_characterNameToDialogueStartNode[charName]);
+            
+            GameRuleManager.EnforceRule(GameRule.NoHUD, this);
         }
 
         public void EndCurrentCharacterInteraction()
@@ -38,6 +42,19 @@ namespace Dialogue
             {
                 InteractionEventSystem.TriggerOnEndInteraction(_currentFocusedInteractable.InteractableObjId, _currentFocusedInteractable.Type);
                 _currentFocusedInteractable = null;
+            }
+            
+            GameRuleManager.RevokeRule(GameRule.NoHUD, this);
+        }
+
+        private void OnDestroy()
+        {
+            // todo: to:billy use the IDisposable pattern here
+            // todo: we also need a way to disable camera rotation during rotation
+
+            if (GameRuleManager.IsRuleEnforcedBy(GameRule.NoHUD, this))
+            {
+                GameRuleManager.RevokeRule(GameRule.NoHUD, this);
             }
         }
 

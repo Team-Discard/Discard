@@ -107,6 +107,9 @@ namespace FlowControl
 
                 _currentLevelRoot = newLevelRoot;
                 _currentLevelFlow = new LevelFlow(_componentRegistry, newLevelRoot);
+                
+                // todo: to:billy evil, refactor this
+                _currentLevelRoot.BroadcastMessage("OnLevelCompleted");
             }
 
             _componentRegistry
@@ -207,6 +210,8 @@ namespace FlowControl
         }
 
         // function to find the closest interactable object within certain range of the player
+        // todo: to:george from:billy we also need a way for interactables and interactors to specify an offset from
+        //        their origin
         private IInteractable ScanForClosestInteractableWithInRange(float range)
         {
             IInteractable retVal = null;
