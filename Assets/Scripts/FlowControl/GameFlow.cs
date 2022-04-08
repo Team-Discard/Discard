@@ -26,7 +26,7 @@ namespace FlowControl
         [SerializeField] private StandardPlayer _player;
         [SerializeField] private PlayerStatsDisplay _playerStatsDisplay;
         [SerializeField] private NpcHealthBarRendererManager _npcHealthBarRendererMgr;
-
+        
         private GameObject _currentLevelRoot;
         private LevelFlow _currentLevelFlow;
 
@@ -215,6 +215,9 @@ namespace FlowControl
             // find the closest interactable within range
             foreach (var interactable in _interactables)
             {
+                // to:george This skips disabled interactables. Needed for conditionally enabling warp points
+                if (interactable is MonoBehaviour { isActiveAndEnabled: false }) continue;
+
                 var directionToTarget =
                     interactable.MyGameObject.transform.position - _player.gameObject.transform.position;
 
