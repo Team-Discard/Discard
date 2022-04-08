@@ -77,6 +77,8 @@ namespace CombatSystem
 
         public static void ClearDamage(ref int id)
         {
+            if (id == -1) return;
+
             if (!_damages.Remove(id))
             {
                 throw new Exception($"Damage with {id} does not exist!");
@@ -110,10 +112,10 @@ namespace CombatSystem
             return false;
         }
 
-        
+
         private static List<IDamageTakerComponent> _invincibilityFrameIterationBuffer;
         private static List<IDamageTakerComponent> _invincibilityFrameRemovalBuffer;
-    
+
         /// <summary>
         /// Subtracts <paramref name="deltaTime"/> from all recorded invincibility frames,
         /// and removes any frame that has expired.
@@ -124,7 +126,7 @@ namespace CombatSystem
             foreach (var damageRec in _damages.Values)
             {
                 damageRec.invincibilityFrames.Keys.ToList(_invincibilityFrameIterationBuffer);
-                
+
                 foreach (var damageTaker in _invincibilityFrameIterationBuffer)
                 {
                     if ((damageRec.invincibilityFrames[damageTaker] -= deltaTime) <= 0.0f)
@@ -152,7 +154,7 @@ namespace CombatSystem
             GetAllDamages(DamageBuffer);
 
             damageTakers.RemoveDestroyed();
-            
+
             foreach (var damageTaker in damageTakers)
             {
                 foreach (var pair in DamageBuffer)

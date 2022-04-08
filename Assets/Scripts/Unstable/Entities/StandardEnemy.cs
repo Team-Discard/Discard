@@ -41,10 +41,14 @@ namespace Unstable.Entities
         private PawnAnimationHandler _animationHandler;
         private bool _attackAnimationPlayed;
 
+        private int _damageId;
+        
         public override void Init()
         {
             base.Init();
 
+            _damageId = -1;
+            
             _healthBar = GetComponent<StandardHealthBar>();
             _damageTaker.BindHealthBar(_healthBar);
 
@@ -78,6 +82,11 @@ namespace Unstable.Entities
             _healthBar.Destroy();
             _pawn.Destroy();
             _animationHandler.Destroy();
+
+            if (_damageId != -1)
+            {
+                DamageManager.ClearDamage(ref _damageId);
+            }
         }
 
         public void Tick(float deltaTime)
@@ -130,12 +139,12 @@ namespace Unstable.Entities
                 {
                     _rootMotionFrame = rootMotionSource.BeginAccumulate();
                     _attackAnimationPlayed = true;
-                    var damageId = DamageManager.SetDamage(new Damage
+                    _damageId = DamageManager.SetDamage(new Damage
                     {
                         BaseAmount = 1.0f,
                         DamageBox = _sword.DamageBox,
                         Layer = DamageLayer.Enemy
-                    });
+                    }, _damageId);
                     _animationHandler.PlayAnimation(
                         _stabAnimation,
                         () =>
@@ -143,7 +152,9 @@ namespace Unstable.Entities
                             _enemyAI.IsSlashing = false;
                             _attackAnimationPlayed = false;
                             _rootMotionFrame.Destroy();
-                            DamageManager.ClearDamage(ref damageId);
+                            
+                            // todo: to:billy we need a RAII interface for damage IDs (expressing damage ownership)
+                            DamageManager.ClearDamage(ref _damageId);
                         });
                 }
                 else
