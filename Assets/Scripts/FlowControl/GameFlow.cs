@@ -26,7 +26,7 @@ namespace FlowControl
         [SerializeField] private StandardPlayer _player;
         [SerializeField] private PlayerStatsDisplay _playerStatsDisplay;
         [SerializeField] private NpcHealthBarRendererManager _npcHealthBarRendererMgr;
-        
+
         private GameObject _currentLevelRoot;
         private LevelFlow _currentLevelFlow;
 
@@ -73,16 +73,15 @@ namespace FlowControl
             }
         }
 
+        public void AddComponent(IComponent component)
+        {
+            _componentRegistry.AddComponent(component);
+        }
+
         private void Start()
         {
-            Entity.SetUp(
-                _player.transform,
-                AddComponent);
-
-            Entity.SetUp(
-                _playerStatsDisplay.transform,
-                AddComponent
-            );
+            Entity.SetUp(_player.transform, this);
+            Entity.SetUp(_playerStatsDisplay.transform, this);
 
             _playerStatsDisplay.BindHealthBar(_player.HealthBar);
 
@@ -107,9 +106,9 @@ namespace FlowControl
 
                 _currentLevelRoot = newLevelRoot;
                 _currentLevelFlow = new LevelFlow(_componentRegistry, newLevelRoot);
-                
+
                 // todo: to:billy evil, refactor this
-                _currentLevelRoot.BroadcastMessage("OnLevelCompleted");
+                _currentLevelRoot.BroadcastMessage("OnLevelCompleted", SendMessageOptions.DontRequireReceiver);
             }
 
             _componentRegistry
@@ -241,14 +240,6 @@ namespace FlowControl
             }
 
             return retVal;
-        }
-
-        private ComponentList<IPawnComponent> _pawns;
-        private ComponentList<PawnAnimationHandler> _animationHandlers;
-
-        public void AddComponent(IComponent component)
-        {
-            _componentRegistry.AddComponent(component);
         }
     }
 }

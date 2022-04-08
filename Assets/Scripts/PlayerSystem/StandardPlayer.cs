@@ -109,7 +109,13 @@ namespace PlayerSystem
             {
                 if (_cameraSetup.CurrentMode != CharacterCameraMode.TargetLockOn)
                 {
-                    _cameraSetup.BeginLockOn(GameObject.FindGameObjectWithTag("Enemy").transform.Find("Lock On Point"));
+                    var mainCam = Camera.main;
+                    var viewerTransform =  mainCam != null ? mainCam.transform : transform;
+                    var lockOnTarget = LockOnTargetManager.FindBestTarget(viewerTransform.position, viewerTransform.forward);
+                    if (lockOnTarget != null)
+                    {
+                        _cameraSetup.BeginLockOn(lockOnTarget);
+                    }
                 }
                 else
                 {

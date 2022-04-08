@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Animancer;
+using CameraSystem;
 using CharacterSystem;
 using CombatSystem;
 using EntitySystem;
@@ -37,6 +39,8 @@ namespace Unstable.Entities
         private EnemyHealthBarTransform _healthBarTransform;
         [SerializeField] private StandardDamageTaker _damageTaker;
 
+        [SerializeField] private Transform _lockOnPoint;
+        
         private RootMotionFrame _rootMotionFrame;
         private PawnAnimationHandler _animationHandler;
         private bool _attackAnimationPlayed;
@@ -63,6 +67,11 @@ namespace Unstable.Entities
             _attackAnimationPlayed = false;
         }
 
+        private void Start()
+        {
+            LockOnTargetManager.RegisterTarget(_lockOnPoint);
+        }
+
         public void RegisterSelf(IComponentRegistry registry)
         {
             registry.AddComponent(this);
@@ -87,6 +96,8 @@ namespace Unstable.Entities
             {
                 DamageManager.ClearDamage(ref _damageId);
             }
+            
+            LockOnTargetManager.UnregisterTarget(_lockOnPoint);
         }
 
         public void Tick(float deltaTime)
