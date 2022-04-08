@@ -106,9 +106,6 @@ namespace FlowControl
 
                 _currentLevelRoot = newLevelRoot;
                 _currentLevelFlow = new LevelFlow(_componentRegistry, newLevelRoot);
-
-                // todo: to:billy evil, refactor this
-                _currentLevelRoot.BroadcastMessage("OnLevelCompleted", SendMessageOptions.DontRequireReceiver);
             }
 
             _componentRegistry

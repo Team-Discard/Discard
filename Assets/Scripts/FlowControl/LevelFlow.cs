@@ -21,6 +21,8 @@ namespace FlowControl
         private readonly ComponentList<IEnemyComponent> _enemies = new();
         private readonly List<EnemySpawnDesc> _enemySpawnBuffer = new();
 
+        private GameObject _root;
+        
         private LevelState _state;
 
         private GameObject _rewardChest;
@@ -28,6 +30,7 @@ namespace FlowControl
         public LevelFlow(IComponentRegistry gameCompRegistry, GameObject levelRoot)
         {
             _gameCompRegistry = gameCompRegistry;
+            _root = levelRoot;
             _rewardChest = levelRoot.transform.Find("Reward Chest")?.gameObject;
 
             Entity.SetUp(levelRoot.transform, c =>
@@ -76,6 +79,7 @@ namespace FlowControl
                 _enemies.Count == 0)
             {
                 _state = LevelState.Completed;
+                _root.BroadcastMessage("OnLevelCompleted", SendMessageOptions.DontRequireReceiver);
                 SpawnReward();
             }
         }
