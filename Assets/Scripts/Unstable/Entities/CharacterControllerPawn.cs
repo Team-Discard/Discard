@@ -2,6 +2,7 @@
 using EntitySystem;
 using MotionSystem;
 using UnityEngine;
+using Uxt;
 
 namespace Unstable.Entities
 {
@@ -61,6 +62,14 @@ namespace Unstable.Entities
         {
             var transform = _controller.transform;
             transform.rotation = _rotation.Apply(deltaTime, transform.rotation);
+        }
+
+        public void Warp(RigidTransformData target)
+        {
+            var enabled = _controller.enabled;
+            _controller.enabled = false;
+            target.ApplyTo(_controller.transform);
+            _controller.enabled = enabled;
         }
     }
 }

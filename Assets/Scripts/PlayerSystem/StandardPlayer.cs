@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ActionSystem;
 using Animancer;
 using CameraSystem;
@@ -34,7 +35,7 @@ namespace PlayerSystem
         [SerializeField] private CardManager _cardManager;
         
         private RootMotionSource _rootMotionSource;
-        private IPawnComponent _pawn;
+        private CharacterControllerPawn _pawn;
         private IActionExecutorComponent _actionExecutor;
         private PawnAnimationHandler _animationHandler;
         private IPawnControllerComponent _controller;
@@ -48,6 +49,17 @@ namespace PlayerSystem
         [SerializeField] private List<Card> _debugPlayerCards;
 
         public IHealthBarComponent HealthBar => _healthBar;
+
+        // todo: to:billy this is evil
+        public CharacterControllerPawn Pawn => _pawn;
+
+        // todo: to:billy this is evil
+        public static StandardPlayer Instance { get; private set; }
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         public override void Init()
         {
