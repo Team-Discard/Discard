@@ -33,7 +33,7 @@ namespace PlayerSystem
         [SerializeField] private StandardHealthBar _healthBar;
         [SerializeField] private CharacterCameraSetup _cameraSetup;
         [SerializeField] private CardManager _cardManager;
-        
+
         private RootMotionSource _rootMotionSource;
         private CharacterControllerPawn _pawn;
         private IActionExecutorComponent _actionExecutor;
@@ -65,6 +65,8 @@ namespace PlayerSystem
         {
             base.Init();
 
+            var sockets = GetComponentInChildren<SocketGroup>();
+
             var animancer = GetComponentInChildren<AnimancerComponent>();
             Debug.Assert(animancer != null, "Player must have an animancer component in its children");
 
@@ -75,8 +77,8 @@ namespace PlayerSystem
             _actionExecutor = new ActionExecutor();
             _animationHandler = new PawnAnimationHandler(_pawn, animancer, _noWeaponAnimationSet);
             _weaponEquipHandler = new StandardWeaponEquipHandler(
-                _leftHandSocket,
-                _rightHandSocket,
+                sockets.LeftHand,
+                sockets.RightHand,
                 _animationHandler);
             _controller =
                 new StandardPlayerController(_pawn, _controlCamera, _actionExecutor, _inputHandler, _maxSpeed);
@@ -85,7 +87,7 @@ namespace PlayerSystem
             {
                 _cardManager.AcquireCard(card, 0);
             }
-            
+
             _cardUser = new StandardCardUser(_actionExecutor, _cardManager);
 
             _healthBar = GetComponent<StandardHealthBar>();
@@ -99,7 +101,7 @@ namespace PlayerSystem
                 _animationHandler,
                 _rootMotionSource,
                 transform,
-                GetComponent<SocketGroup>(),
+                sockets,
                 GetComponentInChildren<CharacterController>()
             };
 
@@ -110,8 +112,9 @@ namespace PlayerSystem
                 if (_cameraSetup.CurrentMode != CharacterCameraMode.TargetLockOn)
                 {
                     var mainCam = Camera.main;
-                    var viewerTransform =  mainCam != null ? mainCam.transform : transform;
-                    var lockOnTarget = LockOnTargetManager.FindBestTarget(viewerTransform.position, viewerTransform.forward);
+                    var viewerTransform = mainCam != null ? mainCam.transform : transform;
+                    var lockOnTarget =
+                        LockOnTargetManager.FindBestTarget(viewerTransform.position, viewerTransform.forward);
                     if (lockOnTarget != null)
                     {
                         _cameraSetup.BeginLockOn(lockOnTarget);
