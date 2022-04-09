@@ -1,4 +1,5 @@
 using System;
+using GameRuleSystem;
 using UnityEngine;
 
 namespace InteractionSystem
@@ -8,14 +9,31 @@ namespace InteractionSystem
         // bool variable that ONLY allow a single interaction with an interactable at a time
         // may change in the future
         public static bool IsInteracting { get; private set; } = false;
-        public static int PlayerRestraint = 0;
+        private static int _playerRestraint = 0;
+        private static object _playerRestraintEnforcer;
+
+        public static void IncrementPlayerRestraint()
+        {
+            if (++_playerRestraint == 1)
+            {
+                GameRuleManager.EnforceRule(GameRule.PlayerCannotMove, _playerRestraintEnforcer);
+            }
+        }
+
+        public static void DecrementPlayerRestraint()
+        {
+            if (--_playerRestraint == 0)
+            {
+                GameRuleManager.RevokeRule(GameRule.PlayerCannotMove, _playerRestraintEnforcer);
+            }
+        }
 
         // to:george to:billy (DO NOT REMOVE)
         // Events can be public, so you don't need methods that wrap around them.
         // Other classes would only be able to subscribe to them, not invoking them.
         private static event Action<int> OnStartInteraction;
         private static event Action<int> OnEndInteraction;
-        
+
         // to:george to:billy (DO NOT REMOVE)
         // the following is necessary to initialize the static variable. Unity does not reload 
         // c# scripts when entering playmode, meaning that static constructors are not called.
@@ -26,14 +44,15 @@ namespace InteractionSystem
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void StaticInit()
         {
-            PlayerRestraint = 0;
+            _playerRestraint = 0;
             IsInteracting = false;
             OnStartInteraction = null;
             OnEndInteraction = null;
         }
-        
+
         public static void SubscribeToOnStartInteraction(Action<int> subscriber) => OnStartInteraction += subscriber;
         public static void UnSubscribeToOnStartInteraction(Action<int> subscriber) => OnStartInteraction -= subscriber;
+
         public static void TriggerOnStartInteraction(int interactableObjId, InteractionType type)
         {
             // if we are already interacting with something, do not trigger more interactions
@@ -41,10 +60,10 @@ namespace InteractionSystem
             {
                 return;
             }
-            
+
             // else set interacting to true and trigger interaction event
             IsInteracting = true;
-            PlayerRestraint++;
+            IncrementPlayerRestraint();
             OnStartInteraction?.Invoke(interactableObjId);
         }
 
@@ -55,7 +74,7 @@ namespace InteractionSystem
         public static void TriggerOnEndInteraction(int interactableObjId, InteractionType type)
         {
             IsInteracting = false;
-            PlayerRestraint--;
+            DecrementPlayerRestraint();
             OnEndInteraction?.Invoke(interactableObjId);
         }
     }
