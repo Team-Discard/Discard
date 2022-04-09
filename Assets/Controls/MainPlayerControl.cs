@@ -38,7 +38,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Camera Rotate"",
-                    ""type"": ""Value"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""015448ed-9893-4aa9-bc3a-9e54c5d48711"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
@@ -201,7 +201,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                     ""id"": ""d03fc1ad-4497-48d1-bd82-14c62ef944af"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": ""ScaleVector2(x=15,y=15)"",
+                    ""processors"": ""ScaleVector2(x=160,y=160)"",
                     ""groups"": """",
                     ""action"": ""Camera Rotate"",
                     ""isComposite"": false,
