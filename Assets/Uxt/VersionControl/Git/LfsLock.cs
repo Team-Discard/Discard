@@ -8,6 +8,7 @@ using Debug = UnityEngine.Debug;
 
 namespace Uxt.VersionControl.Git
 {
+#if UNITY_EDITOR
     public static class LfsLock
     {
         public static async Task<List<string>> GetLockedFilesGuid()
@@ -31,7 +32,7 @@ namespace Uxt.VersionControl.Git
 
                 var output = await git.StandardOutput.ReadToEndAsync();
                 Debug.Log(output);
-                
+
                 return null;
             }
             catch (Exception e)
@@ -47,4 +48,5 @@ namespace Uxt.VersionControl.Git
             GetLockedFilesGuid();
         }
     }
+#endif
 }

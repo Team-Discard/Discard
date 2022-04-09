@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 90687be24fe00864f82166830b1a8618
+  - enabled: 1
+    path: Assets/Exclusive/Haotian/Demo Level.unity
+    guid: c5256c546cefd624c9d15af6f2ef1a87
   m_configObjects: {}

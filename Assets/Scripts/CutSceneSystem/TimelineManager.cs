@@ -40,6 +40,7 @@ namespace CutSceneSystem
         {
             IsCutScenePlaying = true;
             GameRuleManager.EnforceRule(GameRule.PlayerCannotMove, this);
+            GameRuleManager.EnforceRule(GameRule.NoHUD, this);
         }
 
         [UsedImplicitly]
@@ -47,6 +48,7 @@ namespace CutSceneSystem
         {
             IsCutScenePlaying = false;
             GameRuleManager.RevokeRule(GameRule.PlayerCannotMove, this);
+            GameRuleManager.RevokeRule(GameRule.NoHUD, this);
         }
 
         public void DestroyManikin()

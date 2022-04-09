@@ -3,10 +3,7 @@ using Animancer;
 using CombatSystem;
 using MotionSystem;
 using UnityEngine;
-using Unstable;
 using Unstable.Entities;
-using Unstable.Utils;
-using Uxt;
 using Uxt.InterModuleCommunication;
 using WeaponSystem;
 using WeaponSystem.Swords;
@@ -50,6 +47,9 @@ namespace ActionSystem.Actions.GreatSwordSlash
             _preparationClipDone = false;
             _executionClipDone = false;
             _preparationTimer = _preparationTime;
+            
+            // todo: to:billy we need a proper audio manager
+            GetComponent<AudioSource>().Play();
         }
 
         private void Awake()
