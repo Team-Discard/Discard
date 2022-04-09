@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CharacterSystem;
 using EntitySystem;
+using GameRuleSystem;
 using SpawnerSystem;
 using UnityEngine;
 using Unstable;
@@ -47,6 +48,7 @@ namespace FlowControl
             });
 
             _state = LevelState.InCombat;
+            GameRuleManager.EnforceRule(GameRule.InCombat, this);
         }
 
         public void Tick(float deltaTime)
@@ -80,6 +82,7 @@ namespace FlowControl
                 _enemies.Count == 0)
             {
                 _state = LevelState.Completed;
+                GameRuleManager.RevokeRule(GameRule.InCombat, this);
                 _root.BroadcastMessage("OnLevelCompleted", SendMessageOptions.DontRequireReceiver);
                 SpawnReward();
             }

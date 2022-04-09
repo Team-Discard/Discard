@@ -45,7 +45,8 @@ namespace CardSystem
 
         private void UseSouthCard()
         {
-            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove))
+            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove) &&
+                GameRuleManager.IsRuleEnforced(GameRule.InCombat))
             {
                 _cardUser.UseCard(0, _cardUseDependencies);
             }
@@ -53,7 +54,8 @@ namespace CardSystem
 
         private void UseEastCard()
         {
-            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove))
+            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove) &&
+                GameRuleManager.IsRuleEnforced(GameRule.InCombat))
             {
                 _cardUser.UseCard(1, _cardUseDependencies);
             }
@@ -61,7 +63,8 @@ namespace CardSystem
 
         private void UseNorthCard()
         {
-            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove))
+            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove) &&
+                GameRuleManager.IsRuleEnforced(GameRule.InCombat))
             {
                 _cardUser.UseCard(2, _cardUseDependencies);
             }
@@ -69,7 +72,8 @@ namespace CardSystem
 
         private void UseWestCard()
         {
-            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove))
+            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove) &&
+                GameRuleManager.IsRuleEnforced(GameRule.InCombat))
             {
                 _cardUser.UseCard(3, _cardUseDependencies);
             }
