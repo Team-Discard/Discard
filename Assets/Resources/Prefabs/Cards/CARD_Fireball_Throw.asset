@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9862a1db356940d7a8e53f0c4655a56f, type: 3}
+  m_Name: CARD_Fireball_Throw
+  m_EditorClassIdentifier: 
+  _name: Fireball
+  _description: 
+  _illustration: {fileID: -899543852, guid: 3c21c99865e1b0248abd547cb608521f, type: 3}
+  _actionPrefab: {fileID: 1381349324411992239, guid: 8a634afa2b4cfce4f8d1a6399a9b7c19, type: 3}

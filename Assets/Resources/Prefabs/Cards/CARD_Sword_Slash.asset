@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Sword Slash
   _description: 
-  _illustration: {fileID: 21300000, guid: 4edaf5c9c408e7e40ba97a89ef3dab53, type: 3}
+  _illustration: {fileID: -1443156045, guid: db64a540a5f33034c8ceeada125e1dd9, type: 3}
   _actionPrefab: {fileID: 8525776740673082216, guid: 59ad3105c16e30b418049d479fd3adb1, type: 3}
