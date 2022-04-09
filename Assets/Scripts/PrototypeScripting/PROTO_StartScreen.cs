@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -12,6 +13,7 @@ namespace PrototypeScripting
     {
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private float _fadeSpeed;
+        [SerializeField] private AudioSource _audio;
         private bool _fadeStarted;
 
         private void Awake()
@@ -26,6 +28,7 @@ namespace PrototypeScripting
             {
                 Debug.Log("WTF!");
                 _fadeStarted = true;
+                _audio.DOFade(0.0f, 2.0f);
             }
 
             if (_fadeStarted)
