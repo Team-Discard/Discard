@@ -1,0 +1,11 @@
+title: Rollo.Start
+position: 0,0.5
+---
+Rollo: Uh... Uh... Ahhhhhhh...
+-> Give him a card
+    Rollo: Oh... I felt card magic. Are you a card master? But... this is in prison init?
+    Rollo: Ah! Don't mind my talk, I will be leaving soon. Back to the sanctuary.
+    Rollo: Before I leave, please receive this as my gift.
+-> Leave him be
+    Rollo: ...
+===

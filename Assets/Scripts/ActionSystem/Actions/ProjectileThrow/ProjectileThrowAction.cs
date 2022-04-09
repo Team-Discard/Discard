@@ -17,7 +17,7 @@ namespace ActionSystem.Actions.ProjectileThrow
         [SerializeField] private ClipTransition _windUpAnimation;
         [SerializeField] private ClipTransition _throwAnimation;
         [SerializeField] private ProjectileComponent _projectilePrefab;
-
+        
         private PawnAnimationHandler _animationHandler;
         private float _windUpTimer;
         private FrameData<Translation> _translationFrame;
@@ -96,6 +96,9 @@ namespace ActionSystem.Actions.ProjectileThrow
                     ComponentRegistry.Instance,
                     _projectile.transform,
                     _socketGroup.Projectile);
+                
+                // todo: to:billy we need a proper audio manager
+                GetComponent<AudioSource>().Play();
             });
         }
 

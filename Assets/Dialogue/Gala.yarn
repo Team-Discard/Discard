@@ -1,28 +1,17 @@
 title: Gala.Start
-tags: 
 colorID: 0
 position: 789,276
 ---
-Gala: Hi player, how are you today?
--> Fantastic
-    <<static_example "argument string">>
-    Gala: Glad to hear that!
--> I'm OK
-    Gala: OK that's good to hear.
-Gala: I want you to know how to use card to fight enemies.
--> I don't care about it
-    <<set $interested to false>>
--> Please tell me more!
-    <<set $interested to true>>
-
-<<if $interested>>
-    Gala: OK fine...
-<<else>>
-    Gala: Yep. So you need to go find some skeleton, pick up card, and fight your ass through this!
-<<endif>>
-
+Gala: Another discarded arcana I see.
+Gala: Must be wondering why a room here, are you not?
+Gala: I am Gala, royal knight of Livera.
+Gala: Long story short, I got discarded here like you.
+Gala: Oh, but I see a fire of vengeance in your eyes. You want revenge don't you?
+-> Yes
+-> No
+Gala: Care not your answer, I would love to offer you a hand.
+Gala: You can not get out from here alone, so why don't you try picking up some ashes from the aisle over there?
 <<set $talked_to_gala to 1>>
-
 <<destroy_object UI_Hider>>
 ===
 
