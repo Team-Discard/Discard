@@ -1,6 +1,7 @@
 ﻿using EntitySystem;
+using Unstable;
 
-namespace Unstable
+namespace CharacterSystem
 {
     public interface IEnemyComponent : ITicker, IComponent<IEnemyComponent>
     {
