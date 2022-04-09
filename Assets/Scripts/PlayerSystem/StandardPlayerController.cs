@@ -2,6 +2,7 @@
 using CharacterSystem;
 using CutSceneSystem;
 using EntitySystem;
+using GameRuleSystem;
 using InteractionSystem;
 using MotionSystem;
 using UnityEngine;
@@ -32,7 +33,12 @@ namespace PlayerSystem
         public void Tick(float deltaTime)
         {
             // very hacky
-            if (InteractionEventSystem.PlayerRestraint > 0) return;
+            if (GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove))
+            {
+                _pawn.SetTranslation(Translation.Identity);
+                _pawn.SetRotation(Rotation.Identity);
+                return;
+            }
 
             var rotationFrame = Rotation.Identity;
             var translationFrame = Translation.Identity;

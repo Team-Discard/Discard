@@ -1,5 +1,6 @@
 ﻿using Annotations;
 using CutSceneSystem;
+using GameRuleSystem;
 using InteractionSystem;
 using UnityEngine;
 
@@ -24,7 +25,7 @@ namespace CameraSystem
         private void Update()
         {
             // very hacky
-            if (InteractionEventSystem.PlayerRestraint > 0) return;
+            if (GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove)) return;
             
             var rotation = Quaternion.Euler(-_pitch, _yaw, 0.0f);
             _pivotTransform.rotation = rotation;

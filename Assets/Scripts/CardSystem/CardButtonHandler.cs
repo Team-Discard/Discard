@@ -1,4 +1,5 @@
 ﻿using EntitySystem;
+using GameRuleSystem;
 using Unstable.Entities;
 using Uxt;
 using Uxt.InterModuleCommunication;
@@ -22,7 +23,7 @@ namespace CardSystem
             _inputHandler = inputHandler;
             _cardUser = cardUser;
             _cardUseDependencies = cardUseDependencies;
-            
+
             _inputHandler.onSouthButton += UseSouthCard;
             _inputHandler.onEastButton += UseEastCard;
             _inputHandler.onNorthButton += UseNorthCard;
@@ -42,12 +43,36 @@ namespace CardSystem
             _inputHandler.onWestButton -= UseWestCard;
         }
 
-        private void UseSouthCard() => _cardUser.UseCard(0, _cardUseDependencies);
+        private void UseSouthCard()
+        {
+            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove))
+            {
+                _cardUser.UseCard(0, _cardUseDependencies);
+            }
+        }
 
-        private void UseEastCard() => _cardUser.UseCard(1, _cardUseDependencies);
+        private void UseEastCard()
+        {
+            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove))
+            {
+                _cardUser.UseCard(1, _cardUseDependencies);
+            }
+        }
 
-        private void UseNorthCard() => _cardUser.UseCard(2, _cardUseDependencies);
+        private void UseNorthCard()
+        {
+            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove))
+            {
+                _cardUser.UseCard(2, _cardUseDependencies);
+            }
+        }
 
-        private void UseWestCard() => _cardUser.UseCard(3, _cardUseDependencies);
+        private void UseWestCard()
+        {
+            if (!GameRuleManager.IsRuleEnforced(GameRule.PlayerCannotMove))
+            {
+                _cardUser.UseCard(3, _cardUseDependencies);
+            }
+        }
     }
 }

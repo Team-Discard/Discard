@@ -1,5 +1,7 @@
 using DG.Tweening;
+using GameRuleSystem;
 using InteractionSystem;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,16 +35,18 @@ namespace CutSceneSystem
             IsCutScenePlaying = false;
         }
 
+        [UsedImplicitly]
         public void SetCutScenePlayingTrue()
         {
             IsCutScenePlaying = true;
-            InteractionEventSystem.PlayerRestraint++;
+            GameRuleManager.EnforceRule(GameRule.PlayerCannotMove, this);
         }
 
+        [UsedImplicitly]
         public void SetCutScenePlayingFalse()
         {
             IsCutScenePlaying = false;
-            InteractionEventSystem.PlayerRestraint--;
+            GameRuleManager.RevokeRule(GameRule.PlayerCannotMove, this);
         }
 
         public void DestroyManikin()
