@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ActionSystem;
 using CardSystem;
@@ -183,6 +184,14 @@ namespace FlowControl
             }
         }
 
+        private void FixedUpdate()
+        {
+            var deltaTime = Time.fixedDeltaTime;
+            
+            _componentRegistry
+                .Get<ProjectileComponent>()
+                .Tick(deltaTime, (proj, dt) => proj.TickHoming(dt));
+        }
 
         private bool PlayerEnteredNewLevel(out GameObject levelRoot)
         {

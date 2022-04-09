@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Animancer;
+﻿using Animancer;
 using CameraSystem;
 using CharacterSystem;
 using CombatSystem;
@@ -154,7 +152,7 @@ namespace Unstable.Entities
                     {
                         BaseAmount = 1.0f,
                         DamageBox = _sword.DamageBox,
-                        Layer = DamageLayer.Enemy
+                        Layer = FriendLayer.Enemy
                     }, _damageId);
                     _animationHandler.PlayAnimation(
                         _stabAnimation,

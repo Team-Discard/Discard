@@ -74,6 +74,8 @@ namespace ActionSystem.Actions.ProjectileThrow
                 rigidBody.isKinematic = false;
                 rigidBody.useGravity = false;
                 rigidBody.AddForce(_rootMotionSource.transform.forward * 10.0f, ForceMode.Impulse);
+
+                _projectile.EnableHoming = true;
             });
             
             _animationHandler.PlayActionAnimation(this, _leadAnimation, () =>
@@ -88,7 +90,7 @@ namespace ActionSystem.Actions.ProjectileThrow
                 }
                 
                 // todo: this damage layer should be a parameter
-                _projectile.BindDamageLayer(DamageLayer.Player);
+                _projectile.BindDamageLayer(FriendLayer.Player);
                 
                 _windUpFollowConstraint = new FollowConstraintComponent(
                     ComponentRegistry.Instance,

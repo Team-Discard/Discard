@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using EntitySystem;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace CombatSystem
 {
@@ -10,7 +11,7 @@ namespace CombatSystem
     {
         [SerializeField] private HurtBox _hurtBox;
         [SerializeField] private float _invincibilityFrame;
-        [SerializeField] private DamageLayer _damageLayer;
+        [FormerlySerializedAs("_damageLayer")] [SerializeField] private FriendLayer friendLayer;
         private IHealthBarComponent _healthBar;
         private Queue<Damage> _damageQueue;
 
@@ -33,7 +34,7 @@ namespace CombatSystem
             }
 
             // Cannot take friendly damage
-            if (damage.Layer == _damageLayer)
+            if (damage.Layer == friendLayer)
             {
                 return;
             }
