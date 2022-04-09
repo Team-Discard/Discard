@@ -1,4 +1,5 @@
 ﻿using System;
+using Dialogue;
 using InteractionSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,6 +16,7 @@ namespace Unstable.Entities
         public Action onWestButton;
         public Action onToggleLockOn;
         public Action onInteractButton;
+        public Action onContinueButton;
 
         private void Awake()
         {
@@ -35,6 +37,7 @@ namespace Unstable.Entities
         {
             // maybe bad practice, ask Billy
             onInteractButton += InteractionManager.Instance.InteractWithCurrentFocusedInteractable;
+            onContinueButton += DialogueManager.Instance.TryPressContinue;
         }
 
         private void OnDestroy()
@@ -43,6 +46,7 @@ namespace Unstable.Entities
             
             // maybe bad practice, ask Billy
             onInteractButton -= InteractionManager.Instance.InteractWithCurrentFocusedInteractable;
+            onContinueButton -= DialogueManager.Instance.TryPressContinue;
         }
 
         public void UpdateInput(
@@ -81,6 +85,11 @@ namespace Unstable.Entities
             onInteractButton?.Invoke();
         }
 
+        private void OnContinueButton(InputAction.CallbackContext callbackContext)
+        {
+            onContinueButton?.Invoke();
+        }
+
         private void RegisterInput()
         {
             _control.Standard.CardSouth.performed += OnSouthButton;
@@ -89,6 +98,7 @@ namespace Unstable.Entities
             _control.Standard.CardWest.performed += OnWestButton;
             _control.Standard.ToggleLockOn.performed += OnToggleLockOn;
             _control.Standard.Interact.performed += OnInteractButton;
+            _control.Standard.Continue.performed += OnContinueButton;
         }
 
         private void UnregisterInput()
@@ -99,6 +109,7 @@ namespace Unstable.Entities
             _control.Standard.CardWest.performed -= OnWestButton;
             _control.Standard.ToggleLockOn.performed -= OnToggleLockOn;
             _control.Standard.Interact.performed -= OnInteractButton;
+            _control.Standard.Continue.performed -= OnContinueButton;
         }
     }
 }
