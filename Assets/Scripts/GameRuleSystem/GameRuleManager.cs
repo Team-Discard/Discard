@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Dialogue;
 using UnityEngine;
 using Uxt.Utils;
 
@@ -49,6 +48,7 @@ namespace GameRuleSystem
     public enum GameRule
     {
         PlayerCannotMove,
-        NoHUD
+        NoHUD,
+        InCombat
     }
 }
