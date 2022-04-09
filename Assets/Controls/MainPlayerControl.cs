@@ -107,6 +107,15 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Continue"",
+                    ""type"": ""Button"",
+                    ""id"": ""f64ca4c8-20a6-44ed-a74a-633c5fefd99a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -285,6 +294,28 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""517f936d-ba59-4182-8398-def8a3496ab7"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dfd16108-a802-4a2f-9943-744b3e5de30e"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Continue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -302,6 +333,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
         m_Standard_CardNorth = m_Standard.FindAction("Card North", throwIfNotFound: true);
         m_Standard_CardWest = m_Standard.FindAction("Card West", throwIfNotFound: true);
         m_Standard_Interact = m_Standard.FindAction("Interact", throwIfNotFound: true);
+        m_Standard_Continue = m_Standard.FindAction("Continue", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -370,6 +402,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
     private readonly InputAction m_Standard_CardNorth;
     private readonly InputAction m_Standard_CardWest;
     private readonly InputAction m_Standard_Interact;
+    private readonly InputAction m_Standard_Continue;
     public struct StandardActions
     {
         private @MainPlayerControl m_Wrapper;
@@ -383,6 +416,7 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
         public InputAction @CardNorth => m_Wrapper.m_Standard_CardNorth;
         public InputAction @CardWest => m_Wrapper.m_Standard_CardWest;
         public InputAction @Interact => m_Wrapper.m_Standard_Interact;
+        public InputAction @Continue => m_Wrapper.m_Standard_Continue;
         public InputActionMap Get() { return m_Wrapper.m_Standard; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -419,6 +453,9 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                 @Interact.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnInteract;
+                @Continue.started -= m_Wrapper.m_StandardActionsCallbackInterface.OnContinue;
+                @Continue.performed -= m_Wrapper.m_StandardActionsCallbackInterface.OnContinue;
+                @Continue.canceled -= m_Wrapper.m_StandardActionsCallbackInterface.OnContinue;
             }
             m_Wrapper.m_StandardActionsCallbackInterface = instance;
             if (instance != null)
@@ -450,6 +487,9 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @Continue.started += instance.OnContinue;
+                @Continue.performed += instance.OnContinue;
+                @Continue.canceled += instance.OnContinue;
             }
         }
     }
@@ -465,5 +505,6 @@ public partial class @MainPlayerControl : IInputActionCollection2, IDisposable
         void OnCardNorth(InputAction.CallbackContext context);
         void OnCardWest(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnContinue(InputAction.CallbackContext context);
     }
 }

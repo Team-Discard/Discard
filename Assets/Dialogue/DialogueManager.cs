@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using GameRuleSystem;
 using InteractionSystem;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.UI;
 using Yarn.Unity;
 
 namespace Dialogue
@@ -23,6 +23,8 @@ namespace Dialogue
 
         [SerializeField] private DialogueRunner dialogueRunner;
         private IInteractable _currentFocusedInteractable;
+
+        [SerializeField] private Button continueButton;
 
 
         public void StartDialogueWithCharacter(IInteractable inter)
@@ -48,6 +50,14 @@ namespace Dialogue
 
             GameRuleManager.RevokeRule(GameRule.NoHUD, this);
             GameRuleManager.RevokeRule(GameRule.PlayerCannotMove, this);
+        }
+
+        public void TryPressContinue()
+        {
+            if (continueButton.enabled)
+            {
+                continueButton.onClick?.Invoke();
+            }
         }
 
         private void OnDestroy()
