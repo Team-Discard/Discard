@@ -75,10 +75,11 @@ namespace Unstable.Entities
             if (!Mathf.Approximately(moveDirection.sqrMagnitude, 0))
             {
                 var angleDiff = -Vector2.SignedAngle(currentForward, moveDirection);
-                if (Mathf.Abs(angleDiff) >= 0.1f)
-                {
-                    rotation.YawVelocity += Mathf.Sign(angleDiff) * maxAngularSpeed;
-                }
+                rotation.Delta *= Quaternion.Slerp(Quaternion.identity, Quaternion.AngleAxis(angleDiff, Vector3.up), 15f * deltaTime);
+                // if (Mathf.Abs(angleDiff) >= 1f)
+                // {
+                //     rotation.YawVelocity += Mathf.Sign(angleDiff) * maxAngularSpeed;
+                // }
             }
         }
 
@@ -90,19 +91,7 @@ namespace Unstable.Entities
                 ~0,
                 -10.0f * Time.deltaTime);
 
-            switch (fallAndPush.Type)
-            {
-                case FallAndPushType.Fall:
-                {
-                    translation.TargetVerticalVelocity += -10.0f;
-                    break;
-                }
-                case FallAndPushType.Push:
-                {
-                    // translationFrame.Displacement += fallAndPush.AbsoluteAmount * Vector3.up;
-                    break;
-                }
-            }
+            translation.TargetVerticalVelocity += -10.0f;
         }
     }
 }
