@@ -70,8 +70,8 @@ namespace InteractionSystem
                 return;
             }
 
-            var screenPoint = Camera.main.WorldToScreenPoint(targetTransform.position);
-            _hintDisplay.Rect.position = screenPoint;
+            //var screenPoint = Camera.main.WorldToScreenPoint(targetTransform.position);
+            //_hintDisplay.Rect.position = screenPoint;
             
             _hintDisplay.SetText(_currentFocusedInteractable.HintText);
             _hintDisplay.Show();
