@@ -23,23 +23,32 @@ namespace PrototypeScripting
 
         private void Update()
         {
-            if (Gamepad.current.allControls.Any(x => x is ButtonControl button && button.isPressed && !x.synthetic) ||
-                Keyboard.current.anyKey.wasPressedThisFrame && !_fadeStarted)
-            {
-                Debug.Log("WTF!");
-                _fadeStarted = true;
-                _audio.DOFade(0.0f, 2.0f);
-            }
+            var gamePadAnyKey =
+                Gamepad.current != null &&
+                Gamepad.current.allControls.Any(x => x is ButtonControl button && button.isPressed && !x.synthetic);
 
-            if (_fadeStarted)
+            var keyboardAnyKey =
+                Keyboard.current != null &&
+                Keyboard.current.anyKey.wasPressedThisFrame;
+
+            switch (_fadeStarted)
             {
-                _canvasGroup.alpha += Time.deltaTime * _fadeSpeed;
-                if (_canvasGroup.alpha >= 1.0f)
+                case false when (gamePadAnyKey || keyboardAnyKey):
                 {
-                    SceneManager.LoadScene("Demo Level", LoadSceneMode.Single);
+                    _fadeStarted = true;
+                    _audio.DOFade(0.0f, 2.0f);
+                    break;
+                }
+                case true:
+                {
+                    _canvasGroup.alpha += Time.deltaTime * _fadeSpeed;
+                    if (_canvasGroup.alpha >= 1.0f)
+                    {
+                        SceneManager.LoadScene("Demo Level", LoadSceneMode.Single);
+                    }
+                    break;
                 }
             }
         }
-        
     }
 }
